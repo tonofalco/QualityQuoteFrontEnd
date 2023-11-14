@@ -1,0 +1,85 @@
+import { useDispatch, useSelector } from "react-redux"
+import Swal from "sweetalert2"
+import { calendarApi } from "../api"
+import { convertToDateEvents } from "../helpers"
+import { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadEvents } from "../store"
+
+
+export const useCalendarStore = () => {
+
+    const dispatch = useDispatch()
+
+    const { activeEvent, events } = useSelector(state => state.calendar)
+    const { user } = useSelector(state => state.auth)
+
+    const setActiveEvent = (calendarEvent) => {
+        dispatch(onSetActiveEvent(calendarEvent))
+    }
+
+    const starSavingEvent = async (calendarEvent) => {
+        //TODO: llegar al backend
+
+        //* todo bien
+        // TODO: update event
+
+        try {
+
+            if (calendarEvent.id) {
+                // Actualizando
+                const { data } = await calendarApi.put(`/events/${calendarEvent.id}`, calendarEvent)
+                dispatch(onUpdateEvent({ ...calendarEvent, user }))
+                return;
+            }
+            // Creando
+            const { data } = await calendarApi.post('/events', calendarEvent)
+            dispatch(onAddNewEvent({ ...calendarEvent, id: data.evento.id, user }))
+
+        } catch (error) {
+
+            console.log(error)
+            Swal.fire('Error al guardar', error.response.data?.msg, 'error')
+
+        }
+
+    }
+
+    const StartDeletingEvent = async () => {
+        //TODO: llegar al backend
+
+        try {
+            const { data } = await calendarApi.delete(`/events/${activeEvent.id}`)
+            dispatch(onDeleteEvent());
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error al eliminar', error.response.data?.msg, 'error')
+        }
+
+    }
+
+    const startLoadingEvent = async () => {
+        try {
+            const { data } = await calendarApi.get('/events')
+            const events = convertToDateEvents(data.eventos)
+            dispatch(onLoadEvents(events))
+            // console.log(data)
+
+        } catch (error) {
+            console.log('error cargando eventos')
+            console.log(error)
+        }
+    }
+
+    return {
+        //* propiedades
+        events,
+        activeEvent,
+        hasEventSelected: !!activeEvent,
+
+        //* Metodos
+        setActiveEvent,
+        starSavingEvent,
+        StartDeletingEvent,
+        startLoadingEvent,
+
+    }
+}

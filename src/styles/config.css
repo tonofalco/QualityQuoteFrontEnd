@@ -1,0 +1,35 @@
+.icon_font {
+    font-size: 90px;
+    color: green;
+
+}
+
+.option:hover {
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+.table-wrapper {
+    overflow: auto;
+    max-height: 790px;
+    /* Ajusta la altura máxima según tus necesidades */
+}
+
+.table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.table-wrapper thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #fff;
+}
+
+@media (max-width: 360px) {
+    .icon_font {
+        font-size: 60px;
+    }
+}

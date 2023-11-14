@@ -1,0 +1,30 @@
+/* SideBar */
+.sideBar {
+    padding: 0% 10%;
+}
+
+.content {
+    margin-left: 1.5%;
+}
+
+.activeLink {
+    background-color: red;
+    margin-top: 200px;
+}
+
+/* Media Query */
+@media (max-width: 900px) {
+    .sideBarList {
+        padding: 0% 0%;
+    }
+
+    .sideBarList .nav-item a {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0%;
+    }
+}
