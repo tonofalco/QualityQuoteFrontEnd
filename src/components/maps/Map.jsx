@@ -1,14 +1,17 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
 import { eachDayOfInterval, getDay } from 'date-fns';
 import { AppProvider } from '../../context/AppContext';
 import { MapBox, RoutesCalculator, GoogleMaps } from '../';
 import Swal from 'sweetalert2'
+import { useConfigStore } from '../../hooks';
 
 
 const libraries = ['places'];
 
 export const Map = () => {
+
+    const { costsValue, startLoadingCosts, loading } = useConfigStore();
 
     const [mapKey, setMapKey] = useState(0); // Nuevo estado mapKey
     const [directionsResponse, setDirectionsResponse] = useState(null);
@@ -21,6 +24,8 @@ export const Map = () => {
     const [weekendCount, setWeekendCount] = useState(null);
     const [stops, setStops] = useState([]);
     const [currentStop, setCurrentStop] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const sourceRef = useRef();
     const destinationRef = useRef();
@@ -29,6 +34,17 @@ export const Map = () => {
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
         libraries: libraries
     });
+
+    useEffect(() => {
+        if (!isLoading) {
+            const fetchData = async () => {
+                setIsLoading(true);
+                await startLoadingCosts();
+            };
+
+            fetchData();
+        }
+    }, [isLoading, startLoadingCosts]);
 
     const addStop = () => {
         if (stops.length < 5) {
@@ -120,58 +136,71 @@ export const Map = () => {
         directionsService.route(directionsRequest, generatePath);
     }
 
-    if (!isLoaded) {
-        return <div>Loading...</div>;
+    if (loading || costsValue == {}) {
+        return <div>Cargando aplicacion...</div>
     }
 
     return (
         <>
-            <AppProvider>
+            {costsValue ? (
+                <AppProvider>
+
+                    <div>
+                        <div>
+                            {/* Contenido de la caja del formulario */}
+                            <MapBox
+                                calculateRoute={calculateRoute}
+                                sourceRef={sourceRef}
+                                destinationRef={destinationRef}
+                                setDistance={setDistance}
+                                setDuration={setTime}
+                                stops={stops}
+                                setStops={setStops}
+                                currentStop={currentStop}
+                                setCurrentStop={setCurrentStop}
+                                addStop={addStop}
+                                removeStop={removeStop}
+                                setDirectionsResponse={setDirectionsResponse}
+                                startDate={startDate}
+                                setStartDate={setStartDate}
+                                endDate={endDate}
+                                setEndDate={setEndDate}
+                                autocompleteRef={autocompleteRef}
+                                setMapKey={setMapKey}
+                            />
+                        </div>
+
+
+                        <div className='row '> {/* Mapa de google */}
+                            <div className='col-sm-8 col-12' style={{ height: 'calc(100vh - 60px)' }}>
+                                <GoogleMaps
+                                    directionsResponse={directionsResponse}
+                                    mapKey={mapKey}
+                                />
+                            </div>
+
+                            <div className="col-sm-4 col-12">
+                                <RoutesCalculator
+                                    distance={distance}
+                                    duration={time}
+                                    directionsResponse={directionsResponse}
+                                    totalDays={totalDays}
+                                    weekdaysCount={weekdaysCount}
+                                    weekendCount={weekendCount}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+
+                </AppProvider>
+            ) : (
                 <div>
-                    {/* Contenido de la caja del formulario */}
-                    <MapBox
-                        calculateRoute={calculateRoute}
-                        sourceRef={sourceRef}
-                        destinationRef={destinationRef}
-                        setDistance={setDistance}
-                        setDuration={setTime}
-                        stops={stops}
-                        setStops={setStops}
-                        currentStop={currentStop}
-                        setCurrentStop={setCurrentStop}
-                        addStop={addStop}
-                        removeStop={removeStop}
-                        setDirectionsResponse={setDirectionsResponse}
-                        startDate={startDate}
-                        setStartDate={setStartDate}
-                        endDate={endDate}
-                        setEndDate={setEndDate}
-                        autocompleteRef={autocompleteRef}
-                        setMapKey={setMapKey}
-                    />
+                    <br />
+                    <h5>Cargando Mapa...</h5>
+                    <hr />
                 </div>
-
-
-                <div className='row '> {/* Mapa de google */}
-                    <div className='col-sm-8 col-12' style={{ height: 'calc(100vh - 60px)' }}>
-                        <GoogleMaps
-                            directionsResponse={directionsResponse}
-                            mapKey={mapKey}
-                        />
-                    </div>
-
-                    <div className="col-sm-4 col-12">
-                        <RoutesCalculator
-                            distance={distance}
-                            duration={time}
-                            directionsResponse={directionsResponse}
-                            totalDays={totalDays}
-                            weekdaysCount={weekdaysCount}
-                            weekendCount={weekendCount}
-                        />
-                    </div>
-                </div>
-            </AppProvider>
+            )}
         </>
     )
 }

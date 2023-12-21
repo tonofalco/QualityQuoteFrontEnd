@@ -7,10 +7,14 @@ export const configSlice = createSlice({
         editDay: true,
         editKms: true,
 
-        costos: {}
+        costos: null, // Inicializa como null 
+        loading: false, // Estado para indicar si los datos se están cargando
 
     },
     reducers: {
+        onSetActiveUser: (state, { payload }) => {
+            state.activeEvent = payload
+        },
         onEditDayCosts: (state) => {
             state.editDay = !state.editDay; // Cambia el valor de "edit" al opuesto
         },
@@ -18,12 +22,19 @@ export const configSlice = createSlice({
             state.editKms = !state.editKms;
         },
 
-        onLoadCosts: (state, { payload }) => {
-            state.costos = payload; // Actualizar la lista de usuarios en el estado
-        },
         onUpdateCostValue: (state, action) => {
             const { key, newValue } = action.payload; // Esperamos un objeto con "key" y "newValue"
             state.costos[key] = newValue; // Modificar el valor en el objeto "costos"
+        },
+        onLoadCostsStart: (state) => {
+            state.loading = true; // Indicar que se está cargando la información
+        },
+        onLoadCostsSuccess: (state, { payload }) => {
+            state.costos = payload;
+            state.loading = false; // Indicar que la carga ha finalizado
+        },
+        onLoadCostsFailure: (state) => {
+            state.loading = false; // Indicar que ha ocurrido un error al cargar los datos
         },
     },
 });
@@ -37,9 +48,14 @@ export const {
     onEditKms,
     onUpdateCostValue,
 
-    onLoadCosts,
     updateCostsSuccess,
-    updateCostsError
+    updateCostsError,
+
+    onLoadCostsStart,
+    onLoadCostsSuccess,
+    onLoadCostsFailure,
+
+    onSetActiveUser,
 } = configSlice.actions;
 
 // Exporta el initialState

@@ -14,6 +14,8 @@ export const ConfigOptions = () => {
 
     return (
         <>
+        <h1 className="mt-2">CONFIGURACION</h1>
+        <hr />
             <div className="row">
                 <div className="col-md-2 col-6 my-3 d-flex flex-column text-center option" onClick={handleButtonClickCosts}>
                     <span><i className="fa-solid fa-file-invoice-dollar icon_font"></i></span>

@@ -6,21 +6,11 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
 
     const [multi, setMulti] = useState(2);
     const [isChecked, setIsChecked] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
-    const { costsValue, startLoadingCosts } = useConfigStore();
+
+    const { costsValue, loading } = useConfigStore();
     const { hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs, gasoline, salary, booths, maintenance, utility, supplement } = costsValue
 
-    useEffect(() => {
-        if (!isLoading) {
-            const fetchData = async () => {
-                setIsLoading(true);
-                await startLoadingCosts();
-            };
-
-            fetchData();
-        }
-    }, [isLoading, startLoadingCosts, costsValue]);
 
     const calcularCosto = (dias, costoPorDia) => {
         let costo = (dias * costoPorDia);
@@ -57,6 +47,10 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
     const precioUnitatioSpt = (precioTotal / plazasSpt)
     const formattedPrecioUnitarioSpt = parseFloat(precioUnitatioSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 
+    if (loading || costsValue == {}) {
+        return <div>Cargando aplicacion...</div>
+    }
+
     return (
         <>
             <div className='me-3 ms-4 ms-md-0 mb-3' id='titulo'>
@@ -65,8 +59,10 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                     <div>
                         <h2 className='text-center mt-3'>Cotizacion de transportes</h2>
                         <br />
-                        {/* INFORMACION DEL VIAJE */}
-                        <div>
+
+                {/* INFORMACION DEL VIAJE */}
+
+                <div>
                             <div className="form-check">
                                 <input
                                     className="form-check-input"
@@ -84,9 +80,11 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                             <div><b>Duracion: </b> {duration}</div>
                             <div><b>Dias: </b>{totalDays}</div>
                         </div>
-                        <hr />
-                        {/* PRECIOS FINALES */}
-                        <table className="table text-center">
+                <hr />
+
+                {/* PRECIOS FINALES */}
+
+                <table className="table text-center">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
@@ -111,8 +109,10 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                             </tbody>
                         </table>
                         <hr />
-                        {/* DESGLOSE DE OPERACIONES*/}
-                        <div className='bg-secondary text-white'>
+
+                {/* DESGLOSE DE OPERACIONES*/}
+
+                <div className='bg-secondary text-white'>
                             <h3 className='mx-1 my-1'>Desglose</h3>
                             <br />
                             <div className="row mx-1 ">

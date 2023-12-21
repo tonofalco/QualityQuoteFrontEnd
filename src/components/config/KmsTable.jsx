@@ -13,27 +13,39 @@ export const KmsTable = ({ costsValue, editKms, handleToggleKmsState, handleUpda
         maintenance: 0,
         utility: 0,
         supplement: 0,
+
+        hotel_es: 0,
+        food_es: 0,
+        park_es: 0,
+        renueve_es: 0,
+        hotel_fs: 0,
+        food_fs: 0,
+        park_fs: 0
     })
 
     const { gasoline, salary, booths, maintenance, utility, supplement } = formValues
 
+    const cleanValue = (value) => {
+        return isNaN(value) || value === '' ? 0 : parseFloat(value);
+    };
+
     const onInputChanged = ({ target }) => {
         setFormValues({
             ...formValues,
-            [target.name]: parseFloat(target.value)
-        })
-    }
+            [target.name]: cleanValue(target.value),
+        });
+    };
 
     const onSubmit = async () => {
-        event.preventDefault()
+        event.preventDefault();
         await dispatch(handleUpdateCosts(formValues));
-    }
+    };
 
     useEffect(() => {
         if (costsValue !== null) {
-            setFormValues({ ...costsValue })
+            setFormValues({ ...costsValue });
         }
-    }, [costsValue])
+    }, [costsValue]);
 
     const destinos = [
         { nombre: 'Acapulco / Barra vieja', kms: 300 },
@@ -71,10 +83,13 @@ export const KmsTable = ({ costsValue, editKms, handleToggleKmsState, handleUpda
         { nombre: 'Mty', kms: 2400 },
     ];
 
-    let kms = 0
-    const directCost = parseFloat(formValues.gasoline + formValues.salary + formValues.booths).toFixed(1)
-    const totalCost = parseFloat(directCost) + formValues.maintenance
-    const rentPrice = parseFloat(totalCost) + formValues.utility
+    let kms = 0;
+const cleanedGasoline = cleanValue(gasoline);
+const cleanedSalary = cleanValue(salary);
+const cleanedBooths = cleanValue(booths);
+const directCost = parseFloat(cleanedGasoline + cleanedSalary + cleanedBooths).toFixed(1);
+const totalCost = parseFloat(directCost) + cleanValue(maintenance);
+const rentPrice = totalCost + cleanValue(utility);
 
 
     return (

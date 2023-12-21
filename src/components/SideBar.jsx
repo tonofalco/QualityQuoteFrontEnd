@@ -7,12 +7,7 @@ import '../styles/sidebar.css'
 import { Sidebar_bg } from "../styles/styledComponents"
 
 
-
-
-
 export const SideBar = () => {
-
-    
 
     const { user } = useAuthStore()
     const { handleLinkSelection, valueLink} = useActiveBar()

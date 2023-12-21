@@ -1,4 +1,4 @@
-import { NavBar, SideBar, ExtraDay, KmsTable, AdminUsers, ConfigOptions } from "../components"
+import { NavBar, SideBar, AdminUsers} from "../components"
 import { useActiveBar } from "../hooks"
 
 export const ConfigUsersPage = () => {

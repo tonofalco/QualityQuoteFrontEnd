@@ -18,8 +18,6 @@ export const ConfigPage = () => {
         <div className='col-md-10 col-12 '>
           <NavBar />
           <div className={`ms-3 cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
-            <h1 className="mt-2">CONFIGURACION</h1>
-            <hr />
             <ConfigOptions />
           </div>
 
