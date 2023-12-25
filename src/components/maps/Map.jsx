@@ -137,8 +137,11 @@ export const Map = () => {
     }
 
     if (loading || costsValue == {}) {
-        return <div>Cargando aplicacion...</div>
+        return <h5>Cargando aplicacion...</h5>
+    } else if (!isLoaded) {
+        return <h5>Cargando Mapa...</h5>;
     }
+
 
     return (
         <>
@@ -197,7 +200,7 @@ export const Map = () => {
             ) : (
                 <div>
                     <br />
-                    <h5>Cargando Mapa...</h5>
+                    <h5>Conectando con DB...</h5>
                     <hr />
                 </div>
             )}

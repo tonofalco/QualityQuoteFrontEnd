@@ -35,17 +35,17 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
     const multKms = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
     const costoTotal = (distancia * multKms)
     const precioTotal = Math.round(parseFloat(costoTotal) + parseFloat(totalDiasCosto))
-    const formattedPrecioTotal = parseFloat(precioTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });;
+    const formattedPrecioTotal = parseFloat(precioTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
     const precioUnitatio = (precioTotal / plazas)
-    const formattedPrecioUnitario = parseFloat(precioUnitatio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+    const formattedPrecioUnitario = parseFloat(precioUnitatio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
     let plazasSpt = 18
     const multKmsSpt = multKms + 3
     const costoTotalSpt = (distancia * multKmsSpt)
     const precioTotalSpt = Math.round(parseFloat(costoTotalSpt) + parseFloat(totalDiasCosto))
-    const formattedPrecioTotalSpt = parseFloat(precioTotalSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });;
+    const formattedPrecioTotalSpt = parseFloat(precioTotalSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
     const precioUnitatioSpt = (precioTotal / plazasSpt)
-    const formattedPrecioUnitarioSpt = parseFloat(precioUnitatioSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+    const formattedPrecioUnitarioSpt = parseFloat(precioUnitatioSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
     if (loading || costsValue == {}) {
         return <div>Cargando aplicacion...</div>
