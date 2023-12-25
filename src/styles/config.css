@@ -1,12 +1,18 @@
 .icon_font {
     font-size: 90px;
     color: green;
-
 }
 
-.option:hover {
-    opacity: 0.9;
+
+
+/* .icon_font:hover {
+    color: #6c757d;
+} */
+
+.btn:hover, .icon_font:hover {
+    opacity: 0.8;
     cursor: pointer;
+    color: #6c757d;
 }
 
 .table-wrapper {

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { calendarApi } from "../api"
-import { clearErrorMessage, onChecking, onLogin, onLogout, onLogoutCalendar, onLoadUsers } from '../store'
+import { clearErrorMessage, onChecking, onLogin, onLogout, onLogoutCalendar, onLoadUsers, onDeleteUser, onUpdateUser } from '../store'
 
 
 export const useAuthStore = () => {
@@ -35,13 +35,13 @@ export const useAuthStore = () => {
 
     }
 
-    const startRegister = async ({ name, email, password }) => {
+    const startRegister = async ({ name, email, role, password }) => {
 
         dispatch(onChecking())
 
         try {
 
-            const { data } = await calendarApi.post('/auth/new', { name, email, password })
+            const { data } = await calendarApi.post('/auth/new', { name, email, role, password })
             // console.log({ resp })
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
@@ -95,6 +95,29 @@ export const useAuthStore = () => {
         }
     };
 
+    const deleteUser = async (userId) => {
+        // dispatch(onDeleteUser(userId)); // Llama al action creator para eliminar un usuario por su ID
+        try {
+            const { data } = await calendarApi.delete(`/auth/${userId}`)
+            dispatch(onDeleteUser(userId));
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error al eliminar', error.response.data?.msg, 'error')
+        }
+    };
+
+    const updateUser = async (userId, updatedUserInfo) => {
+        try {
+            const { data } = await calendarApi.put(`/auth/${userId}`, updatedUserInfo);
+            // Suponiendo que la API devuelve la información actualizada del usuario
+
+            dispatch(onUpdateUser({ userId, updatedUserInfo: data })); // Actualizar el usuario en el estado
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error al actualizar', error.response.data?.msg, 'error');
+        }
+    };
+
     return {
         //* propiedades
         errorMessage,
@@ -108,6 +131,8 @@ export const useAuthStore = () => {
         startLogout,
         startRegister,
         startLoadingUsers,
+        deleteUser,
+        updateUser,
     }
 
 }

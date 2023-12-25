@@ -14,16 +14,30 @@ export const ConfigOptions = () => {
 
     return (
         <>
-        <h1 className="mt-2">CONFIGURACION</h1>
-        <hr />
-            <div className="row">
-                <div className="col-md-2 col-6 my-3 d-flex flex-column text-center option" onClick={handleButtonClickCosts}>
-                    <span><i className="fa-solid fa-file-invoice-dollar icon_font"></i></span>
-                    <button type="button" className="btn text-secondary">Costos</button>
+            <h1 className="mt-2">CONFIGURACION</h1>
+            <hr />
+            <div className="row my-4 mx-4">
+                {/* COSTOS  */}
+                <div className="col-md-2 col-6" onClick={handleButtonClickCosts}>
+                    <button
+                        type="button"
+                        className="btn text-secondary d-flex flex-column align-items-center justify-content-center text-center"
+                        style={{ height: '100px', /* Ajusta la altura según tus necesidades */ }}
+                    >
+                        <i className="fa-solid fa-file-invoice-dollar icon_font mb-1"></i>
+                        <span>Costos</span>
+                    </button>
                 </div>
-                <div className="col-md-2 col-6 my-3 d-flex flex-column text-center option" onClick={handleButtonClickUsers}>
-                    <span><i className="fa-solid fa-users icon_font"></i></span>
-                    <button type="button" className="btn text-secondary">Usuarios</button>
+                {/* USUARIOS */}
+                <div className="col-md-2 col-6" onClick={handleButtonClickUsers}>
+                    <button
+                        type="button"
+                        className="btn text-secondary d-flex flex-column align-items-center justify-content-center text-center"
+                        style={{ height: '100px', /* Ajusta la altura según tus necesidades */ }}
+                    >
+                        <i className="fa-solid fa-users icon_font mb-1"></i>
+                        <span>Usuarios</span>
+                    </button>
                 </div>
             </div>
         </>
