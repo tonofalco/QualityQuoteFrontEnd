@@ -41,12 +41,12 @@ export const Logo = styled.img`
     margin-right: auto;
 `
 
-export const Sidebar_bg = styled.div`
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    width: 100% !important;
-    background-color: #212529;
-`;
+// export const Sidebar_bg = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     min-height: 100vh;
+//     margin: 0;
+//     padding: 0;
+//     width: 100% !important;
+//     background-color: #212529;
+// `;

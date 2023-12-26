@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { calendarApi } from "../api"
-import { onEditDayCosts, onEditKms,  onSetActiveUser, onLoadCostsStart, onLoadCostsSuccess, onLoadCostsFailure, } from "../store"
+import { onEditDayCosts, onEditKms, onLoadCostsStart, onLoadCostsSuccess, onLoadCostsFailure, } from "../store"
 // import { useAuthStore } from "./useAuthStore"
 
 
@@ -17,10 +17,6 @@ export const useConfigStore = () => {
 
     const handleToggleDayEstado = () => dispatch(onEditDayCosts())
     const handleToggleKmsState = () => dispatch(onEditKms())
-
-    const setActiveUser = (user) => {
-        dispatch(onSetActiveUser(user))
-    }
 
     
 
@@ -56,7 +52,6 @@ export const useConfigStore = () => {
         editDay,
         editKms,
 
-        setActiveUser,
         startLoadingCosts,
         handleUpdateCosts,
 

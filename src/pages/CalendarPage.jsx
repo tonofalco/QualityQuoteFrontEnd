@@ -1,4 +1,4 @@
-import { BigCalendar, NavBar, SideBar } from "../components"
+import { BigCalendar, NavBar, OverlayWhole, SideBar } from "../components"
 import { useActiveBar } from "../hooks"
 
 
@@ -13,13 +13,22 @@ export const CalendarPage = () => {
                 <div className="col-md-2 d-none d-md-block">
                     <SideBar />
                 </div>
-                
+
                 <div className='col-md-10 col-12'>
                     <NavBar />
 
-                    <div className={` cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
-                        <BigCalendar />
-                    </div>
+                    {!stateNavBar
+                        ? (
+                            <div className="row">
+                                <div className="col-12">
+                                <BigCalendar />
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="overlay">
+                                <OverlayWhole />
+                            </div>
+                        )}
 
                 </div>
 

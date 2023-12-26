@@ -8,22 +8,15 @@ export const useActiveBar = () => {
     const valueLink = useSelector((state) => state.navBar.value)
     const stateNavBar = useSelector((state) => state.navBar.isnavBarOpen)
 
+    const openNavBar = () => dispatch( onOpenNavBar() )
+    const closeNavBar = () => dispatch( onCloseNavBar() )
 
     const handleLinkSelection = (value) => {
         dispatch(selectLink(value))
     };
-    
-    const openNavBar = () => {
-        dispatch(onOpenNavBar())
-        // console.log(stateNavBar)
-    }
-
-    const closeNavBar = () => {
-        dispatch(onCloseNavBar())
-        // console.log(stateNavBar)
-    }
-    
 
 
-    return {handleLinkSelection, valueLink, openNavBar, closeNavBar, stateNavBar }
+
+
+    return { handleLinkSelection, valueLink, openNavBar, closeNavBar, stateNavBar }
 }

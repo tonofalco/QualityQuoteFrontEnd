@@ -34,11 +34,12 @@ export const calendarSlice = createSlice({
             state.activeEvent = null;
         },
         onUpdateEvent: (state, { payload }) => {
-            console.log(state.events);
+            // console.log(state.events);
             state.events = state.events.map(event => {
                 if (event.id === payload.id) {
                     return payload
                 }
+                // console.log(event.id, payload.id);
                 return event
             })
         },

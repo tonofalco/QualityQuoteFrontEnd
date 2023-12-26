@@ -1,6 +1,6 @@
 export * from './NavBar'
 export * from './SideBar'
-export * from './OverlayShadow'
+export * from './OverlayWhole'
 
 export * from './calendar/BigCalendar'
 export * from './calendar/CalendarEvent'

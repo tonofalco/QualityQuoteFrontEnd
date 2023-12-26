@@ -3,6 +3,7 @@ import { useAuthStore, useForm } from "../../hooks"
 import Swal from 'sweetalert2';
 import Modal from 'react-modal'
 
+
 const customStyles = {
     content: {
         top: '50%',
@@ -24,13 +25,21 @@ const registerFormFields = {
 
 export const AdminUsers = () => {
 
-    const { usersValue, startLoadingUsers, startRegister, errorMessage, deleteUser, updateUser } = useAuthStore();
+    const [selectUser, setSelectUser] = useState({
+        updateName: '',
+        updateEmail: '',
+        updateRole: '',
+    })
+
+    const { usersValue, activeUser, startLoadingUsers, startRegister, errorMessage, deleteUser, updateUser, setActiveUser } = useAuthStore();
+
     const { registerName, registerEmail, registerRole, registerPassword, registerPassword2, onInputChange: onRegisterInputChange } = useForm(registerFormFields)
-    
+    const { updateName, updateEmail, updateRole, onInputChange: onUpdateInputChange } = useForm(selectUser)
+
     const [isLoading, setIsLoading] = useState(false);
     const [show, setShow] = useState(false);
     const [show2, setShow2] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+
 
     useEffect(() => {
         if (errorMessage !== undefined) {
@@ -43,10 +52,27 @@ export const AdminUsers = () => {
 
             fetchData();
         }
-    }, [errorMessage, isLoading, startLoadingUsers]);
-    
+    }, [isLoading, startLoadingUsers]);
 
-    const areFieldsFilled = () => {
+    useEffect(() => {
+        if (activeUser !== null) {
+            setSelectUser({
+                updateName: activeUser.name,
+                updateEmail: activeUser.email,
+                updateRole: activeUser.role,
+                registerPassword: activeUser.password,
+                registerPassword2: activeUser.password,
+            })
+        }
+        // console.log(formValues);
+    }, [activeUser])
+
+    // Función para manejar la selección de usuario en redux
+    const onSelect = async (userId) => {
+        setActiveUser(userId)
+    };
+
+    const areFieldsFilledCreate = () => {
         return (
             registerName.trim() !== '' &&
             registerEmail.trim() !== '' &&
@@ -56,11 +82,22 @@ export const AdminUsers = () => {
         );
     };
 
+    const areFieldsFilledUpdate = () => {
+        return (
+            updateName.trim() !== '' &&
+            updateEmail.trim() !== '' &&
+            updateRole.trim() !== ''
+        );
+    };
+
     const handleRegisterUser = async (e) => {
         e.preventDefault();
-        if (!areFieldsFilled()) {
+        if (!areFieldsFilledCreate()) {
             Swal.fire('Campos vacíos', 'Por favor, completa todos los campos.', 'warning');
-        } else if (registerPassword !== registerPassword2) {
+        }else if (!emailRegex.test(updateEmail)) {
+            Swal.fire('Correo inválido', 'Por favor, introduce un correo electrónico válido.', 'error');
+        }
+        else if (registerPassword !== registerPassword2) {
             Swal.fire('Error en registro', '¡Las contraseñas no son iguales!', 'error');
         } else {
             await startRegister({ name: registerName, email: registerEmail, role: registerRole, password: registerPassword });
@@ -74,26 +111,20 @@ export const AdminUsers = () => {
         }
     };
 
-    // const handleEditUser = (user) => {
-    //     setSelectedUser(user);
-    //     toggleModalUpdate();
-    // };
-
     const handleUpdateUser = async (e) => {
         e.preventDefault();
-        if (!areFieldsFilled()) {
+        if (!areFieldsFilledUpdate()) {
             Swal.fire('Campos vacíos', 'Por favor, completa todos los campos.', 'warning');
-        } else if (registerPassword !== registerPassword2) {
-            Swal.fire('Error en registro', '¡Las contraseñas no son iguales!', 'error');
-        } else {
-            await updateUser(selectedUser.id, {
-                name: registerName,
-                email: registerEmail,
-                role: registerRole,
-                password: registerPassword
+        }else if (!emailRegex.test(updateEmail)) {
+            Swal.fire('Correo inválido', 'Por favor, introduce un correo electrónico válido.', 'error');
+        }
+        else {
+            await updateUser(activeUser.id, {
+                name: updateName,
+                email: updateEmail,
+                role: updateRole,
             });
-            // Restablece el estado del usuario seleccionado y cierra el modal
-            setSelectedUser(null);
+
             toggleModalUpdate();
             Swal.fire({
                 icon: 'success',
@@ -128,6 +159,7 @@ export const AdminUsers = () => {
     };
 
     const rolOptions = ['user', 'admin'];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const toggleModalCreate = () => setShow(prevShow => !prevShow);
     const toggleModalUpdate = () => setShow2(prevShow => !prevShow);
 
@@ -158,17 +190,21 @@ export const AdminUsers = () => {
                             <tbody>
                                 {usersValue.map((user) => (
                                     <tr key={user.id}>
-                                        {/* <td>{user.id}</td> */}
                                         <td>{user.name}</td>
                                         <td>{user.email}</td>
                                         <td>{user.role}</td>
                                         <td>
-                                            <button className="btn btn-primary me-3" onClick={() => toggleModalUpdate()}><i className="fa-solid fa-user-pen"></i></button>
-                                            <button className="btn btn-danger " onClick={() => handleDeleteUser(user.id)}><i className="fa-solid fa-user-minus"></i></button>
+                                            {/* Utiliza una arrow function para pasar el id del usuario a la función */}
+                                            <button className="btn btn-primary me-3" onClick={() => { onSelect(user.id); toggleModalUpdate() }}>
+                                                <i className="fa-solid fa-user-pen"></i>
+                                            </button>
+                                            <button className="btn btn-danger" onClick={() => handleDeleteUser(user.id)}>
+                                                <i className="fa-solid fa-user-minus"></i>
+                                            </button>
                                         </td>
-                                        {/* Agrega más celdas según tus datos de usuario */}
                                     </tr>
                                 ))}
+
                             </tbody>
                         </table>
                     </div>
@@ -278,7 +314,7 @@ export const AdminUsers = () => {
                 <hr />
                 <div className="container">
                     <div className="row">
-                        <form onSubmit={handleUpdateUser}>
+                        <form onSubmit={handleUpdateUser} className="mt-3">
                             <div className="col-12">
                                 <span>Nombre</span>
                                 <input
@@ -286,6 +322,8 @@ export const AdminUsers = () => {
                                     className="form-control"
                                     placeholder="Nombre de usuario"
                                     name='updateName'
+                                    value={updateName}
+                                    onChange={onUpdateInputChange}
                                 />
                             </div>
                             <div className="col-12 mt-3">
@@ -294,7 +332,9 @@ export const AdminUsers = () => {
                                     type="email"
                                     className="form-control"
                                     placeholder="Correo de usuario"
-                                    name='registerEmail'
+                                    name='updateEmail'
+                                    value={updateEmail}
+                                    onChange={onUpdateInputChange}
                                 />
                             </div>
                             <div className="col-12 mt-3">
@@ -303,30 +343,15 @@ export const AdminUsers = () => {
                                     type="text"
                                     className="form-select"
                                     aria-label="Seleccione una ciudad"
-                                    name='registerRole'
+                                    name='updateRole'
+                                    value={updateRole}
+                                    onChange={onUpdateInputChange}
                                 >
                                     <option value="" disabled>Seleccione un rol</option>
-                                    <option value="user">Usuario</option>
-                                    <option value="admin">Administrador</option>
+                                    {rolOptions.map((city) => (
+                                        <option value={city} key={city}>{city}</option>
+                                    ))}
                                 </select>
-                            </div>
-                            <div className="col-12 mt-3">
-                                <span>Contraseña</span>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Contraseña de usuario"
-                                    name='registerPassword'
-                                />
-                            </div>
-                            <div className="col-12 mt-3">
-                                <span>Confirmar contraseña</span>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Repita la misma contraseña"
-                                    name='registerPassword2'
-                                />
                             </div>
                             <div className="col-12 mt-3 d-flex justify-content-end">
                                 <button

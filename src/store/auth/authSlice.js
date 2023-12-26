@@ -7,8 +7,13 @@ export const authSlice = createSlice({
         user: {},
         errorMessage: undefined,
         users: [], // Agregado: estado para almacenar los usuarios
+        activeUser: null,
     },
     reducers: {
+        onSelectedUser: (state, { payload }) => {
+            state.activeUser = payload
+            // console.log(user.id, user.payload);
+        },
         onChecking: (state) => {
             state.status = 'checking';
             state.user = {};
@@ -34,16 +39,26 @@ export const authSlice = createSlice({
             state.users = state.users.filter(user => user.id !== payload); // Elimina el usuario por su ID
         },
         onUpdateUser: (state, { payload }) => {
-            const { userId, updatedUserInfo } = payload;
-            // Buscar el usuario por su ID y actualizar la información
-            state.users = state.users.map(user =>
-                user.id === userId ? { ...user, ...updatedUserInfo } : user
-            );
+            state.users = state.users.map(user => {
+                if (user.id === payload.id) {
+                    return payload
+                }
+                // console.log(user.id, payload.id);
+                return user
+            })
         },
     },
 });
 
-export const { onChecking, onLogin, onLogout, clearErrorMessage, onLoadUsers, onDeleteUser, onUpdateUser } = authSlice.actions;
+export const { onSelectedUser: onSelectedUser, 
+    onChecking,
+    onLogin,
+    onLogout,
+    clearErrorMessage,
+    onLoadUsers,
+    onDeleteUser,
+    onUpdateUser,
+    } = authSlice.actions;
 
 // Exporta el initialState
 export default authSlice.reducer;

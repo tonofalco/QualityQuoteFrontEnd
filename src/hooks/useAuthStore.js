@@ -1,16 +1,19 @@
 import { useDispatch, useSelector } from "react-redux"
 import { calendarApi } from "../api"
-import { clearErrorMessage, onChecking, onLogin, onLogout, onLogoutCalendar, onLoadUsers, onDeleteUser, onUpdateUser } from '../store'
+import { clearErrorMessage, onSelectedUser, onChecking, onLogin, onLogout, onLogoutCalendar, onLoadUsers, onDeleteUser, onUpdateUser } from '../store'
 
 
 export const useAuthStore = () => {
 
-    const { status, user, errorMessage } = useSelector(state => state.auth)
+    const { status, user, errorMessage, activeUser } = useSelector(state => state.auth)
     const usersValue = useSelector((state) => state.auth.users)
-
 
     const dispatch = useDispatch()
 
+    const setActiveUser = (userSelected) => {
+        const userActive = usersValue.find(user => user.id == userSelected)
+        dispatch(onSelectedUser(userActive))
+    }
 
     const startLogin = async ({ email, password }) => {
 
@@ -42,10 +45,8 @@ export const useAuthStore = () => {
         try {
 
             const { data } = await calendarApi.post('/auth/new', { name, email, role, password })
-            // console.log({ resp })
-            localStorage.setItem('token', data.token)
-            localStorage.setItem('token-init-date', new Date().getTime())
-            dispatch(onLogin({ name: data.name, uid: data.uid }))
+            // console.log(user.name);
+            dispatch(onLogin({ name: user.name, uid: user.uid }))
 
         } catch (error) {
 
@@ -110,9 +111,9 @@ export const useAuthStore = () => {
         try {
             const { data } = await calendarApi.put(`/auth/${userId}`, updatedUserInfo);
             // Suponiendo que la API devuelve la información actualizada del usuario
-
             dispatch(onUpdateUser({ userId, updatedUserInfo: data })); // Actualizar el usuario en el estado
         } catch (error) {
+            // console.log(userId, data);
             console.log(error);
             Swal.fire('Error al actualizar', error.response.data?.msg, 'error');
         }
@@ -124,8 +125,10 @@ export const useAuthStore = () => {
         status,
         user,
         usersValue,
+        activeUser,
 
         //* Metodos
+        setActiveUser,
         checkAuthToken,
         startLogin,
         startLogout,

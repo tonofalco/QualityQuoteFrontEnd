@@ -1,5 +1,5 @@
 
-import { NavBar, SideBar, Map } from "../components";
+import { NavBar, SideBar, Map, OverlayWhole } from "../components";
 import { useActiveBar } from "../hooks";
 import '../styles/overlayShadow.css';
 
@@ -16,13 +16,20 @@ export const MapsPage = () => {
         <div className='col-md-10 col-12'>
           <NavBar />
 
-          <div className={`cuerpo ${stateNavBar ? 'overlay' : ''}`}>
-            <div className="row">
-              <div className="col-12">
-                <Map />
+          {!stateNavBar
+            ? (
+              <div className="row">
+                <div className="col-12">
+                  <Map />
+                </div>
               </div>
-            </div>
-          </div>
+            ) : (
+
+              <div className="overlay">
+                <OverlayWhole />
+              </div>
+            )}
+            
         </div>
       </div>
     </>

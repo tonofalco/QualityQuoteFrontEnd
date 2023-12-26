@@ -58,7 +58,6 @@ export const BigCalendar = () => {
 
     return (
         <>
-
             <Calendar
                 culture='es'
                 // views={views}
