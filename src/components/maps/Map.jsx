@@ -195,7 +195,6 @@ export const Map = () => {
                         </div>
                     </div>
 
-
                 </AppProvider>
             ) : (
                 <div>
