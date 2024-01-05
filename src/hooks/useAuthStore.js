@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { calendarApi } from "../api"
+import { serverApi } from "../api"
 import { clearErrorMessage, onSelectedUser, onChecking, onLogin, onLogout, onLogoutCalendar, onLoadUsers, onDeleteUser, onUpdateUser } from '../store'
 
 
@@ -21,7 +21,7 @@ export const useAuthStore = () => {
 
         try {
 
-            const { data } = await calendarApi.post('/auth', { email, password })
+            const { data } = await serverApi.post('/auth', { email, password })
             // console.log({ resp })
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
@@ -44,7 +44,7 @@ export const useAuthStore = () => {
 
         try {
 
-            const { data } = await calendarApi.post('/auth/new', { name, email, role, password })
+            const { data } = await serverApi.post('/auth/new', { name, email, role, password })
             // console.log(user.name);
             dispatch(onLogin({ name: user.name, uid: user.uid }))
 
@@ -66,7 +66,7 @@ export const useAuthStore = () => {
 
         try {
 
-            const { data } = await calendarApi.get('auth/renew')
+            const { data } = await serverApi.get('auth/renew')
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
             dispatch(onLogin({ name: data.name, uid: data.uid }))
@@ -87,7 +87,7 @@ export const useAuthStore = () => {
 
     const startLoadingUsers = async () => {
         try {
-            const { data } = await calendarApi.get('/auth');
+            const { data } = await serverApi.get('/auth');
             const usuarios = data.usuarios;
             dispatch(onLoadUsers(usuarios)); // Pasar 'usuarios' como argumento
         } catch (error) {
@@ -99,7 +99,7 @@ export const useAuthStore = () => {
     const deleteUser = async (userId) => {
         // dispatch(onDeleteUser(userId)); // Llama al action creator para eliminar un usuario por su ID
         try {
-            const { data } = await calendarApi.delete(`/auth/${userId}`)
+            const { data } = await serverApi.delete(`/auth/${userId}`)
             dispatch(onDeleteUser(userId));
         } catch (error) {
             console.log(error);
@@ -109,7 +109,7 @@ export const useAuthStore = () => {
 
     const updateUser = async (userId, updatedUserInfo) => {
         try {
-            const { data } = await calendarApi.put(`/auth/${userId}`, updatedUserInfo);
+            const { data } = await serverApi.put(`/auth/${userId}`, updatedUserInfo);
             // Suponiendo que la API devuelve la información actualizada del usuario
             dispatch(onUpdateUser({ userId, updatedUserInfo: data })); // Actualizar el usuario en el estado
         } catch (error) {

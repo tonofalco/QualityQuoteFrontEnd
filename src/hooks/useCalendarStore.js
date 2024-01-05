@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import Swal from "sweetalert2"
-import { calendarApi } from "../api"
+import { serverApi } from "../api"
 import { convertToDateEvents } from "../helpers"
 import { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadEvents } from "../store"
 
@@ -26,12 +26,12 @@ export const useCalendarStore = () => {
 
             if (calendarEvent.id) {
                 // Actualizando
-                const { data } = await calendarApi.put(`/events/${calendarEvent.id}`, calendarEvent)
+                const { data } = await serverApi.put(`/events/${calendarEvent.id}`, calendarEvent)
                 dispatch(onUpdateEvent({ ...calendarEvent, user }))
                 return;
             }
             // Creando
-            const { data } = await calendarApi.post('/events', calendarEvent)
+            const { data } = await serverApi.post('/events', calendarEvent)
             dispatch(onAddNewEvent({ ...calendarEvent, id: data.evento.id, user }))
 
         } catch (error) {
@@ -47,7 +47,7 @@ export const useCalendarStore = () => {
         //TODO: llegar al backend
 
         try {
-            const { data } = await calendarApi.delete(`/events/${activeEvent.id}`)
+            const { data } = await serverApi.delete(`/events/${activeEvent.id}`)
             dispatch(onDeleteEvent());
         } catch (error) {
             console.log(error);
@@ -58,7 +58,7 @@ export const useCalendarStore = () => {
 
     const startLoadingEvent = async () => {
         try {
-            const { data } = await calendarApi.get('/events')
+            const { data } = await serverApi.get('/events')
             const events = convertToDateEvents(data.eventos)
             dispatch(onLoadEvents(events))
             // console.log(data)

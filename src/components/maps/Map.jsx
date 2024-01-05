@@ -30,6 +30,7 @@ export const Map = () => {
     const sourceRef = useRef();
     const destinationRef = useRef();
     const autocompleteRef = useRef(null);
+    
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
         libraries: libraries
