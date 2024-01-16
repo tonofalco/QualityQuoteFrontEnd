@@ -11,6 +11,17 @@
     border-radius: 8px;
 }
 
+.hidden-text {
+    /*Propiedades*/
+    white-space: nowrap;
+    /*No salto de lineas*/
+    overflow: hidden;
+    /*No dejar que salga nada*/
+    text-overflow: ellipsis;
+    /*Colocar los puntos suspencivos*/
+}
+
+
 @media (max-width: 900px) {
     .map-box {
         width: 30%
@@ -27,6 +38,7 @@
     .actions_btn {
         align-items: center;
     }
+
     .map-box {
         width: 50%
     }

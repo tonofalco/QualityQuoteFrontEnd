@@ -1,4 +1,4 @@
-import { NavBar, SideBar, AdminUsers} from "../components"
+import { NavBar, SideBar, AdminUsers, OverlayWhole } from "../components"
 import { useActiveBar } from "../hooks"
 
 export const ConfigUsersPage = () => {
@@ -15,11 +15,24 @@ export const ConfigUsersPage = () => {
 
                 <div className='col-md-10 col-12 '>
                     <NavBar />
-                    <div className={`ms-3 cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
+                    {!stateNavBar
+                        ? (
+                            <div>
+                                <h1 className="mt-2">CONFIGURACION</h1>
+                                <hr />
+                                <AdminUsers />
+                            </div>
+                        ) : (
+                            <div className="overlay">
+                                <OverlayWhole />
+                            </div>
+                        )}
+
+                    {/* <div className={`ms-3 cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
                         <h1 className="mt-2">CONFIGURACION</h1>
                         <hr />
                         <AdminUsers />
-                    </div>
+                    </div> */}
 
                 </div>
 

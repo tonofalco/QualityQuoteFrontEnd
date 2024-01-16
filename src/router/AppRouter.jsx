@@ -33,30 +33,16 @@ export const AppRouter = () => {
                             size={150}
                             aria-label="Loading Spinner"
                             data-testid="loader"
-                            color="blue" // Cambiar el color a azul
+                            color="blue"
                         />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-12 text-center">
-                        <h5>Cargando aplicacion...</h5>
+                        <h5>Cargando...</h5>
                     </div>
                 </div>
             </div>
-
-            // <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            //     <ClipLoader
-            //         size={150}
-            //         aria-label="Loading Spinner"
-            //         data-testid="loader"
-            //         color="blue" // Cambiar el color a azul
-            //     />
-            //     <div>
-
-            //         <p style={{ marginTop: 200}}>Cargando...</p>
-            //     </div>
-            //     <br />
-            // </div>
         )
     }
 

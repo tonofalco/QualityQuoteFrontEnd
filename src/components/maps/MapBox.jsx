@@ -81,12 +81,12 @@ export const MapBox = (
                         </div>
                     </Autocomplete>
 
-                    <ul className="border border-black rounded"> {/* Lista de paradas */}
+                    <ul className="border border-black rounded" style={{paddingLeft: 10 }}> {/* Lista de paradas */}
                         {stops.map((stop, index) => (
 
-                            <li key={index} className=" d-flex justify-content-between align-items-center my-2">
+                            <li key={index} className="d-flex justify-content-between align-items-center my-2">
 
-                                {stop}
+                                <span className='hidden-text'>{stop}</span>
                                 <button className="btn btn-danger"
                                     onClick={() => {
                                         removeStop(index);       // Llama a la primera función

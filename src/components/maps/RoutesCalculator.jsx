@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useConfigStore } from '../../hooks';
+import Accordion from 'react-bootstrap/Accordion';
 
 
 export const RoutesCalculator = ({ distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, }) => {
@@ -57,12 +58,12 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
 
                 {directionsResponse ? (
                     <div>
-                        <h2 className='text-center mt-3'>Cotizacion de transportes</h2>
+                        <h2 className='text-center mt-3'>COTIZACION DEL VIAJE</h2>
                         <br />
 
-                {/* INFORMACION DEL VIAJE */}
+                        {/* INFORMACION DEL VIAJE */}
 
-                <div>
+                        <div>
                             <div className="form-check">
                                 <input
                                     className="form-check-input"
@@ -73,18 +74,17 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                     onChange={handleChangeMult} // Asigna el controlador de eventos al evento "onChange"
                                 />
                                 <label className="form-check-label" htmlFor="flexCheckIndeterminate">
-                                    calcular solo ida
+                                    Calculo kms*1
                                 </label>
                             </div>
                             <div><b>Distancia: </b> {distancia} kms</div>
                             <div><b>Duracion: </b> {duration}</div>
                             <div><b>Dias: </b>{totalDays}</div>
                         </div>
-                <hr />
+                        <hr />
 
-                {/* PRECIOS FINALES */}
-
-                <table className="table text-center">
+                        {/* PRECIOS FINALES */}
+                        <table className="table text-center">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
@@ -110,72 +110,70 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                         </table>
                         <hr />
 
-                {/* DESGLOSE DE OPERACIONES*/}
+                        {/* DESGLOSE DE OPERACIONES*/}
+                        <Accordion defaultActiveKey="0">
+                            <Accordion.Item eventKey="0">
+                                <Accordion.Header>DESGLOSE DE OPERACIONES</Accordion.Header>
+                                <Accordion.Body style={{ padding: 0 }}>
+                                    <br />
+                                    <div className="row mx-1 ">
 
-                <div className='bg-secondary text-white'>
-                            <h3 className='mx-1 my-1'>Desglose</h3>
-                            <br />
-                            <div className="row mx-1 ">
+                                        <div className="col-5">
+                                            <div className="row">
+                                                <div className="col-12">
+                                                    <p>
+                                                        <b>Formula:</b>
+                                                        <br />
+                                                        kms * {multi}
+                                                        <br />
+                                                        (kms * mult) + dias
+                                                    </p>
+                                                </div>
+                                                <div className="col-12">
+                                                    <p>
+                                                        <b>Dias extras:</b>
+                                                        <br />
+                                                        Entre semana:
+                                                        <br />&nbsp;
+                                                        {weekdaysCount} * {diaExtraEntreSemanaBase}
+                                                        <br />
+                                                        Fin semana:
+                                                        <br />&nbsp;
+                                                        {weekendCount} * {diaExtraFinSemanaBase}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <div className="col-5">
-                                    <div className="row">
-                                        <div className="col-12">
-                                            <p>
-                                                <b>Total kms:</b>
-                                                <br />
-                                                kms * {multi}
-                                            </p>
+                                        <div className="col-7">
+                                            <div className="row">
+                                                <div className="col-12">
+                                                    <p>
+                                                        <b>Van:</b>
+                                                        <br />
+                                                        {distancia} * {multKms} = {Math.round(costoTotal)}
+                                                        <br />
+                                                        {Math.round(costoTotal)} + {totalDiasCosto} = {formattedPrecioTotal}
+                                                        <br />
+                                                        {precioTotal} / {plazas} = {formattedPrecioUnitario}
+                                                    </p>
+                                                </div>
+                                                <div className="col-12 mb-1">
+                                                    <b>Sprinter:</b>
+                                                    <br />
+                                                    {distancia} * {multKmsSpt} = {Math.round(costoTotalSpt)}
+                                                    <br />
+                                                    {Math.round(costoTotalSpt)} + {totalDiasCosto} = {formattedPrecioTotalSpt}
+                                                    <br />
+                                                    {precioTotal} / {plazasSpt} = {formattedPrecioUnitarioSpt}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="col-12">
-                                            <p>
-                                                <b>Dias extras:</b>
-                                                <br />
-                                                Entre semana:
-                                                <br />&nbsp;
-                                                {weekdaysCount} * {diaExtraEntreSemanaBase}
-                                                <br />
-                                                Fin semana:
-                                                <br />&nbsp;
-                                                {weekendCount} * {diaExtraFinSemanaBase}
-                                            </p>
-                                        </div>
-                                        <div className="col-12">
-                                            <p>
-                                                <b>Costo:</b>
-                                                <br />
-                                                kms * base
-                                            </p>
-                                        </div>
+
                                     </div>
-                                </div>
-
-                                <div className="col-7">
-                                    <div className="row">
-                                        <div className="col-12">
-                                            <p>
-                                                <b>Van:</b>
-                                                <br />
-                                                {distancia} * {multKms} = {Math.round(costoTotal)}
-                                                <br />
-                                                {Math.round(costoTotal)} + {totalDiasCosto} = {formattedPrecioTotal}
-                                                <br />
-                                                {precioTotal} / {plazas} = {formattedPrecioUnitario}
-                                            </p>
-                                        </div>
-                                        <div className="col-12 mb-1">
-                                            <b>Sprinter:</b>
-                                            <br />
-                                            {distancia} * {multKmsSpt} = {Math.round(costoTotalSpt)}
-                                            <br />
-                                            {Math.round(costoTotalSpt)} + {totalDiasCosto} = {formattedPrecioTotalSpt}
-                                            <br />
-                                            {precioTotal} / {plazasSpt} = {formattedPrecioUnitarioSpt}
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
 
                     </div>
 

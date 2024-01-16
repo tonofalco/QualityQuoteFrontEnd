@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { NavBar, SideBar, ExtraDay, KmsTable } from "../components"
+import { NavBar, SideBar, ExtraDay, KmsTable, OverlayWhole } from "../components"
 import { useActiveBar, useConfigStore } from "../hooks"
 
 
@@ -37,7 +37,29 @@ export const ConfigCostsPage = () => {
 
                 <div className='col-md-10 col-12 '>
                     <NavBar />
-                    {costsValue ? (
+                    {!stateNavBar
+                        ? (
+                            <div>
+                                <h1 className="mt-2">CONFIGURACION</h1>
+                                <hr />
+                                <ExtraDay
+                                    editDay={editDay}
+                                    handleToggleDayEstado={handleToggleDayEstado}
+                                    costsValue={costsValue}
+                                    handleUpdateCosts={handleUpdateCosts} />
+                                <hr />
+                                <KmsTable
+                                    editKms={editKms}
+                                    costsValue={costsValue}
+                                    handleToggleKmsState={handleToggleKmsState}
+                                    handleUpdateCosts={handleUpdateCosts} />
+                            </div>
+                        ) : (
+                            <div className="overlay">
+                                <OverlayWhole />
+                            </div>
+                        )}
+                    {/* {costsValue ? (
                         <div className={`ms-3 cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
                             <h1 className="mt-2">CONFIGURACION</h1>
                             <hr />
@@ -48,19 +70,19 @@ export const ConfigCostsPage = () => {
                                 handleUpdateCosts={handleUpdateCosts} />
                             <hr />
                             <KmsTable
-                            editKms={editKms}
-                            costsValue={costsValue}
-                            handleToggleKmsState={handleToggleKmsState}
-                            handleUpdateCosts={handleUpdateCosts} />
+                                editKms={editKms}
+                                costsValue={costsValue}
+                                handleToggleKmsState={handleToggleKmsState}
+                                handleUpdateCosts={handleUpdateCosts} />
                         </div>
                     ) : (
-                        
+
                         <div>
                             <hr />
                             <h5>conectando con BD...</h5>
-                            <hr /> 
+                            <hr />
                         </div>
-                    )}
+                    )} */}
                 </div>
 
             </div>
