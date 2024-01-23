@@ -11,7 +11,7 @@ const libraries = ['places'];
 
 export const Map = () => {
 
-    const { costsValue, startLoadingCosts, loading } = useConfigStore();
+    const { costsValue, costsValueWeekend, startLoadingCosts, startLoadingEsCosts, loading } = useConfigStore();
 
     const [mapKey, setMapKey] = useState(0); // Nuevo estado mapKey
     const [directionsResponse, setDirectionsResponse] = useState(null);
@@ -22,15 +22,15 @@ export const Map = () => {
     const [totalDays, setTotalDays] = useState(0);
     const [weekdaysCount, setWeekdaysCount] = useState(null);
     const [weekendCount, setWeekendCount] = useState(null);
+    const [multKms, setMultKms] = useState(false)
     const [stops, setStops] = useState([]);
     const [currentStop, setCurrentStop] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-
     const sourceRef = useRef();
     const destinationRef = useRef();
     const autocompleteRef = useRef(null);
-    
+
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
         libraries: libraries
@@ -40,12 +40,14 @@ export const Map = () => {
         if (!isLoading) {
             const fetchData = async () => {
                 setIsLoading(true);
-                await startLoadingCosts();
+                await Promise.all([
+                    startLoadingCosts(),
+                    startLoadingEsCosts()
+                ]);
             };
-
             fetchData();
         }
-    }, [isLoading, startLoadingCosts]);
+    }, []);
 
     const addStop = () => {
         if (stops.length < 5) {
@@ -69,8 +71,14 @@ export const Map = () => {
         setStops(updatedStops);
     };
 
-    async function calculateRoute(e) {
+    // console.log(multKms);
+
+    const calculateRoute = async (e) => {
         e.preventDefault();
+
+        // Limpiar la respuesta de direcciones actual
+        setMapKey((prevKey) => prevKey + 1);
+        setDirectionsResponse(null);
 
         const SourceAndDestination = [sourceRef.current.value, destinationRef.current.value];
 
@@ -123,21 +131,23 @@ export const Map = () => {
                     setWeekdaysCount(weekdaysCountValue);
                     setWeekendCount(weekendCountValue);
 
+                    (startDate.getDay() >= 1 && startDate.getDay() <= 5 ? setMultKms(true) : setMultKms(false))
+
+
                 }
-
-
-
             } else {
                 console.error('Error al calcular la ruta:', status);
             }
         };
+
+
 
         const directionsService = new window.google.maps.DirectionsService();
 
         directionsService.route(directionsRequest, generatePath);
     }
 
-    if (loading || costsValue == {}) {
+    if (loading || costsValue == null || costsValueWeekend == null) {
         return <h5>Cargando aplicacion...</h5>
     } else if (!isLoaded) {
         return <h5>Cargando Mapa...</h5>;
@@ -191,6 +201,7 @@ export const Map = () => {
                                     totalDays={totalDays}
                                     weekdaysCount={weekdaysCount}
                                     weekendCount={weekendCount}
+                                    multKms={multKms}
                                 />
                             </div>
                         </div>

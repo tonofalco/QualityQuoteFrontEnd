@@ -37,7 +37,6 @@ export const MapBox = (
         sourceRef.current.value = ''; // Clear source input
         destinationRef.current.value = ''; // Clear destination input
         setMapKey((prevKey) => prevKey + 1); // Incrementar mapKey para forzar el desmontaje y remontaje del componente GoogleMap
-
     };
 
     registerLocale('es', es);

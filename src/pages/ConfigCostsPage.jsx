@@ -7,7 +7,7 @@ import { useActiveBar, useConfigStore } from "../hooks"
 export const ConfigCostsPage = () => {
 
     const { stateNavBar } = useActiveBar()
-    const { startLoadingCosts, editDay, editKms, handleToggleDayEstado, handleToggleKmsState, costsValue, handleUpdateCosts, } = useConfigStore();
+    const { startLoadingCosts, startLoadingEsCosts, editDay, editKms, handleToggleDayEstado, handleToggleKmsState, costsValue, costsValueWeekend, handleUpdateCosts, handleUpdateEsCosts, } = useConfigStore();
     const { loading } = useConfigStore();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -15,14 +15,16 @@ export const ConfigCostsPage = () => {
         if (!isLoading) {
             const fetchData = async () => {
                 setIsLoading(true);
-                await startLoadingCosts();
+                await Promise.all([
+                    startLoadingCosts(),
+                    startLoadingEsCosts()
+                ]);
             };
-
             fetchData();
         }
-    }, [isLoading, startLoadingCosts]);
+    }, []);
 
-    if (loading || costsValue == {}) {
+    if (loading || costsValue == null || costsValueWeekend== null) {
         return <div>Cargando aplicacion...</div>
     }
 
@@ -46,43 +48,22 @@ export const ConfigCostsPage = () => {
                                     editDay={editDay}
                                     handleToggleDayEstado={handleToggleDayEstado}
                                     costsValue={costsValue}
-                                    handleUpdateCosts={handleUpdateCosts} />
+                                    handleUpdateCosts={handleUpdateCosts}
+                                    />
                                 <hr />
                                 <KmsTable
                                     editKms={editKms}
                                     costsValue={costsValue}
+                                    costsValueWeekend={costsValueWeekend}
                                     handleToggleKmsState={handleToggleKmsState}
-                                    handleUpdateCosts={handleUpdateCosts} />
+                                    handleUpdateCosts={handleUpdateCosts} 
+                                    handleUpdateEsCosts = {handleUpdateEsCosts}/>
                             </div>
                         ) : (
                             <div className="overlay">
                                 <OverlayWhole />
                             </div>
                         )}
-                    {/* {costsValue ? (
-                        <div className={`ms-3 cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
-                            <h1 className="mt-2">CONFIGURACION</h1>
-                            <hr />
-                            <ExtraDay
-                                editDay={editDay}
-                                handleToggleDayEstado={handleToggleDayEstado}
-                                costsValue={costsValue}
-                                handleUpdateCosts={handleUpdateCosts} />
-                            <hr />
-                            <KmsTable
-                                editKms={editKms}
-                                costsValue={costsValue}
-                                handleToggleKmsState={handleToggleKmsState}
-                                handleUpdateCosts={handleUpdateCosts} />
-                        </div>
-                    ) : (
-
-                        <div>
-                            <hr />
-                            <h5>conectando con BD...</h5>
-                            <hr />
-                        </div>
-                    )} */}
                 </div>
 
             </div>

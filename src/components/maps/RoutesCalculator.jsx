@@ -3,15 +3,14 @@ import { useConfigStore } from '../../hooks';
 import Accordion from 'react-bootstrap/Accordion';
 
 
-export const RoutesCalculator = ({ distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, }) => {
+export const RoutesCalculator = ({ distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms }) => {
 
     const [multi, setMulti] = useState(2);
-    const [isChecked, setIsChecked] = useState(false);
+    const [isChecked, setIsChecked] = useState(true);
 
-
-    const { costsValue, loading } = useConfigStore();
+    const { costsValue, costsValueWeekend, loading } = useConfigStore();
     const { hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs, gasoline, salary, booths, maintenance, utility, supplement } = costsValue
-
+    const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = costsValueWeekend
 
     const calcularCosto = (dias, costoPorDia) => {
         let costo = (dias * costoPorDia);
@@ -20,37 +19,37 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
 
     const handleChangeMult = (event) => {
         setIsChecked(event.target.checked);
-        setMulti(event.target.checked ? 1 : 2);
+        setMulti(event.target.checked ? 2 : 1);
     };
 
+    //CALCULO DISTANCIA FINAL
+    const distancia = Math.round(parseFloat(distance) * parseInt(multi))
+    //CALCULO MULTKMS PRIMER DIA
+    const multKmsValueEs = distancia <= 400 ? gasolineEs + salaryEs + boothsEs + maintenanceEs + utilityEs + supplementEs : gasolineEs + salaryEs + maintenanceEs + boothsEs + utilityEs;
+    const multKmsValueFs = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
+    const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
     //CALCULOS POR DIAS EXTRAS
     const diaExtraEntreSemanaBase = hotel_es + food_es + park_es + renueve_es
     const diaExtraFinSemanaBase = hotel_fs + food_fs + park_fs + renueve_fs
     const diasEntreSemanaCosto = calcularCosto(weekdaysCount, diaExtraEntreSemanaBase);
     const diasFinSemanaCosto = calcularCosto(weekendCount, diaExtraFinSemanaBase);
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
-    //CALCULO DISTANCIA FINAL
-    const distancia = Math.round(parseFloat(distance) * parseInt(multi))
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 14
-    const multKms = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
-    const costoTotal = (distancia * multKms)
+    const costoTotal = ( distancia * multKmsValue)
     const precioTotal = Math.round(parseFloat(costoTotal) + parseFloat(totalDiasCosto))
     const formattedPrecioTotal = parseFloat(precioTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
     const precioUnitatio = (precioTotal / plazas)
     const formattedPrecioUnitario = parseFloat(precioUnitatio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
     let plazasSpt = 18
-    const multKmsSpt = multKms + 3
+    const multKmsSpt = multKmsValue + 3
     const costoTotalSpt = (distancia * multKmsSpt)
     const precioTotalSpt = Math.round(parseFloat(costoTotalSpt) + parseFloat(totalDiasCosto))
     const formattedPrecioTotalSpt = parseFloat(precioTotalSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
     const precioUnitatioSpt = (precioTotal / plazasSpt)
     const formattedPrecioUnitarioSpt = parseFloat(precioUnitatioSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-    if (loading || costsValue == {}) {
-        return <div>Cargando aplicacion...</div>
-    }
 
     return (
         <>
@@ -74,7 +73,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                     onChange={handleChangeMult} // Asigna el controlador de eventos al evento "onChange"
                                 />
                                 <label className="form-check-label" htmlFor="flexCheckIndeterminate">
-                                    Calculo kms*1
+                                    Calcular kms * 2
                                 </label>
                             </div>
                             <div><b>Distancia: </b> {distancia} kms</div>
@@ -151,7 +150,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                                     <p>
                                                         <b>Van:</b>
                                                         <br />
-                                                        {distancia} * {multKms} = {Math.round(costoTotal)}
+                                                        {distancia} * {multKmsValue} = {Math.round(costoTotal)}
                                                         <br />
                                                         {Math.round(costoTotal)} + {totalDiasCosto} = {formattedPrecioTotal}
                                                         <br />

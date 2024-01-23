@@ -8,6 +8,8 @@ export const configSlice = createSlice({
         editKms: true,
 
         costos: null, // Inicializa como null 
+        costosFinSemana: null,
+
         loading: false, // Estado para indicar si los datos se están cargando
 
     },
@@ -33,12 +35,15 @@ export const configSlice = createSlice({
             state.costos = payload;
             state.loading = false; // Indicar que la carga ha finalizado
         },
+        onLoadCostsEsSuccess: (state, { payload }) => {
+            state.costosFinSemana = payload;
+            state.loading = false; // Indicar que la carga ha finalizado
+        },
         onLoadCostsFailure: (state) => {
             state.loading = false; // Indicar que ha ocurrido un error al cargar los datos
         },
     },
 });
-
 
 
 
@@ -53,6 +58,7 @@ export const {
 
     onLoadCostsStart,
     onLoadCostsSuccess,
+    onLoadCostsEsSuccess,
     onLoadCostsFailure,
 
     onSetActiveUser,
