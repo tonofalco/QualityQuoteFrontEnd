@@ -5,30 +5,38 @@ import { useCalendarStore, useUiStore } from "../../hooks"
 
 export const FabAddNew = () => {
 
-    const { openDateModal } = useUiStore()
+    const { openDateModal, openViewModal } = useUiStore()
     const { setActiveEvent } = useCalendarStore()
 
     const handleClickNew = () => {
         setActiveEvent({
-            title: '',
-            notes: '',
+            transportNumber: '',
+            transport: '',
+            seats: '',
+            nameClient: '',
+            phone: '',
+            departure: '',
+            destination: '',
             start: new Date(),
             end: addHours(new Date(), 2),
-            bgColor: '#0a152b',
+            notes: '',
+            price: 0,
+            advance: 0,
             Usuario: {
-                id: '123',
-                name: 'Antonio'
+                name: ''
             }
         })
         openDateModal()
     }
 
     return (
-        <button
-            className="btn btn-primary fab"
-            onClick={handleClickNew}
-        >
-            <i className="fas fa-plus"></i>
-        </button>
+        <>
+            <button
+                className="btn btn-primary fab "
+                onClick={handleClickNew}
+            >
+                <i className="fas fa-plus"></i>
+            </button>
+        </>
     )
 }

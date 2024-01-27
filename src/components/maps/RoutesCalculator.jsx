@@ -9,6 +9,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
     const [isChecked, setIsChecked] = useState(true);
 
     const { costsValue, costsValueWeekend, loading } = useConfigStore();
+    
     const { hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs, gasoline, salary, booths, maintenance, utility, supplement } = costsValue
     const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = costsValueWeekend
 

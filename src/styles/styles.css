@@ -63,12 +63,13 @@ body {
 
 /*FABS*/
 .fab {
-    border-radius: 100%;
+    border-radius: 25%;
     bottom: 25px;
     font-size: 30px;
-    padding: 25px;
+    padding: 15px;
     position: fixed;
     right: 25px;
+    z-index: 100;
 }
 
 .fab-danger {

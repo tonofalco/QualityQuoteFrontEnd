@@ -12,7 +12,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 export const BigCalendar = () => {
 
     const { user } = useAuthStore()
-    const { openDateModal } = useUiStore()
+    const { openDateModal, openViewModal } = useUiStore()
     const { events, setActiveEvent, startLoadingEvent } = useCalendarStore()
 
     const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month')
@@ -36,13 +36,14 @@ export const BigCalendar = () => {
 
     const onDoubleClick = (event) => {
         // console.log({ doubleClick: event })
-        openDateModal()
+        // openDateModal()
+        openViewModal()
     }
 
     const onSelect = (event) => {
         // console.log({ click: event })
-        console.log(user);
-        console.log(event);
+        // console.log(user);
+        // console.log(event);
         setActiveEvent(event)
     }
 
