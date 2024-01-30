@@ -1,8 +1,9 @@
 import { Document, Text, Page, StyleSheet, Image, View, Font } from '@react-pdf/renderer'
+import { format } from 'date-fns/esm';
+import es from 'date-fns/locale/es';
 import Logo from '../../assets/img/logoGuerrero.png'
 import datosAgencia from '../../assets/img/datosAgencia.png'
 import { MontserratFonts } from '../../assets/fonts';
-
 
 Object.entries(MontserratFonts).forEach(([weight, font]) => {
     Font.register({ family: `Montserrat-${weight}`, src: font });
@@ -39,6 +40,12 @@ const styles = StyleSheet.create({
         borderBottom: '1px solid #000',
         paddingBottom: 2, // Ajusta según sea necesario
     },
+    text__Transport: {
+        fontFamily: 'Montserrat-regular',
+        textAlign: 'center',
+        fontSize: 10.72,
+        marginBottom: 3,
+    },
     text__reference: {
         fontFamily: 'Montserrat-bold',
         textAlign: 'justify',
@@ -64,7 +71,6 @@ const styles = StyleSheet.create({
         borderTop: '1px solid #000',
         paddingHorizontal: 30,
     },
-    
     section_header: {
         flexDirection: 'row', // Esto colocará los elementos en la misma fila
         justifyContent: 'space-between', // Esto agrega espacio entre las imágenes
@@ -81,18 +87,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 40,
     },
-    
+
 });
 
-export const PDF = ({ transportNumber, transport, seats, nameClient, phone, departure, destination, dateStart, dateEnd, timeStart, timeEnd, notes, price, advance, due}) => {
-    
+export const PDF = ({ transportNumber, transport, seats, nameClient, phone, departure, destination, dateStart, dateEnd, timeStart, timeEnd, notes, price, advance, due }) => {
+
     const noteValue = notes.length <= 0 ? '-' : notes
-    
+
+    const today = new Date();
+    const formattedDate = format(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy", { locale: es });
+
+
     return (
         <Document>
             <Page style={styles.page}>
-                {/* <Text>Hello word</Text>
-                <Text>Deuda: {saldoValue}</Text> */}
 
                 <View style={styles.section_header}>
                     <Image style={styles.image} src={Logo} />
@@ -106,13 +114,14 @@ export const PDF = ({ transportNumber, transport, seats, nameClient, phone, depa
                     <Text style={styles.title}>CONVENCIONES, ESTUDIOS, PLACER.</Text>
                 </View>
                 <View style={styles.section_body}>
-                    <Text style={styles.subtitle}>Chilpancingo de los Bravos a XX de XXXXX del XXXX</Text>
+                    {/* <Text style={styles.subtitle}>Chilpancingo de los Bravos a XX de XXXXX del XXXX</Text> */}
+                    <Text style={styles.subtitle}>{formattedDate}</Text>
                 </View>
                 <View style={styles.section_body}>
                     <Text style={styles.subtitle}>ESTA EMPRESA CONVIENE EN PROPORCIONAR UN SERVICIO DE EXCURSIÓN EN LOS TÉRMINOS Y CONDICIONES QUE A CONTINUACIÓN SE PRECISAN, RECONOCIENDO A LOS INTERESADOS QUE EL MISMO </Text>
                 </View>
                 <View style={styles.section_body}>
-                    <Text style={styles.subtitle}>POR {transportNumber} {transport} DE {seats} PLAZAS (ASIENTOS) </Text>
+                    <Text style={styles.text__Transport}>POR {transportNumber} {transport.toUpperCase()} DE {seats} PLAZAS (ASIENTOS) </Text>
                 </View>
 
                 <View style={styles.textSection}>
@@ -180,10 +189,10 @@ export const PDF = ({ transportNumber, transport, seats, nameClient, phone, depa
                     </View>
                 </View>
                 <View style={styles.section_body}>
-                    <Text style={styles.text__clauses}>* EL CONTRATANTE SERÁ RESPONSABLE DE LOS DESPERFECTOS CAUSADOS A LA UNIDAD EN SERVICIO POR LOS USUARIOS.</Text>
+                    <Text style={styles.text__clauses}>* EL CONTRATANTE SERÁ RESPONSABLE DE LOS DESPERFECTOS CAUSADOS A LA UNIDAD EN SERVICIO.</Text>
                     <Text style={styles.text__clauses}>* EL NÚMERO DE PASAJEROS NO EXCEDERÁ DE LO INDICADO.</Text>
                     <Text style={styles.text__clauses}>* AL INICIAR EL VIAJE SE LIQUIDARÁ EL TOTAL DEL SERVICIO.</Text>
-                    <Text style={styles.text__clauses}>* ESTE CONTRATO NO INLCUYE ESTACIONAMIENTOS</Text>
+                    <Text style={styles.text__clauses}>* ESTE CONTRATO NO INLCUYE ESTACIONAMIENTOS.</Text>
                 </View>
                 <View style={styles.section_footer}>
                     <Text style={styles.text__firms}>FIRMA CLIENTE</Text>

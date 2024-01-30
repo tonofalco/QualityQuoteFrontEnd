@@ -12,7 +12,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 export const BigCalendar = () => {
 
     const { user } = useAuthStore()
-    const { openDateModal, openViewModal } = useUiStore()
+    const { openViewModal } = useUiStore()
     const { events, setActiveEvent, startLoadingEvent } = useCalendarStore()
 
     const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month')
@@ -20,6 +20,7 @@ export const BigCalendar = () => {
     const eventStyleGetter = (event, start, end, isSelected) => {
 
         const isMyEvent = user && event.Usuario && (user.name === event.Usuario.name || user.name === event.user?.name);
+        
 
 
         const style = {
@@ -38,6 +39,7 @@ export const BigCalendar = () => {
         // console.log({ doubleClick: event })
         // openDateModal()
         openViewModal()
+        
     }
 
     const onSelect = (event) => {

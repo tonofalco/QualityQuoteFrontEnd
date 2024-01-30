@@ -12,7 +12,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import es from 'date-fns/locale/es';
-import { useCalendarStore, useUiStore } from '../../hooks';
+import { useAuthStore, useCalendarStore, useUiStore } from '../../hooks';
 import { PDF } from './PDF';
 
 const customStyles = {
@@ -30,12 +30,11 @@ Modal.setAppElement('#root');
 
 export const CalendarModal = () => {
 
+    registerLocale('es', es);
+
     const { isDateModalOpen, closeDateModal, isModalViewOpen, closeViewModal, openDateModal } = useUiStore()
     const { activeEvent, starSavingEvent, StartDeletingEvent } = useCalendarStore()
-
-    const [formSubmitted, setformSubmitted] = useState(false)
-    // const [eventView, setEventView] = useState(false);
-
+    const { user } = useAuthStore()
 
     const [formValues, setFormValues] = useState({
         transportNumber: '',
@@ -55,17 +54,8 @@ export const CalendarModal = () => {
         }
         // title: '',
     })
-    // console.log(formValues.notes.length);
 
-    // console.log(formValues.start.toLocaleDateString());
-
-    const departureClass = useMemo(() => {
-        if (!formSubmitted || !formValues.departure) return '';  // Agregamos verificación de formValues.departure
-
-        return (formValues.departure.trim().length > 0)
-            ? ''
-            : 'is-invalid';
-    }, [formValues.departure, formSubmitted]);
+    const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, price, advance } = formValues
 
     useEffect(() => {
 
@@ -121,7 +111,7 @@ export const CalendarModal = () => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        setformSubmitted(true);
+        // setformSubmitted(true);
 
         // Verificar campos obligatorios
         if (
@@ -135,7 +125,7 @@ export const CalendarModal = () => {
             !formValues.price ||
             !formValues.advance
         ) {
-            Swal.fire('Campos obligatorios incompletos', 'Por favor, completa todos los campos obligatorios.', 'error');
+            Swal.fire('Campos incompletos', 'Por favor, completa todos los campos obligatorios.', 'error');
             return;
         }
 
@@ -150,16 +140,31 @@ export const CalendarModal = () => {
             Swal.fire('Saldo pendiente incorrecto', 'El anticipo no debe ser mayor al precio', 'error');
             return
         }
-
-        // Resto del código para guardar el evento y cerrar el modal
         await starSavingEvent(formValues);
         closeDateModal();
-        setformSubmitted(false);
+
+        if (activeEvent.Usuario.name == user.name || activeEvent.user.name == user.name) {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Guardado exitoso!',
+                text: 'La reserva se ha guardado exitosamente.',
+                showConfirmButton: false,
+                timer: 1900
+            });
+        }
     };
 
-    registerLocale('es', es);
+    const formatCurrency = (value) => parseFloat(value).toLocaleString('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
 
-    const dueValue = formValues.price - formValues.advance
+    const dueValue = price - advance;
+    const formattedPrice = formatCurrency(price);
+    const formattedAdvance = formatCurrency(advance);
+    const formattedDue = formatCurrency(dueValue);
 
 
     return (
@@ -173,21 +178,23 @@ export const CalendarModal = () => {
                 overlayClassName='modal-fondo'
                 closeTimeoutMS={200}
             >
-                <h1>Editar reserva</h1>
+                {/* {formValues.Usuario.name.length >= 1 ? <h1>Editar reserva</h1> : <h1>Crear reserva</h1> } */}
+
+                <h1>Formulario reserva</h1>
                 <hr />
                 <form className="container" onSubmit={onSubmit}>
 
                     <div className="row mb-3">
-                        <div className="col-3 d-flex align-items-center justify-content-center ">
-                            <label htmlFor="transportNumber">#&nbsp;</label>
+                        <div className="col-7 d-flex align-items-center justify-content-center ">
+                            <label htmlFor="transportNumber">Cantidad&nbsp;de&nbsp;transportes*:&nbsp;</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 id="transportNumber"
-                                placeholder="Numero de Transportes"
+                                placeholder="Num. de Transportes"
                                 name="transportNumber"
                                 autoComplete="off"
-                                value={formValues.transportNumber}
+                                value={transportNumber}
                                 onChange={onInputChanged}
                             />
                         </div>
@@ -195,26 +202,26 @@ export const CalendarModal = () => {
 
                     <div className="row mb-3">
                         <div className="col-7 d-flex align-items-center justify-content-center">
-                            <label htmlFor="transport">Transporte:&nbsp;</label>
+                            <label htmlFor="transport">Transporte*:&nbsp;</label>
                             <input
                                 type="text"
                                 className={`form-control`}
                                 placeholder="Tipo de Transporte"
                                 name="transport"
                                 autoComplete="off"
-                                value={formValues.transport}
+                                value={transport}
                                 onChange={onInputChanged}
                             />
                         </div>
                         <div className="col-5 d-flex align-items-center justify-content-center">
-                            <label htmlFor="seats">plazas:&nbsp;</label>
+                            <label htmlFor="seats">plazas*:&nbsp;</label>
                             <input
                                 type="number"
                                 className={`form-control`}
                                 placeholder="asientos"
                                 name="seats"
                                 autoComplete="off"
-                                value={formValues.seats}
+                                value={seats}
                                 onChange={onInputChanged}
                             />
                         </div>
@@ -223,14 +230,14 @@ export const CalendarModal = () => {
 
                     <div className="row mb-3">
                         <div className="col-12 d-flex align-items-center justify-content-center">
-                            <label htmlFor="nameClient">Nombre:&nbsp;</label>
+                            <label htmlFor="nameClient">Nombre*:&nbsp;</label>
                             <input
                                 type="text"
                                 className={`form-control`}
                                 placeholder="Nombre del cliente"
                                 name="nameClient"
                                 autoComplete="off"
-                                value={formValues.nameClient}
+                                value={nameClient}
                                 onChange={onInputChanged}
                             />
                         </div>
@@ -238,14 +245,14 @@ export const CalendarModal = () => {
 
                     <div className="row mb-3">
                         <div className="col-12 d-flex align-items-center justify-content-center">
-                            <label htmlFor="phone">Telefono:&nbsp;</label>
+                            <label htmlFor="phone">Telefono*:&nbsp;</label>
                             <input
                                 type="text"
                                 className={`form-control`}
                                 placeholder="Telefono del cliente"
                                 name="phone"
                                 autoComplete="off"
-                                value={formValues.phone}
+                                value={phone}
                                 onChange={onInputChanged}
                             />
                         </div>
@@ -255,14 +262,14 @@ export const CalendarModal = () => {
 
                     <div className="row mb-3">
                         <div className="col-12 d-flex align-items-center justify-content-center">
-                            <label htmlFor="departure">Salida:&nbsp;&nbsp;&nbsp;</label>
+                            <label htmlFor="departure">Salida*:&nbsp;&nbsp;&nbsp;</label>
                             <input
                                 type="text"
-                                className={`form-control ${departureClass}`}
+                                className={`form-control `}
                                 placeholder="Punto de salida"
                                 name="departure"
                                 autoComplete="off"
-                                value={formValues.departure}
+                                value={departure}
                                 onChange={onInputChanged}
                             />
                         </div>
@@ -270,14 +277,14 @@ export const CalendarModal = () => {
 
                     <div className="row mb-3">
                         <div className="col-12 d-flex align-items-center justify-content-center">
-                            <label htmlFor="destination">Destino:&nbsp;</label>
+                            <label htmlFor="destination">Destino*:&nbsp;</label>
                             <input
                                 type="text"
                                 className={`form-control`}
                                 placeholder="Punto de destino"
                                 name="destination"
                                 autoComplete="off"
-                                value={formValues.destination}
+                                value={destination}
                                 onChange={onInputChanged}
                             />
                         </div>
@@ -285,9 +292,9 @@ export const CalendarModal = () => {
 
                     <div className="row mb-3">
                         <div className="col-12 d-flex align-items-center justify-content-start">
-                            <label>Fecha y hora salida:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <label>Fecha y hora salida*:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                             <DatePicker
-                                selected={formValues.start}
+                                selected={start}
                                 onChange={(event) => onDateChanged(event, 'start')}
                                 className='form-control'
                                 dateFormat='Pp'
@@ -300,10 +307,10 @@ export const CalendarModal = () => {
 
                     <div className="row mb-3">
                         <div className="col-12 d-flex align-items-center justify-content-start">
-                            <label>Fecha y hora regreso:&nbsp;</label>
+                            <label>Fecha y hora regreso*:&nbsp;</label>
                             <DatePicker
-                                minDate={formValues.start}
-                                selected={formValues.end}
+                                minDate={start}
+                                selected={end}
                                 onChange={(event) => onDateChanged(event, 'end')}
                                 className='form-control'
                                 dateFormat='Pp'
@@ -321,7 +328,7 @@ export const CalendarModal = () => {
                             placeholder="Notas"
                             rows="2"
                             name="notes"
-                            value={formValues.notes}
+                            value={notes}
                             onChange={onInputChanged}
                         ></textarea>
                         <small id="emailHelp" className="form-text text-muted">Información adicional</small>
@@ -331,26 +338,26 @@ export const CalendarModal = () => {
 
                     <div className="row mb-4">
                         <div className="col-6 d-flex align-items-center justify-content-center">
-                            <label htmlFor="price">Precio:&nbsp;</label>
+                            <label htmlFor="price">Precio*:&nbsp;</label>
                             <input
                                 type="number"
                                 className={`form-control`}
                                 placeholder="$$$"
                                 name="price"
                                 autoComplete="off"
-                                value={formValues.price}
+                                value={price}
                                 onChange={onInputChanged}
                             />
                         </div>
                         <div className="col-6 d-flex align-items-center justify-content-center">
-                            <label htmlFor="advance">Anticipo:&nbsp;</label>
+                            <label htmlFor="advance">Anticipo*:&nbsp;</label>
                             <input
                                 type="number"
                                 className={`form-control`}
                                 placeholder="$$$"
                                 name="advance"
                                 autoComplete="off"
-                                value={formValues.advance}
+                                value={advance}
                                 onChange={onInputChanged}
                             />
                         </div>
@@ -358,7 +365,7 @@ export const CalendarModal = () => {
                     <div className="row">
                         <div className="col-6 d-flex align-items-center justify-content-start">
                             <label>Saldo pendiente:&nbsp;</label>
-                            <span>${dueValue}</span>
+                            <span>{formattedDue}</span>
                         </div>
                     </div>
 
@@ -372,18 +379,6 @@ export const CalendarModal = () => {
                             <i className="far fa-save"></i>
                             <span> Guardar</span>
                         </button>
-                        {/* &nbsp;
-                        <button
-                            type="button"
-                            className="btn btn-link"
-                            style={{ color: 'red' }}
-                            onClick={() => {
-                                StartDeletingEvent(activeEvent);
-                                onCloseModal();
-                            }}
-                        >
-                            <span> Eliminar</span>
-                        </button> */}
                     </div>
 
                 </form>
@@ -403,21 +398,21 @@ export const CalendarModal = () => {
 
                 <div className="container">
                     <div className="row">
-                        <span className="col-12 mb-3"><b>#:&nbsp;</b>{formValues.transportNumber}</span>
-                        <span className="col-6 mb-3"><b>Tipo de Transporte:&nbsp;</b>{formValues.transport}</span>
-                        <span className="col-6"><b>Plazas:&nbsp;</b>{formValues.seats}</span>
-                        <span className="col-12 mb-3"><b>Nombre del cliente:&nbsp;</b>{formValues.nameClient}</span>
-                        <span className="col-12 mb-3"><b>Telefono del cliente:&nbsp;</b>{formValues.phone}</span>
+                        <span className="col-12 mb-3"><b>Trasnportes solicitados:&nbsp;</b>{transportNumber}</span>
+                        <span className="col-6 mb-3"><b>Tipo de Transporte:&nbsp;</b>{transport}</span>
+                        <span className="col-6"><b>Plazas:&nbsp;</b>{seats}</span>
+                        <span className="col-12 mb-3"><b>Nombre del cliente:&nbsp;</b>{nameClient}</span>
+                        <span className="col-12 mb-3"><b>Telefono del cliente:&nbsp;</b>{phone}</span>
                         <hr />
-                        <span className="col-12 mb-3"><b>Salida:&nbsp;</b>{formValues.departure}</span>
-                        <span className="col-12 mb-3"><b>Destino:&nbsp;</b>{formValues.destination}</span>
-                        <span className="col-12 mb-3"><b>Fecha y hora salida:&nbsp;</b>{formValues.start.toLocaleString()}</span>
-                        <span className="col-12 mb-3"><b>Fecha y hora salida:&nbsp;</b>{formValues.end.toLocaleString()}</span>
-                        <span className="col-12"><b>Nota:&nbsp;</b>{formValues.notes}</span>
+                        <span className="col-12 mb-3"><b>Salida:&nbsp;</b>{departure}</span>
+                        <span className="col-12 mb-3"><b>Destino:&nbsp;</b>{destination}</span>
+                        <span className="col-12 mb-3"><b>Fecha y hora salida:&nbsp;</b>{start.toLocaleString()}</span>
+                        <span className="col-12 mb-3"><b>Fecha y hora salida:&nbsp;</b>{end.toLocaleString()}</span>
+                        <span className="col-12"><b>Nota:&nbsp;</b>{notes}</span>
                         <hr />
-                        <span className="col-6 mb-3"><b>Precio:&nbsp;</b>{formValues.price}</span>
-                        <span className="col-6"><b>Anticipo:&nbsp;</b>{formValues.advance}</span>
-                        <span className="col-12"><b>Saldo pendiente:&nbsp;</b>{dueValue}</span>
+                        <span className="col-6 mb-3"><b>Precio:&nbsp;</b>{formattedPrice}</span>
+                        <span className="col-6"><b>Anticipo:&nbsp;</b>{formattedAdvance}</span>
+                        <span className="col-12"><b>Saldo pendiente:&nbsp;</b>{formattedDue}</span>
                     </div>
                     <hr />
                     <div className="row">
@@ -436,24 +431,24 @@ export const CalendarModal = () => {
                                 <PDFDownloadLink
                                     document={
                                         <PDF
-                                            transportNumber={formValues.transportNumber}
-                                            transport={formValues.transport}
-                                            seats={formValues.seats}
-                                            nameClient={formValues.nameClient}
-                                            phone={formValues.phone}
-                                            departure={formValues.departure}
-                                            destination={formValues.destination}
-                                            dateStart={formValues.start.toLocaleDateString()}
-                                            dateEnd={formValues.end.toLocaleDateString()}
-                                            timeStart={formValues.start.toLocaleTimeString()}
-                                            timeEnd={formValues.end.toLocaleTimeString()}
-                                            notes={formValues.notes}
-                                            price={formValues.price}
-                                            advance={formValues.advance}
-                                            due={dueValue}
-                                        />} fileName='Pokemon.pdf'>
-                                    {({ loading, url, error, blog }) => loading
-                                        ? (<button className="btn btn-outline-primary">Cargando</button>)
+                                            transportNumber={transportNumber}
+                                            transport={transport}
+                                            seats={seats}
+                                            nameClient={nameClient}
+                                            phone={phone}
+                                            departure={departure}
+                                            destination={destination}
+                                            dateStart={start.toLocaleDateString()}
+                                            dateEnd={end.toLocaleDateString()}
+                                            timeStart={start.toLocaleTimeString()}
+                                            timeEnd={end.toLocaleTimeString()}
+                                            notes={notes}
+                                            price={formattedPrice}
+                                            advance={formattedAdvance}
+                                            due={formattedDue}
+                                        />} fileName='Contrato Terrestre VQ.pdf'>
+                                    {({ loading }) => loading
+                                        ? (<button className="btn btn-outline-primary" disabled>Cargando</button>)
                                         : (<button className="btn btn-outline-primary">Descargar PDF</button>)
                                     }
                                 </PDFDownloadLink>
