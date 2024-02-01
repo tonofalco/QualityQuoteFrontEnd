@@ -10,6 +10,8 @@ import '../styles/sidebar.css'
 export const SideBar = () => {
 
     const { user } = useAuthStore()
+    console.log(user);
+    console.log(user.role);
     const { handleLinkSelection, valueLink } = useActiveBar()
 
     useEffect(() => {
