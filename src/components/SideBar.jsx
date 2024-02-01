@@ -58,7 +58,7 @@ export const SideBar = () => {
                         <Link to="/calendar" className="nav-link text-light"><i className="fa-solid fa-calendar-days"></i>&nbsp; Calendario</Link>
                     </li>
                     {/* /config */}
-                    {user.role === 'admin' && (
+                    {user.role == 'admin' && (
                         <li className={`nav-item ${valueLink === 3 ? 'active bg-primary' : ''}`}>
                             <Link to="/config" className="nav-link text-light"><i className="fa-solid fa-gear"></i>&nbsp; Configuración</Link>
                         </li>
