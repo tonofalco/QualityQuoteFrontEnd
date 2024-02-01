@@ -10,8 +10,8 @@ import '../styles/sidebar.css'
 export const SideBar = () => {
 
     const { user } = useAuthStore()
-    console.log(user);
-    console.log(user.role);
+    // console.log(user);
+    // console.log(user.role);
     const { handleLinkSelection, valueLink } = useActiveBar()
 
     useEffect(() => {
@@ -71,6 +71,7 @@ export const SideBar = () => {
                     <li className="text-light mx-3">
                         <i className="fa-solid fa-user"></i>
                         &nbsp; {user.name}
+                        &nbsp; {user.role}
                     </li>
                 </ul>
             </div>
