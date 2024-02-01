@@ -15,13 +15,23 @@ export const AppRouter = () => {
 
 
     const { status, checkAuthToken } = useAuthStore()
-    const location = useLocation()
+    // const location = useLocation()
 
     // const authStatus = 'not-authenticadted' // 'authenticated' 'not-authenticadted'
 
     useEffect(() => {
         checkAuthToken()
     }, [])
+
+        // Redirige a la ruta principal al actualizar la página desde cualquier ruta
+        // useEffect(() => {
+        //     const navigationEntries = window.performance.getEntriesByType('navigation');
+        //     const isPageReload = navigationEntries.length && navigationEntries[0].type === 'reload';
+
+        //     if (status === 'authenticated' && isPageReload && location.pathname !== '/') {
+        //         window.location.href = '/';
+        //     }
+        // }, [status, location.pathname]);
 
 
     if (status === 'checking') {
@@ -47,12 +57,7 @@ export const AppRouter = () => {
         )
     }
 
-    // Redirige a la ruta principal al actualizar la página desde cualquier ruta
-    useEffect(() => {
-        if (status === 'authenticated' && location.pathname !== '/') {
-            window.location.href = '/';
-        }
-    }, [status, location.pathname]);
+
 
 
     return (
