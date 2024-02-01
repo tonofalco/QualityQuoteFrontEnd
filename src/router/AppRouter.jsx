@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Navigate, Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import { useAuthStore } from "../hooks"
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -15,6 +15,7 @@ export const AppRouter = () => {
 
 
     const { status, checkAuthToken } = useAuthStore()
+    const location = useLocation()
 
     // const authStatus = 'not-authenticadted' // 'authenticated' 'not-authenticadted'
 
@@ -46,6 +47,12 @@ export const AppRouter = () => {
         )
     }
 
+    // Redirige a la ruta principal al actualizar la página desde cualquier ruta
+    useEffect(() => {
+        if (status === 'authenticated' && location.pathname !== '/') {
+            window.location.href = '/';
+        }
+    }, [status, location.pathname]);
 
 
     return (
