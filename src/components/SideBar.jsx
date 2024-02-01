@@ -71,7 +71,7 @@ export const SideBar = () => {
                     <li className="text-light mx-3">
                         <i className="fa-solid fa-user"></i>
                         &nbsp; {user.role}:
-                        &nbsp; {user.name}
+                        &nbsp;{user.name}
                     </li>
                 </ul>
             </div>
