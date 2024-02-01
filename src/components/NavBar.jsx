@@ -36,20 +36,22 @@ export const NavBar = () => {
 
                             <ul className="nav navBarList flex-column">
                                 <li className={`nav-item  ${valueLink === 0 ? 'active bg-primary ' : ''}`}>
-                                    <Link to="/" className="nav-link text-light" onClick={() => {showNavbar();} }> <i className="fa-solid fa-house"></i>&nbsp; Inicio</Link>
+                                    <Link to="/" className="nav-link text-light" onClick={() => { showNavbar(); }}> <i className="fa-solid fa-house"></i>&nbsp; Inicio</Link>
                                 </li>
 
                                 <li className={`nav-item ${valueLink === 1 ? 'active bg-primary' : ''}`}>
-                                    <Link to="/map" className="nav-link text-light" onClick={() => {showNavbar();}}><i className="fa-solid fa-bus"></i>&nbsp; Cotización</Link>
+                                    <Link to="/map" className="nav-link text-light" onClick={() => { showNavbar(); }}><i className="fa-solid fa-bus"></i>&nbsp; Cotización</Link>
                                 </li>
 
                                 <li className={`nav-item ${valueLink === 2 ? 'active bg-primary' : ''}`}>
-                                    <Link to="/calendar" className="nav-link text-light" onClick={() =>{showNavbar();}}><i className="fa-solid fa-calendar-days"></i>&nbsp; Calendario</Link>
+                                    <Link to="/calendar" className="nav-link text-light" onClick={() => { showNavbar(); }}><i className="fa-solid fa-calendar-days"></i>&nbsp; Calendario</Link>
                                 </li>
 
-                                <li className={`nav-item ${valueLink === 3 ? 'active bg-primary' : ''}`}>
-                                    <Link to="/config" className="nav-link text-light" onClick={() => {showNavbar();}}><i className="fa-solid fa-gear"></i>&nbsp; Configuración</Link>
-                                </li>
+                                {user.role == 'admin' && (
+                                    <li className={`nav-item ${valueLink === 3 ? 'active bg-primary' : ''}`}>
+                                        <Link to="/config" className="nav-link text-light" onClick={() => { showNavbar(); }}><i className="fa-solid fa-gear"></i>&nbsp; Configuración</Link>
+                                    </li>
+                                )}
 
                                 <li>
                                     <hr className="mx-3" style={{ color: '#fff' }} />
@@ -62,7 +64,7 @@ export const NavBar = () => {
                             </ul>
                             <button
                                 className="nav-btn nav-close-btn"
-                                onClick={() => { showNavbar();}}
+                                onClick={() => { showNavbar(); }}
                             >
                                 <FaTimes />
                             </button>
@@ -71,7 +73,7 @@ export const NavBar = () => {
                     </div>
                     <button
                         className="nav-btn"
-                        onClick={() => { showNavbar();}}>
+                        onClick={() => { showNavbar(); }}>
                         <FaBars />
                     </button>
                 </div>
@@ -82,7 +84,7 @@ export const NavBar = () => {
                         startLogout()
                         closeNavBar()
                     }}
-                    >
+                >
                     <i className="fas fa-sign-out-alt"></i>
                     &nbsp;
                     <span>Salir</span>
