@@ -22,10 +22,9 @@ export const useAuthStore = () => {
         try {
 
             const { data } = await serverApi.post('/auth', { email, password })
-            // console.log({ resp })
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
-            dispatch(onLogin({ name: data.name, uid: data.uid }))
+            dispatch(onLogin({ name: data.name, uid: data.uid, role: data.role }))
 
 
         } catch (error) {
@@ -40,13 +39,13 @@ export const useAuthStore = () => {
 
     const startRegister = async ({ name, email, role, password }) => {
 
-        dispatch(onChecking())
+        // dispatch(onChecking())
 
         try {
 
             const { data } = await serverApi.post('/auth/new', { name, email, role, password })
             // console.log(user.name);
-            dispatch(onLogin({ name: user.name, uid: user.uid }))
+            dispatch(onLogin({ name: user.name, uid: user.uid, role: user.role }))
 
         } catch (error) {
 
@@ -67,9 +66,10 @@ export const useAuthStore = () => {
         try {
 
             const { data } = await serverApi.get('auth/renew')
+            // console.log('Renew response:', data);
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
-            dispatch(onLogin({ name: data.name, uid: data.uid }))
+            dispatch(onLogin({ name: data.name, uid: data.uid,  role: data.role }))
 
         } catch (error) {
 
@@ -88,6 +88,7 @@ export const useAuthStore = () => {
     const startLoadingUsers = async () => {
         try {
             const { data } = await serverApi.get('/auth');
+            // console.log(data);
             const usuarios = data.usuarios;
             dispatch(onLoadUsers(usuarios)); // Pasar 'usuarios' como argumento
         } catch (error) {

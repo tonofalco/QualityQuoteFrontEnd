@@ -40,6 +40,7 @@ export const AdminUsers = () => {
     const [show, setShow] = useState(false);
     const [show2, setShow2] = useState(false);
 
+    // console.log(registerFormFields);
 
     useEffect(() => {
         if (errorMessage !== undefined) {
@@ -94,13 +95,20 @@ export const AdminUsers = () => {
         e.preventDefault();
         if (!areFieldsFilledCreate()) {
             Swal.fire('Campos vacíos', 'Por favor, completa todos los campos.', 'warning');
-        }else if (!emailRegex.test(updateEmail)) {
+        } else if (!emailRegex.test(registerEmail)) {
             Swal.fire('Correo inválido', 'Por favor, introduce un correo electrónico válido.', 'error');
         }
         else if (registerPassword !== registerPassword2) {
             Swal.fire('Error en registro', '¡Las contraseñas no son iguales!', 'error');
         } else {
-            await startRegister({ name: registerName, email: registerEmail, role: registerRole, password: registerPassword });
+            await startRegister({
+                name: registerName,
+                email: registerEmail,
+                role: registerRole,
+                password: registerPassword
+            });
+
+            toggleModalCreate()
             Swal.fire({
                 icon: 'success',
                 title: '¡Usuario creado!',
@@ -115,7 +123,7 @@ export const AdminUsers = () => {
         e.preventDefault();
         if (!areFieldsFilledUpdate()) {
             Swal.fire('Campos vacíos', 'Por favor, completa todos los campos.', 'warning');
-        }else if (!emailRegex.test(updateEmail)) {
+        } else if (!emailRegex.test(updateEmail)) {
             Swal.fire('Correo inválido', 'Por favor, introduce un correo electrónico válido.', 'error');
         }
         else {
