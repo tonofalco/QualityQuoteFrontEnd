@@ -45,7 +45,7 @@ export const SideBar = () => {
     return (
         <>
             <div className="sideBar">
-                <img alt="logo de empresa" src={LogoQualityGuerrero} className="mb-3 mx-3" />
+                <img alt="logo de empresa" src={LogoQualityGuerrero} className="my-3 mx-1" />
                 <ul className="nav sideBarList flex-column">
                     {/* / */}
                     <li className={`nav-item  ${valueLink === 0 ? 'active bg-primary' : ''}`}>
@@ -68,7 +68,7 @@ export const SideBar = () => {
                     <li>
                         <hr className="mx-3" style={{ color: '#fff' }} />
                     </li>
-                    <li className="text-light mx-3">
+                    <li className=" nav-item text-light mx-3">
                         <i className="fa-solid fa-user"></i>
                         &nbsp; {user.role}:
                         &nbsp;{user.name}

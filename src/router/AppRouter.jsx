@@ -6,7 +6,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { HomePage, CalendarPage, MapsPage, ConfigPage, ConfigCostsPage, ConfigUsersPage, LoginPage } from '../pages/'
 
 
-
+import '../styles/pages.css'
 
 export const AppRouter = () => {
 

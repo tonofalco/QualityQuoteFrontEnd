@@ -9,6 +9,10 @@
     background-color: #212529;
 }
 
+.sideBarList .nav-item {
+    font-size: 14.5px;
+}
+
 .content {
     margin-left: 1.5%;
 }

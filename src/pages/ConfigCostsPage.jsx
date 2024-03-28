@@ -24,7 +24,7 @@ export const ConfigCostsPage = () => {
         }
     }, []);
 
-    if (loading || costsValue == null || costsValueWeekend== null) {
+    if (loading || costsValue == null || costsValueWeekend == null) {
         return <div>Cargando aplicacion...</div>
     }
 
@@ -33,11 +33,11 @@ export const ConfigCostsPage = () => {
 
             <div className="row gx-0">
 
-                <div className=" col-md-2 d-none d-md-block">
+            <div className="sidebar_column d-none d-md-block">
                     <SideBar />
                 </div>
 
-                <div className='col-md-10 col-12 '>
+                <div className="content_column">
                     <NavBar />
                     {!stateNavBar
                         ? (
@@ -49,15 +49,15 @@ export const ConfigCostsPage = () => {
                                     handleToggleDayEstado={handleToggleDayEstado}
                                     costsValue={costsValue}
                                     handleUpdateCosts={handleUpdateCosts}
-                                    />
+                                />
                                 <hr />
                                 <KmsTable
                                     editKms={editKms}
                                     costsValue={costsValue}
                                     costsValueWeekend={costsValueWeekend}
                                     handleToggleKmsState={handleToggleKmsState}
-                                    handleUpdateCosts={handleUpdateCosts} 
-                                    handleUpdateEsCosts = {handleUpdateEsCosts}/>
+                                    handleUpdateCosts={handleUpdateCosts}
+                                    handleUpdateEsCosts={handleUpdateEsCosts} />
                             </div>
                         ) : (
                             <div className="overlay">

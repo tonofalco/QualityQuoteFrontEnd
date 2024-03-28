@@ -118,7 +118,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                     <br />
                                     <div className="row mx-1 ">
 
-                                        <div className="col-5">
+                                        <div className="col-6">
                                             <div className="row">
                                                 <div className="col-12">
                                                     <p>
@@ -145,7 +145,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                             </div>
                                         </div>
 
-                                        <div className="col-7">
+                                        <div className="col-6">
                                             <div className="row">
                                                 <div className="col-12">
                                                     <p>

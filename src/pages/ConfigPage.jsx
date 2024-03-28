@@ -1,4 +1,4 @@
-import { NavBar, SideBar, ConfigOptions, OverlayWhole} from "../components"
+import { NavBar, SideBar, ConfigOptions, OverlayWhole } from "../components"
 import { useActiveBar } from "../hooks"
 import '../styles/config.css'
 
@@ -11,17 +11,17 @@ export const ConfigPage = () => {
 
       <div className="row gx-0">
 
-        <div className=" col-md-2 d-none d-md-block">
+      <div className="sidebar_column d-none d-md-block">
           <SideBar />
         </div>
 
-        <div className='col-md-10 col-12 '>
+        <div className="content_column">
           <NavBar />
           {!stateNavBar
             ? (
               <div className="row">
-                <div className="col-12">
-                <ConfigOptions />
+                <div className="col-12 ms-3">
+                  <ConfigOptions />
                 </div>
               </div>
             ) : (

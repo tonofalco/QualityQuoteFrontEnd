@@ -13,7 +13,7 @@ export const NavBar = () => {
     const navRef = useRef();
 
     const { startLogout, user } = useAuthStore()
-    const { handleLinkSelection, valueLink, openNavBar, closeNavBar, stateNavBar } = useActiveBar()
+    const { valueLink, openNavBar, closeNavBar, stateNavBar } = useActiveBar()
 
     const showNavbar = () => {
         navRef.current.classList.toggle("responsive_nav");

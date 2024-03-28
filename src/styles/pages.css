@@ -1,0 +1,18 @@
+.sidebar_column {
+    width: 12.5%;
+}
+
+.content_column {
+    width: 87.5%;
+}
+
+@media (max-width: 768px) {
+    .sidebar_column {
+        width: 0%;
+    }
+    
+    .content_column {
+        width: 100%;
+    }
+}
+

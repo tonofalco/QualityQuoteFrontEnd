@@ -14,9 +14,9 @@ export const ConfigOptions = () => {
 
     return (
         <>
-            <h1 className="mt-2">CONFIGURACION</h1>
+            <h3 className="mt-1">CONFIGURACION</h3>
             <hr />
-            <div className="row my-4 mx-4">
+            <div className="row my-5 mx-4">
                 {/* COSTOS  */}
                 <div className="col-md-2 col-6" onClick={handleButtonClickCosts}>
                     <button

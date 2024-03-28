@@ -118,7 +118,7 @@ export const Map = () => {
                 const hours = Math.floor((totalDuration / 60) / 60);
                 const minutes = totalDuration % 60;
 
-                setDistance((totalDistance / 1000).toFixed(2)); // Convertir a km y redondear a 2 decimales
+                setDistance((totalDistance / 1000).toFixed(1)); // Convertir a km y redondear
                 setTime(`${hours} h ${minutes} min`); // Formato de horas y minutos
 
                 if (startDate && endDate) {

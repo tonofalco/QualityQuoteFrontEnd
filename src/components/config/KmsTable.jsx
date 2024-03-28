@@ -1,10 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useConfigExtraDayStore } from '../../hooks';
+
+
 
 export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleKmsState, handleUpdateCosts, handleUpdateEsCosts }) => {
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const dispatch = useDispatch();
+
+    const { startLoadingCostsExtraDay } = useConfigExtraDayStore()
+
+    useEffect(() => {
+        if (!isLoading) {
+            const fetchData = async () => {
+                setIsLoading(true);
+                await startLoadingCostsExtraDay();
+            };
+
+            fetchData();
+        }
+    }, [isLoading, startLoadingCostsExtraDay]);
 
     // console.log(costsValueWeekend);
     // console.log(costsValue);

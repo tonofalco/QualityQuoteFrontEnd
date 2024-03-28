@@ -9,11 +9,11 @@ export const ConfigUsersPage = () => {
 
             <div className="row gx-0">
 
-                <div className=" col-md-2 d-none d-md-block">
+            <div className="sidebar_column d-none d-md-block">
                     <SideBar />
                 </div>
 
-                <div className='col-md-10 col-12 '>
+                <div className="content_column">
                     <NavBar />
                     {!stateNavBar
                         ? (
