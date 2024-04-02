@@ -64,7 +64,7 @@ export const BigCalendar = () => {
             <Calendar
                 culture='es'
                 // views={views}
-                views={{ month: true, week: true, agenda: true }}
+                views={{ month: true, week: true, agenda: false }}
                 // components={{ month: renderView, week: renderView, agenda: renderView, crud: renderView }}
                 step={90}
                 localizer={localizer}

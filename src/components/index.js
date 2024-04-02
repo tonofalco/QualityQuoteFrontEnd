@@ -9,6 +9,8 @@ export * from './calendar/FabAddNew'
 export * from './calendar/FabDelete'
 
 export * from './config/ExtraDay'
+export * from './config/CreateExtaDayModal'
+export * from './config/UpdateExtaDayModal'
 export * from './config/KmsTable'
 export * from './config/AdminUsers'
 export * from './config/ConfigOptions'

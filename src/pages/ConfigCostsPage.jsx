@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react"
 import { NavBar, SideBar, ExtraDay, KmsTable, OverlayWhole } from "../components"
-import { useActiveBar, useConfigStore } from "../hooks"
+import { useActiveBar, useConfigExtraDayStore, useConfigStore } from "../hooks"
 
 
 
 export const ConfigCostsPage = () => {
 
     const { stateNavBar } = useActiveBar()
-    const { startLoadingCosts, startLoadingEsCosts, editDay, editKms, handleToggleDayEstado, handleToggleKmsState, costsValue, costsValueWeekend, handleUpdateCosts, handleUpdateEsCosts, } = useConfigStore();
-    const { loading } = useConfigStore();
+    const { startLoadingCosts, startLoadingEsCosts, editKms, handleToggleKmsState, costsValue, costsValueWeekend, handleUpdateCosts, handleUpdateEsCosts } = useConfigStore();
+    const { startLoadingCostsExtraDay, costs_extraDay } = useConfigExtraDayStore()
+
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -17,14 +18,15 @@ export const ConfigCostsPage = () => {
                 setIsLoading(true);
                 await Promise.all([
                     startLoadingCosts(),
-                    startLoadingEsCosts()
+                    startLoadingEsCosts(),
+                    startLoadingCostsExtraDay()
                 ]);
             };
             fetchData();
         }
     }, []);
 
-    if (loading || costsValue == null || costsValueWeekend == null) {
+    if (costs_extraDay == null) {
         return <div>Cargando aplicacion...</div>
     }
 
@@ -33,7 +35,7 @@ export const ConfigCostsPage = () => {
 
             <div className="row gx-0">
 
-            <div className="sidebar_column d-none d-md-block">
+                <div className="sidebar_column d-none d-md-block">
                     <SideBar />
                 </div>
 
@@ -41,16 +43,13 @@ export const ConfigCostsPage = () => {
                     <NavBar />
                     {!stateNavBar
                         ? (
-                            <div>
-                                <h1 className="mt-2">CONFIGURACION</h1>
+                            <div className="container">
+                                <h6 className="mt-2 text-secondary">COSTOS OPERATIVOS</h6>
                                 <hr />
-                                <ExtraDay
-                                    editDay={editDay}
-                                    handleToggleDayEstado={handleToggleDayEstado}
-                                    costsValue={costsValue}
-                                    handleUpdateCosts={handleUpdateCosts}
-                                />
+
+                                <ExtraDay />
                                 <hr />
+
                                 <KmsTable
                                     editKms={editKms}
                                     costsValue={costsValue}
@@ -71,4 +70,3 @@ export const ConfigCostsPage = () => {
         </>
     )
 }
-

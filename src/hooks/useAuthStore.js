@@ -39,22 +39,17 @@ export const useAuthStore = () => {
 
     const startRegister = async ({ name, email, role, password }) => {
 
-        // dispatch(onChecking())
-
         try {
-
             const { data } = await serverApi.post('/auth/new', { name, email, role, password })
             // console.log(user.name);
             dispatch(onLogin({ name: user.name, uid: user.uid, role: user.role }))
 
         } catch (error) {
-
             dispatch(onLogout(error.response.data?.msg || '--'))
 
             setTimeout(() => {
                 dispatch(clearErrorMessage())
             }, 100);
-
         }
 
     }

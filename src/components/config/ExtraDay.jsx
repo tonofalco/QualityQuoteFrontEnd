@@ -1,236 +1,125 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import Swal from 'sweetalert2';
+
+import { useConfigExtraDayStore } from '../../hooks';
+
+import { CreateExtaDayModal } from './CreateExtaDayModal';
+import { UpdateExtaDayModal } from './UpdateExtaDayModal';
 
 
-export const ExtraDay = ({ editDay, handleToggleDayEstado, costsValue, handleUpdateCosts }) => {
+export const ExtraDay = () => {
 
-    const dispatch = useDispatch();
+    const { sumaCostoDiaExtraEs, sumaCostoDiaExtraFs, totalEs, totalFs, setActiveCost, deleteCostExtraDay, costs_extraDay } = useConfigExtraDayStore()
 
-    const [formValues, setFormValues] = useState({
-        gasoline: 0,
-        salary: 0,
-        booths: 0,
-        maintenance: 0,
-        utility: 0,
-        supplement: 0,
+    const [show, setShow] = useState(false);
+    const [show2, setShow2] = useState(false);
+    
+    const toggleModalCreate = () => setShow(prevShow => !prevShow);
+    const toggleModalUpdate = () => setShow2(prevShow => !prevShow);
 
-        hotel_es: 0,
-        food_es: 0,
-        park_es: 0,
-        renueve_es: 0,
-        hotel_fs: 0,
-        food_fs: 0,
-        park_fs: 0
-    })
-
-    const {hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs} = formValues
-
-    // console.log(formValues.hotel_es);
-
-
-    const cleanValue = (value) => {
-        return isNaN(value) || value === '' ? 0 : parseFloat(value);
+    //Función para manejar la selección de usuario en redux
+    const onSelect = async (costId) => {
+        setActiveCost(costId)
     };
 
-    // Función para manejar cambios en los campos de entrada
-    const onInputChanged = ({ target }) => {
-        setFormValues({
-            ...formValues,
-            [target.name]: cleanValue(target.value),
+    //Funcion para eliminar un costo
+    const handleDeleteCost = (costId) => {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar costo',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteCostExtraDay(costId);
+                Swal.fire(
+                    '¡Eliminado!',
+                    'El costo ha sido eliminado.',
+                    'success'
+                );
+            }
         });
     };
 
-    // Función para enviar los datos actualizados
-    const onSubmit = async () => {
-        event.preventDefault();
-        await dispatch(handleUpdateCosts(formValues));
-    };
-
-    // Actualización de formValues cuando se cargan datos de la base de datos
-    useEffect(() => {
-        if (costsValue !== null) {
-            setFormValues({ ...costsValue });
-        }
-    }, [costsValue]);
-
-    let sumaTotalEntreSemana = cleanValue(hotel_es + food_es + park_es + renueve_es)
-    let sumaTotalFinSemana = cleanValue(hotel_fs + food_fs + park_fs + renueve_fs)
+    //Funcion para no recargar la tabla
+    const onSubmit = event => event.preventDefault();
+    
+    // Cargamos la informacion de los costos
+    useEffect(() => {sumaCostoDiaExtraEs(), sumaCostoDiaExtraFs()}, [costs_extraDay]);
 
 
     return (
         <>
-                <form className="container" onSubmit={onSubmit}>
-                    <div className="row">
+            <form onSubmit={onSubmit}>
 
-                        <div className="col-md-6 col-12">
-                            <ul className="list-group list-group-flush">
-                                <h3>Dia entre semana</h3>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Hospedaje:</span>
-                                    {editDay ? (
-                                        <span>{hotel_es}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Hospedaje"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="hotel_es"
-                                            autoComplete="off"
-                                            value={hotel_es}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Alimentos:</span>
-                                    {editDay ? (
-                                        <span>{food_es}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Alimentos"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="food_es"
-                                            autoComplete="off"
-                                            value={food_es}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Estacionamiento:</span>
-                                    {editDay ? (
-                                        <span>{park_es}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Estacionamiento"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="park_es"
-                                            autoComplete="off"
-                                            value={park_es}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Beneficio:</span>
-                                    {editDay ? (
-                                        <span>{renueve_es}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Beneficio"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="renueve_es"
-                                            autoComplete="off"
-                                            value={renueve_es}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                {editDay ? (
-                                    <li className="list-group-item d-flex justify-content-between align-items-center">
-                                        <span className="form-label"><b>Total:</b></span>
-                                        <span><b>{sumaTotalEntreSemana}</b></span>
-                                    </li>
-                                ) : (
-                                    <span></span>
-                                )}
-                            </ul>
-                        </div>
+                <div className="d-flex mb-3">
+                    <h3 className="me-3">DIA EXTRA</h3>
+                    <button type="button" className="btn btn-success" onClick={toggleModalCreate}>
+                        <i className="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                {/* Tabla de costos en dia extra  */}
+                <div className="row">
+                    <div className="col">
+                        <table className="table table-auto text-center">
+                            <thead>
+                                <tr>
+                                    {/* <th scope='row'>Id</th> */}
+                                    <th scope='row'>Coste</th>
+                                    <th scope='row'>Entre Semana</th>
+                                    <th scope='row'>Fin Semana</th>
+                                    <th scope='row'>Acciones</th>
 
-                        <div className="col-md-6 col-12">
-                            <ul className="list-group list-group-flush">
-                                <h3>Dia fin semana</h3>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Hospedaje:</span>
-                                    {editDay ? (
-                                        <span>{hotel_fs}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Hospedaje"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="hotel_fs"
-                                            autoComplete="off"
-                                            value={hotel_fs}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Alimentos:</span>
-                                    {editDay ? (
-                                        <span>{food_fs}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Alimentos"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="food_fs"
-                                            autoComplete="off"
-                                            value={food_fs}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Estacionamiento:</span>
-                                    {editDay ? (
-                                        <span>{park_fs}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Estacionamiento"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="park_fs"
-                                            autoComplete="off"
-                                            value={park_fs}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span className="form-label">Beneficio:</span>
-                                    {editDay ? (
-                                        <span>{renueve_fs}</span>
-                                    ) : (
-                                        <input
-                                            type="number"
-                                            placeholder="Beneficio"
-                                            className="form-control d-inline-block w-auto text-center"
-                                            name="renueve_fs"
-                                            autoComplete="off"
-                                            value={renueve_fs}
-                                            onChange={onInputChanged}
-                                        />
-                                    )}
-                                </li>
-                                {editDay ? (
-                                    <li className="list-group-item d-flex justify-content-between align-items-center">
-                                        <span className="form-label"><b>Total:</b></span>
-                                        <span><b>{sumaTotalFinSemana}</b></span>
-                                    </li>
-                                ) : (
-                                    <span></span>
-                                )}
-                            </ul>
-                        </div>
+                                    {/* <th>Acciones</th> */}
+                                    {/* Agrega más encabezados de columna según tus datos de usuario */}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    costs_extraDay.map((cost) => (
+                                        <tr key={cost.id}>
+                                            <td>{cost.cost}</td>
+                                            <td>{cost.valueEs}</td>
+                                            <td>{cost.valueFs}</td>
+                                            <td>
+                                                {/* Utiliza una arrow function para pasar el id del usuario a la función */}
+                                                <button className="btn btn-primary me-3" onClick={() => { onSelect(cost.id); toggleModalUpdate() }}>
+                                                    <i className="fa-solid fa-pen"></i>
+                                                </button>
+                                                <button className="btn btn-danger" onClick={() => handleDeleteCost(cost.id)}>
+                                                    <i className="fa-solid fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                                <tr>
+                                    <td><b>Total:</b></td>
+                                    <td><b>{totalEs}</b></td>
+                                    <td><b>{totalFs}</b></td>
+                                    <td></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
                     </div>
+                </div>
 
-                    <div className="col-12 my-3 me d-flex align-items-end justify-content-end ">
-                        {editDay ? (
-                            <button type='submit' className="btn btn-primary" onClick={handleToggleDayEstado}>
-                                Editar
-                            </button>
-                        ) : (
-                            <button type='button' className="btn btn-success mt-3" onClick={handleToggleDayEstado}>
-                                Guardar
-                            </button>
-                        )}
-                    </div>
-                </form>
+            </form>
+
+            <CreateExtaDayModal
+                show={show}
+                toggleModalCreate={toggleModalCreate}
+            />
+
+            <UpdateExtaDayModal
+                show2={show2}
+                toggleModalUpdate={toggleModalUpdate}
+            />
         </>
     );
 };

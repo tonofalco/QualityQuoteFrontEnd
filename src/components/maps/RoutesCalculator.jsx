@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useConfigStore } from '../../hooks';
+import { useConfigExtraDayStore, useConfigStore } from '../../hooks';
 import Accordion from 'react-bootstrap/Accordion';
+
 
 
 export const RoutesCalculator = ({ distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms }) => {
@@ -8,10 +9,13 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
     const [multi, setMulti] = useState(2);
     const [isChecked, setIsChecked] = useState(true);
 
-    const { costsValue, costsValueWeekend, loading } = useConfigStore();
+    const { costsValue, costsValueWeekend } = useConfigStore();
+    const {totalEs, totalFs} = useConfigExtraDayStore()
     
-    const { hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs, gasoline, salary, booths, maintenance, utility, supplement } = costsValue
+    const { gasoline, salary, booths, maintenance, utility, supplement } = costsValue
     const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = costsValueWeekend
+
+
 
     const calcularCosto = (dias, costoPorDia) => {
         let costo = (dias * costoPorDia);
@@ -25,16 +29,17 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
 
     //CALCULO DISTANCIA FINAL
     const distancia = Math.round(parseFloat(distance) * parseInt(multi))
+
     //CALCULO MULTKMS PRIMER DIA
     const multKmsValueEs = distancia <= 400 ? gasolineEs + salaryEs + boothsEs + maintenanceEs + utilityEs + supplementEs : gasolineEs + salaryEs + maintenanceEs + boothsEs + utilityEs;
     const multKmsValueFs = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
     const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
+
     //CALCULOS POR DIAS EXTRAS
-    const diaExtraEntreSemanaBase = hotel_es + food_es + park_es + renueve_es
-    const diaExtraFinSemanaBase = hotel_fs + food_fs + park_fs + renueve_fs
-    const diasEntreSemanaCosto = calcularCosto(weekdaysCount, diaExtraEntreSemanaBase);
-    const diasFinSemanaCosto = calcularCosto(weekendCount, diaExtraFinSemanaBase);
+    const diasEntreSemanaCosto = calcularCosto(weekdaysCount, totalEs);
+    const diasFinSemanaCosto = calcularCosto(weekendCount, totalFs);
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
+
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 14
     const costoTotal = ( distancia * multKmsValue)
@@ -135,11 +140,11 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                                         <br />
                                                         Entre semana:
                                                         <br />&nbsp;
-                                                        {weekdaysCount} * {diaExtraEntreSemanaBase}
+                                                        {weekdaysCount} * {totalEs}
                                                         <br />
                                                         Fin semana:
                                                         <br />&nbsp;
-                                                        {weekendCount} * {diaExtraFinSemanaBase}
+                                                        {weekendCount} * {totalFs}
                                                     </p>
                                                 </div>
                                             </div>
