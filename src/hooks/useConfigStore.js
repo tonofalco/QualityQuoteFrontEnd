@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { serverApi } from "../api"
 import { onEditDayCosts, onEditKms, onLoadCostsStart, onLoadCostsSuccess, onLoadCostsEsSuccess, onLoadCostsFailure, } from "../store"
-// import { useAuthStore } from "./useAuthStore"
 
 
 export const useConfigStore = () => {
@@ -20,8 +19,8 @@ export const useConfigStore = () => {
     const startLoadingCosts = async () => {
         try {
             dispatch(onLoadCostsStart()); // Indicar que se está iniciando la carga de datos
-            const { data } = await serverApi.get('/config/costs');
-            const config = data.configuracion[0];
+            const { data } = await serverApi.get('/cost/kmsTable');
+            const config = data.costesKms[0];
             dispatch(onLoadCostsSuccess(config)); // Pasar los datos cargados al estado
         } catch (error) {
             console.log('Error cargando costos:', error);
@@ -32,8 +31,8 @@ export const useConfigStore = () => {
     const startLoadingEsCosts = async () => {
         try {
             dispatch(onLoadCostsStart()); // Indicar que se está iniciando la carga de datos
-            const { data } = await serverApi.get('/config/costs');
-            const config = data.configuracion[1];
+            const { data } = await serverApi.get('/cost/kmsTable');
+            const config = data.costesKms[1];
             dispatch(onLoadCostsEsSuccess(config)); // Pasar los datos cargados al estado
         } catch (error) {
             console.log('Error cargando costos:', error);
@@ -45,7 +44,7 @@ export const useConfigStore = () => {
         return async (dispatch) => {
             try {
                 // Realiza la solicitud PUT a tu API para actualizar los costos
-                const response = await serverApi.put(`/config/costs/1`, newCostsData);
+                const response = await serverApi.put(`/cost/kmsTable/1`, newCostsData);
             } catch (error) {
                 console.error('Error al actualizar los costos:', error);
             }
@@ -56,7 +55,7 @@ export const useConfigStore = () => {
         return async (dispatch) => {
             try {
                 // Realiza la solicitud PUT a tu API para actualizar los costos
-                const response = await serverApi.put(`/config/costs/2`, newCostsData);
+                const response = await serverApi.put(`/cost/kmsTable/2`, newCostsData);
             } catch (error) {
                 console.error('Error al actualizar los costos:', error);
             }
