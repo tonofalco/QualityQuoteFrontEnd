@@ -10,22 +10,37 @@ export const useAuthStore = () => {
 
     const dispatch = useDispatch()
 
-    const setActiveUser = (userSelected) => {
-        const userActive = usersValue.find(user => user.id == userSelected)
-        dispatch(onSelectedUser(userActive))
+    // COMPROBRAR JWT
+    const checkAuthToken = async () => {
+        const token = localStorage.getItem('token')
+        if (!token) return dispatch(onLogout())
+
+        try {
+
+            const { data } = await serverApi.get('auth/renew')
+            // console.log('Renew response:', data);
+            localStorage.setItem('token', data.token)
+            localStorage.setItem('token-init-date', new Date().getTime())
+            dispatch(onLogin({ name: data.name, uid: data.uid, role: data.role }))
+
+        } catch (error) {
+
+            localStorage.clear()
+            dispatch(onLogout())
+
+        }
     }
 
+    // ACEDER A LA APLICACION WEB
     const startLogin = async ({ email, password }) => {
 
         dispatch(onChecking())
 
         try {
-
             const { data } = await serverApi.post('/auth', { email, password })
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
             dispatch(onLogin({ name: data.name, uid: data.uid, role: data.role }))
-
 
         } catch (error) {
             dispatch(onLogout('¡Los datos de acceso son incorrectos!'))
@@ -37,49 +52,14 @@ export const useAuthStore = () => {
 
     }
 
-    const startRegister = async ({ name, email, role, password }) => {
-
-        try {
-            const { data } = await serverApi.post('/auth/new', { name, email, role, password })
-            // console.log(user.name);
-            dispatch(onLogin({ name: user.name, uid: user.uid, role: user.role }))
-
-        } catch (error) {
-            dispatch(onLogout(error.response.data?.msg || '--'))
-
-            setTimeout(() => {
-                dispatch(clearErrorMessage())
-            }, 100);
-        }
-
-    }
-
-    const checkAuthToken = async () => {
-        const token = localStorage.getItem('token')
-        if (!token) return dispatch(onLogout())
-
-        try {
-
-            const { data } = await serverApi.get('auth/renew')
-            // console.log('Renew response:', data);
-            localStorage.setItem('token', data.token)
-            localStorage.setItem('token-init-date', new Date().getTime())
-            dispatch(onLogin({ name: data.name, uid: data.uid,  role: data.role }))
-
-        } catch (error) {
-
-            localStorage.clear()
-            dispatch(onLogout())
-
-        }
-    }
-
+    // SALIR DE LA APLICACION WEB
     const startLogout = () => {
         localStorage.clear()
         dispatch(onLogoutCalendar())
         dispatch(onLogout())
     }
 
+    // OBTENER USUARIOS
     const startLoadingUsers = async () => {
         try {
             const { data } = await serverApi.get('/auth');
@@ -92,24 +72,51 @@ export const useAuthStore = () => {
         }
     };
 
+    // OBTENER VALORES DEL USUARIO SELECIONADO
+    const setActiveUser = (userSelected) => {
+        const userActive = usersValue.find(user => user.id == userSelected)
+        dispatch(onSelectedUser(userActive))
+    }
+
+    // REGISTRAR UN NUEVO USUARIO
+    const startRegister = async ({ name, email, role, password }) => {
+
+        try {
+            await serverApi.post('/auth/new', { name, email, role, password })
+            // console.log(user.name);
+            dispatch(onLogin({ name: user.name, uid: user.uid, role: user.role }))
+            startLoadingUsers()
+
+        } catch (error) {
+            console.log('Error creando nuevo usuario');
+            Swal.fire('Error al eliminar', error.response.data?.msg, 'error')
+
+            setTimeout(() => {
+                dispatch(clearErrorMessage())
+            }, 100);
+        }
+    }
+
+    //ELIMINAR USUARIO POR ID
     const deleteUser = async (userId) => {
         // dispatch(onDeleteUser(userId)); // Llama al action creator para eliminar un usuario por su ID
         try {
-            const { data } = await serverApi.delete(`/auth/${userId}`)
+            await serverApi.delete(`/auth/${userId}`)
             dispatch(onDeleteUser(userId));
+            startLoadingUsers()
         } catch (error) {
             console.log(error);
             Swal.fire('Error al eliminar', error.response.data?.msg, 'error')
         }
     };
 
+    //ACTUALIZAR USUARIO POR ID
     const updateUser = async (userId, updatedUserInfo) => {
         try {
             const { data } = await serverApi.put(`/auth/${userId}`, updatedUserInfo);
-            // Suponiendo que la API devuelve la información actualizada del usuario
             dispatch(onUpdateUser({ userId, updatedUserInfo: data })); // Actualizar el usuario en el estado
+            startLoadingUsers()
         } catch (error) {
-            // console.log(userId, data);
             console.log(error);
             Swal.fire('Error al actualizar', error.response.data?.msg, 'error');
         }

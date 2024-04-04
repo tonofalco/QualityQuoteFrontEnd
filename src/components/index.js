@@ -13,6 +13,8 @@ export * from './config/CreateExtaDayModal'
 export * from './config/UpdateExtaDayModal'
 export * from './config/KmsTable'
 export * from './config/AdminUsers'
+export * from './config/CreateUserModal'
+export * from './config/UpdateUserModal'
 export * from './config/ConfigOptions'
 
 export * from './home/Home'
