@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { useAuthStore } from "../hooks"
 import ClipLoader from "react-spinners/ClipLoader";
 
-import { HomePage, CalendarPage, MapsPage, ConfigPage, ConfigCostsPage, ConfigUsersPage, LoginPage } from '../pages/'
+import { HomePage, CalendarPage, MapsPage, ConfigPage, ConfigCostsPage, ConfigUsersPage, LoginPage, ConfigKmsTablePage } from '../pages/'
 
 
 import '../styles/pages.css'
@@ -75,6 +75,7 @@ export const AppRouter = () => {
                                 <Route path="/map" element={<MapsPage />} />
                                 <Route path="/config" element={<ConfigPage />} />
                                 <Route path="/config/costs" element={<ConfigCostsPage />} />
+                                <Route path="/config/tablekms" element={<ConfigKmsTablePage />} />
                                 <Route path="/config/users" element={<ConfigUsersPage />} />
                                 <Route path="/*" element={<Navigate to='/' />} />
                             </>

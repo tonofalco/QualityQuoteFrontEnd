@@ -1,137 +1,87 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useConfigStore } from '../../hooks';
+import { destinations } from '../../helpers';
 
-import { useConfigExtraDayStore } from '../../hooks';
 
-
-
-export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleKmsState, handleUpdateCosts, handleUpdateEsCosts }) => {
-
-    const [isLoading, setIsLoading] = useState(false);
+export const KmsTable = ({ costsValue, costsValueWeekend }) => {
 
     const dispatch = useDispatch();
-
-    const { startLoadingCostsExtraDay } = useConfigExtraDayStore()
-
-    useEffect(() => {
-        if (!isLoading) {
-            const fetchData = async () => {
-                setIsLoading(true);
-                await startLoadingCostsExtraDay();
-            };
-
-            fetchData();
-        }
-    }, [isLoading, startLoadingCostsExtraDay]);
-
-    // console.log(costsValueWeekend);
-    // console.log(costsValue);
-
-    const [formValuesEs, setFormValuesEs] = useState({
-        gasoline: 0,
-        salary: 0,
-        booths: 0,
-        maintenance: 0,
-        utility: 0,
-        supplement: 0,
-    })
+    const { editKms, handleToggleKmsState, handleUpdateFsCosts, handleUpdateEsCosts } = useConfigStore();
 
     const [formValues, setFormValues] = useState({
-        gasoline: 0,
-        salary: 0,
-        booths: 0,
-        maintenance: 0,
-        utility: 0,
-        supplement: 0,
-    })
+        es: {
+            gasoline: 0,
+            salary: 0,
+            booths: 0,
+            maintenance: 0,
+            utility: 0,
+            supplement: 0,
+        },
+        fs: {
+            gasoline: 0,
+            salary: 0,
+            booths: 0,
+            maintenance: 0,
+            utility: 0,
+            supplement: 0,
+        }
+    });
 
-    const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = formValuesEs
-    const { gasoline, salary, booths, maintenance, utility, supplement } = formValues
+    const { es, fs } = formValues
 
-    // console.log(gasoline, gasolineEs);
+    //Actualizar valores de formValues a BD 
+    const onInputChanged = (part) => ({ target }) => {
 
-    const cleanValue = (value) => {
-        return isNaN(value) || value === '' ? 0 : parseFloat(value);
+        const cleanValue = (value) => isNaN(value) || value === '' ? 0 : parseFloat(value);
+
+        setFormValues(prevFormValues => ({
+            ...prevFormValues,
+            [part]: {
+                ...prevFormValues[part],
+                [target.name]: cleanValue(target.value)
+            }
+        }));
     };
 
-    const onInputChanged = ({ target }) => {
-        setFormValues({
-            ...formValues,
-            [target.name]: cleanValue(target.value)
-        });
-    };
+    // Usar la función para fs y es
+    const onInputChangedFs = onInputChanged('fs');
+    const onInputChangedEs = onInputChanged('es');
 
-    const onInputChangedEs = ({ target }) => {
-        setFormValuesEs({
-            ...formValuesEs,
-            [target.name]: cleanValue(target.value),
-        });
-    };
-
+    //Funcion para no recargar la tabla con dispatch
     const onSubmit = async (event) => {
         event.preventDefault();
+
         await Promise.all([
-            dispatch(handleUpdateCosts(formValues)),
-            dispatch(handleUpdateEsCosts(formValuesEs)),
+            dispatch(handleUpdateFsCosts(fs)), // Envía solo los valores relevantes para 'fs'
+            dispatch(handleUpdateEsCosts(es)), // Envía solo los valores relevantes para 'es'
         ]);
     };
 
+    // Cargamos la informacion de los costos por kms
     useEffect(() => {
-        if (costsValue !== null) {
-            setFormValues({ ...costsValue });
+        if (costsValueWeekend !== null) {
+            setFormValues(prevState => ({
+                ...prevState,
+                es: { ...costsValueWeekend }
+            }));
         }
 
-        if (costsValueWeekend !== null) {
-            setFormValuesEs({ ...costsValueWeekend });
+        if (costsValue !== null) {
+            setFormValues(prevState => ({
+                ...prevState,
+                fs: { ...costsValue }
+            }));
         }
     }, [costsValue, costsValueWeekend]);
 
-    const destinos = [
-        { nombre: 'Acapulco / Barra vieja', kms: 300 },
-        { nombre: 'Taxco', kms: 300 },
-        { nombre: 'Zoofari', kms: 350 },
-        { nombre: 'Tepoztlan', kms: 450 },
-        { nombre: 'Puerto vicente', kms: 500 },
-        { nombre: 'Hacienda panoaya', kms: 550 },
-        { nombre: 'CDMX', kms: 550 },
-        { nombre: 'Puebla', kms: 600 },
-        { nombre: 'Villa iluminada', kms: 600 },
-        { nombre: 'Valquirico', kms: 650 },
-        { nombre: 'Teotihuacan', kms: 650 },
-        { nombre: 'Luciernagas', kms: 700 },
-        { nombre: 'Nevado', kms: 750 },
-        { nombre: 'Volcanic park', kms: 800 },
-        { nombre: 'Bioparque', kms: 800 },
-        { nombre: 'Chignahuapan y Zacatlan', kms: 850 },
-        { nombre: 'Monarcas / valle de bravo', kms: 900 },
-        { nombre: 'Tlalpujahua / El oro', kms: 900 },
-        { nombre: 'Cuetzalan y tlatlauquitepec', kms: 1000 },
-        { nombre: 'Geiser', kms: 1000 },
-        { nombre: 'Tolantongo', kms: 1000 },
-        { nombre: 'Queretaro / bernal', kms: 1050 },
-        { nombre: 'Viñedos', kms: 1100 },
-        { nombre: 'Veracruz', kms: 1200 },
-        { nombre: 'Juquila y pto', kms: 1200 },
-        { nombre: 'Ecoturismo Qro', kms: 1300 },
-        { nombre: 'Morelia y patzcuaro', kms: 1300 },
-        { nombre: 'Guanajuato y sillao o Allende', kms: 1300 },
-        { nombre: 'Leon y Gto', kms: 1400 },
-        { nombre: 'Oaxaca', kms: 1400 },
-        { nombre: 'Zacatecas', kms: 2000 },
-        { nombre: 'Huasteca', kms: 2200 },
-        { nombre: 'Mty', kms: 2400 },
-    ];
+    const directCostFs = (fs.gasoline + fs.salary + fs.booths);
+    const totalCostFs = (directCostFs + fs.maintenance);
+    const rentPriceFs = totalCostFs + fs.utility;
 
-    let kms = 0;
-
-    const directCost = gasoline + salary + booths;
-    const totalCost = directCost + maintenance;
-    const rentPrice = totalCost + utility;
-
-    const directCost2 = gasolineEs + salaryEs + boothsEs;
-    const totalCost2 = (directCost2 + maintenanceEs);
-    const rentPrice2 = totalCost2 + utilityEs;
-
+    const directCostEs = es.gasoline + es.salary + es.booths;
+    const totalCostEs = (directCostEs + es.maintenance);
+    const rentPriceEs = totalCostEs + es.utility;;
 
     return (
         <>
@@ -149,8 +99,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         <th></th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{gasolineEs}</span>
-
+                                                <span>{es.gasoline}</span>
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
                                                     <div style={{ width: '65px' }} className='input-group'>
@@ -161,7 +110,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="gasoline"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={gasolineEs}
+                                                            value={es.gasoline}
                                                             onChange={onInputChangedEs}
                                                         />
                                                     </div>
@@ -170,7 +119,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{salaryEs}</span>
+                                                <span>{es.salary}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -182,7 +131,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="salary"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={salaryEs}
+                                                            value={es.salary}
                                                             onChange={onInputChangedEs}
                                                         />
                                                     </div>
@@ -192,7 +141,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         <th scope='col'>
 
                                             {editKms ? (
-                                                <span>{boothsEs}</span>
+                                                <span>{es.booths}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -204,7 +153,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="booths"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={boothsEs}
+                                                            value={es.booths}
                                                             onChange={onInputChangedEs}
                                                         />
                                                     </div>
@@ -212,11 +161,11 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                             )}
                                         </th>
                                         <th>
-                                            {directCost2}
+                                            {directCostEs}
                                         </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{maintenanceEs}</span>
+                                                <span>{es.maintenance}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -228,7 +177,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="maintenance"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={maintenanceEs}
+                                                            value={es.maintenance}
                                                             onChange={onInputChangedEs}
                                                         />
                                                     </div>
@@ -236,11 +185,11 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                             )}
                                         </th>
                                         <th>
-                                            {totalCost2}
+                                            {totalCostEs}
                                         </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{utilityEs}</span>
+                                                <span>{es.utility}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -252,7 +201,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="utility"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={utilityEs}
+                                                            value={es.utility}
                                                             onChange={onInputChangedEs}
                                                         />
                                                     </div>
@@ -261,7 +210,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{supplementEs}</span>
+                                                <span>{es.supplement}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -273,7 +222,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="supplement"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={supplementEs}
+                                                            value={es.supplement}
                                                             onChange={onInputChangedEs}
                                                         />
                                                     </div>
@@ -281,8 +230,9 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                             )}
                                         </th>
                                         <th>
-                                            {rentPrice2}
+                                            {rentPriceEs}
                                         </th>
+                                        <th>{/* Espacio en blanco */}</th>
                                     </tr>
                                     {/* fin de semana */}
                                     <tr>
@@ -290,7 +240,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         <th></th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{gasoline}</span>
+                                                <span>{fs.gasoline}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -302,8 +252,8 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="gasoline"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={gasoline}
-                                                            onChange={onInputChanged}
+                                                            value={fs.gasoline}
+                                                            onChange={onInputChangedFs}
                                                         />
                                                     </div>
                                                 </div>
@@ -311,7 +261,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{formValues.salary}</span>
+                                                <span>{fs.salary}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -323,8 +273,8 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="salary"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={formValues.salary}
-                                                            onChange={onInputChanged}
+                                                            value={fs.salary}
+                                                            onChange={onInputChangedFs}
                                                         />
                                                     </div>
                                                 </div>
@@ -332,7 +282,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{formValues.booths}</span>
+                                                <span>{fs.booths}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -344,17 +294,19 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="booths"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={formValues.booths}
-                                                            onChange={onInputChanged}
+                                                            value={fs.booths}
+                                                            onChange={onInputChangedFs}
                                                         />
                                                     </div>
                                                 </div>
                                             )}
                                         </th>
-                                        <th>{directCost}</th>
+                                        <th>
+                                            {directCostFs}
+                                        </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{formValues.maintenance}</span>
+                                                <span>{fs.maintenance}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -366,17 +318,19 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="maintenance"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={formValues.maintenance}
-                                                            onChange={onInputChanged}
+                                                            value={fs.maintenance}
+                                                            onChange={onInputChangedFs}
                                                         />
                                                     </div>
                                                 </div>
                                             )}
                                         </th>
-                                        <th>{totalCost}</th>
+                                        <th>
+                                            {totalCostFs}
+                                        </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{formValues.utility}</span>
+                                                <span>{fs.utility}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -388,8 +342,8 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="utility"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={formValues.utility}
-                                                            onChange={onInputChanged}
+                                                            value={fs.utility}
+                                                            onChange={onInputChangedFs}
                                                         />
                                                     </div>
                                                 </div>
@@ -397,7 +351,7 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                         </th>
                                         <th scope='col'>
                                             {editKms ? (
-                                                <span>{formValues.supplement}</span>
+                                                <span>{fs.supplement}</span>
 
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
@@ -409,14 +363,16 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                                             name="supplement"
                                                             autoComplete="off"
                                                             step="any"
-                                                            value={formValues.supplement}
-                                                            onChange={onInputChanged}
+                                                            value={fs.supplement}
+                                                            onChange={onInputChangedFs}
                                                         />
                                                     </div>
                                                 </div>
                                             )}
                                         </th>
-                                        <th>{rentPrice}</th>
+                                        <th>
+                                            {rentPriceFs}
+                                        </th>
                                         <th scope='col' className='d-flex justify-content-end'>
                                             {editKms ? (
                                                 <button
@@ -454,25 +410,25 @@ export const KmsTable = ({ costsValue, costsValueWeekend, editKms, handleToggleK
                                 </thead>
                                 {/* datos de la tabla */}
                                 <tbody>
-                                    {destinos.map((destino, index) => (
+                                    {destinations.map((destino, index) => (
                                         <tr key={index}>
                                             <th scope="row">{destino.nombre}</th>
                                             <td>{destino.kms}</td>
-                                            <td>{Math.round(destino.kms * gasoline)}</td>
-                                            <td>{Math.round(destino.kms * salary)}</td>
-                                            <td>{Math.round(destino.kms * booths)}</td>
-                                            <td className='bg-secondary'>{Math.round(destino.kms * directCost)}</td>
-                                            <td>{destino.kms * maintenance}</td>
-                                            <td className='bg-secondary'>{Math.round(destino.kms * totalCost)}</td>
-                                            <td>{Math.round(destino.kms * utility)}</td>
-                                            <td>{destino.kms <= 400 ? Math.round(destino.kms * supplement) : 0}</td>
+                                            <td>{Math.round(destino.kms * es.gasoline)}</td>
+                                            <td>{Math.round(destino.kms * es.salary)}</td>
+                                            <td>{Math.round(destino.kms * es.booths)}</td>
+                                            <td className='bg-secondary'>{Math.round(destino.kms * directCostFs)}</td>
+                                            <td>{destino.kms * es.maintenance}</td>
+                                            <td className='bg-secondary'>{Math.round(destino.kms * totalCostFs)}</td>
+                                            <td>{Math.round(destino.kms * es.utility)}</td>
+                                            <td>{destino.kms <= 400 ? Math.round(destino.kms * es.supplement) : 0}</td>
                                             <td className='bg-success'>{destino.kms <= 400
-                                                ? Math.round(destino.kms * (rentPrice + supplement))
-                                                : Math.round(destino.kms * rentPrice)}
+                                                ? Math.round(destino.kms * (rentPriceFs + es.supplement))
+                                                : Math.round(destino.kms * rentPriceFs)}
                                             </td>
                                             <td className='bg-info'>{destino.kms <= 400
-                                                ? Math.round((destino.kms * (rentPrice + supplement)) / 14)
-                                                : Math.round((destino.kms * rentPrice) / 14)}
+                                                ? Math.round((destino.kms * (rentPriceFs + es.supplement)) / 14)
+                                                : Math.round((destino.kms * rentPriceFs) / 14)}
                                             </td>
                                         </tr>
                                     ))}

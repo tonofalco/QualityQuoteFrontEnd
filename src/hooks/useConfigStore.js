@@ -1,56 +1,56 @@
 import { useDispatch, useSelector } from "react-redux"
 import { serverApi } from "../api"
-import { onEditDayCosts, onEditKms, onLoadCostsStart, onLoadCostsSuccess, onLoadCostsEsSuccess, onLoadCostsFailure, } from "../store"
+import { onEditKms, onLoadCostsSuccess, onLoadCostsEsSuccess } from "../store"
 
 
 export const useConfigStore = () => {
-    
-    const { editDay, editKms } = useSelector(state => state.config)
-    const costsValue = useSelector((state) => state.config.costos);
-    const costsValueWeekend = useSelector((state) => state.config.costosFinSemana);
-    const loading = useSelector((state) => state.config.loading);
-    // const {} = updateCosts()
+
+    const { editKms } = useSelector(state => state.configKmsTable)
+    const costsValue = useSelector((state) => state.configKmsTable.costos); //array
+    const costsValueWeekend = useSelector((state) => state.configKmsTable.costosFinSemana); //array
 
     const dispatch = useDispatch()
 
-    const handleToggleDayEstado = () => dispatch(onEditDayCosts())
+    // CAMBIAR ESTADO DEL MODO EDITABLE
     const handleToggleKmsState = () => dispatch(onEditKms())
 
-    const startLoadingCosts = async () => {
+    // OBTENER COSTOS KMS TABLA FIN DE SEMANA
+    const startLoadingFsCosts = async () => {
         try {
-            dispatch(onLoadCostsStart()); // Indicar que se está iniciando la carga de datos
             const { data } = await serverApi.get('/cost/kmsTable');
-            const config = data.costesKms[0];
-            dispatch(onLoadCostsSuccess(config)); // Pasar los datos cargados al estado
+            const costesFs = data.costesKms[0];
+            dispatch(onLoadCostsSuccess(costesFs)); // Pasar los datos cargados al estado
         } catch (error) {
-            console.log('Error cargando costos:', error);
-            dispatch(onLoadCostsFailure()); // Indicar que ha habido un error al cargar los datos
+            console.log('Error cargando costos:');
+            console.log(error);
         }
     };
 
+    // OBTENER COSTOS KMS TABLA ENTRE SEMANA
     const startLoadingEsCosts = async () => {
         try {
-            dispatch(onLoadCostsStart()); // Indicar que se está iniciando la carga de datos
             const { data } = await serverApi.get('/cost/kmsTable');
-            const config = data.costesKms[1];
-            dispatch(onLoadCostsEsSuccess(config)); // Pasar los datos cargados al estado
+            const costesEs = data.costesKms[1];
+            dispatch(onLoadCostsEsSuccess(costesEs)); // Pasar los datos cargados al estado
         } catch (error) {
-            console.log('Error cargando costos:', error);
-            dispatch(onLoadCostsFailure()); // Indicar que ha habido un error al cargar los datos
+            console.log('Error cargando costos:');
+            console.log(error);
         }
     };
 
-    const handleUpdateCosts = (newCostsData) => {
-        return async (dispatch) => {
+    //ACTUALIZAR COSTOS FIN DE SEMANA
+    const handleUpdateFsCosts = (newCostsData) => {
+        return async () => {
             try {
-                // Realiza la solicitud PUT a tu API para actualizar los costos
-                const response = await serverApi.put(`/cost/kmsTable/1`, newCostsData);
+                await serverApi.put(`/cost/kmsTable/1`, newCostsData);
             } catch (error) {
-                console.error('Error al actualizar los costos:', error);
+                console.error('Error al actualizar los costos:');
+                console.log(error);
             }
         };
     };
 
+    //ACTUALIZAR COSTOS ENTRE SEMANA
     const handleUpdateEsCosts = (newCostsData) => {
         return async (dispatch) => {
             try {
@@ -64,19 +64,16 @@ export const useConfigStore = () => {
 
 
     return {
+        //* propiedades
         costsValue,
         costsValueWeekend,
-
-        editDay,
         editKms,
 
-        startLoadingCosts,
-        startLoadingEsCosts,
-        
-        handleUpdateCosts,
-        handleUpdateEsCosts,
-
-        handleToggleDayEstado,
+        //* metodos
         handleToggleKmsState,
+        handleUpdateFsCosts,
+        handleUpdateEsCosts,
+        startLoadingFsCosts,
+        startLoadingEsCosts,
     }
 }

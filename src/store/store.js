@@ -1,5 +1,5 @@
 import { configureStore,  } from "@reduxjs/toolkit";
-import { uiSlice, calendarSlice, authSlice, navBarSlice, configSlice, configExtraDaySlice } from "./";
+import { uiSlice, calendarSlice, authSlice, navBarSlice, configKmsTableSlice, configExtraDaySlice } from "./";
 
 export const store = configureStore({
     reducer: {
@@ -7,7 +7,7 @@ export const store = configureStore({
         calendar: calendarSlice.reducer,
         ui: uiSlice.reducer,
         navBar: navBarSlice.reducer,
-        config: configSlice.reducer,
+        configKmsTable: configKmsTableSlice.reducer,
         configExtraDay: configExtraDaySlice.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
