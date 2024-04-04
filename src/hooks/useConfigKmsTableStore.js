@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux"
 import { serverApi } from "../api"
-import { onEditKms, onLoadCostsSuccess, onLoadCostsEsSuccess } from "../store"
+import { onEditKms, onLoadCostsSuccess, onLoadCostsEsSuccess, onLoadTotalSumKmsTableEs, onLoadTotalSumKmsTableFs } from "../store"
 
 
-export const useConfigStore = () => {
+export const useConfigKmsTableStore = () => {
 
-    const { editKms } = useSelector(state => state.configKmsTable)
+    const { editKms, totalKmsEs, totalKmsFs } = useSelector(state => state.configKmsTable)
     const costsValue = useSelector((state) => state.configKmsTable.costos); //array
     const costsValueWeekend = useSelector((state) => state.configKmsTable.costosFinSemana); //array
 
@@ -14,11 +14,43 @@ export const useConfigStore = () => {
     // CAMBIAR ESTADO DEL MODO EDITABLE
     const handleToggleKmsState = () => dispatch(onEditKms())
 
+    // OBTENER SUMA TOTAL DE KMS ENTRE SEMANA
+    const sumaCostoKmsTableEs = () => {
+
+        const { gasoline, salary, booths, maintenance, utility } = costsValue
+
+        try {
+            let suma = gasoline + salary + booths + maintenance + utility
+            // console.log(suma);
+
+            dispatch(onLoadTotalSumKmsTableEs(suma));
+        } catch (error) {
+            console.log('Error cargando total Entre semana');
+            console.log(error);
+        }
+    };
+
+    // OBTENER SUMA TOTAL DE KMS FIN DE SEMANA
+    const sumaCostoKmsTableFs = () => {
+
+        const { gasoline, salary, booths, maintenance, utility } = costsValueWeekend
+
+        try {
+            let suma = gasoline + salary + booths + maintenance + utility
+            // console.log(suma);
+
+            dispatch(onLoadTotalSumKmsTableFs(suma));
+        } catch (error) {
+            console.log('Error cargando total Entre semana');
+            console.log(error);
+        }
+    };
+
     // OBTENER COSTOS KMS TABLA FIN DE SEMANA
     const startLoadingFsCosts = async () => {
         try {
             const { data } = await serverApi.get('/cost/kmsTable');
-            const costesFs = data.costesKms[0];
+            const costesFs = data.costesKms[1];
             dispatch(onLoadCostsSuccess(costesFs)); // Pasar los datos cargados al estado
         } catch (error) {
             console.log('Error cargando costos:');
@@ -30,7 +62,7 @@ export const useConfigStore = () => {
     const startLoadingEsCosts = async () => {
         try {
             const { data } = await serverApi.get('/cost/kmsTable');
-            const costesEs = data.costesKms[1];
+            const costesEs = data.costesKms[0];
             dispatch(onLoadCostsEsSuccess(costesEs)); // Pasar los datos cargados al estado
         } catch (error) {
             console.log('Error cargando costos:');
@@ -42,7 +74,9 @@ export const useConfigStore = () => {
     const handleUpdateFsCosts = (newCostsData) => {
         return async () => {
             try {
-                await serverApi.put(`/cost/kmsTable/1`, newCostsData);
+                await serverApi.put(`/cost/kmsTable/2`, newCostsData);
+                startLoadingFsCosts()
+
             } catch (error) {
                 console.error('Error al actualizar los costos:');
                 console.log(error);
@@ -52,10 +86,11 @@ export const useConfigStore = () => {
 
     //ACTUALIZAR COSTOS ENTRE SEMANA
     const handleUpdateEsCosts = (newCostsData) => {
-        return async (dispatch) => {
+        return async () => {
             try {
                 // Realiza la solicitud PUT a tu API para actualizar los costos
-                const response = await serverApi.put(`/cost/kmsTable/2`, newCostsData);
+                await serverApi.put(`/cost/kmsTable/1`, newCostsData);
+                startLoadingEsCosts()
             } catch (error) {
                 console.error('Error al actualizar los costos:', error);
             }
@@ -68,8 +103,12 @@ export const useConfigStore = () => {
         costsValue,
         costsValueWeekend,
         editKms,
+        totalKmsEs,
+        totalKmsFs,
 
         //* metodos
+        sumaCostoKmsTableEs,
+        sumaCostoKmsTableFs,
         handleToggleKmsState,
         handleUpdateFsCosts,
         handleUpdateEsCosts,

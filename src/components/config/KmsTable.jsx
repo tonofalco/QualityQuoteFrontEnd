@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useConfigStore } from '../../hooks';
+import { useConfigKmsTableStore } from '../../hooks';
 import { destinations } from '../../helpers';
 
 
 export const KmsTable = ({ costsValue, costsValueWeekend }) => {
 
     const dispatch = useDispatch();
-    const { editKms, handleToggleKmsState, handleUpdateFsCosts, handleUpdateEsCosts } = useConfigStore();
+    const { editKms, handleToggleKmsState, handleUpdateFsCosts, handleUpdateEsCosts, sumaCostoKmsTableEs, sumaCostoKmsTableFs, totalKmsEs, totalKmsFs } = useConfigKmsTableStore();
 
     const [formValues, setFormValues] = useState({
         es: {
@@ -63,25 +63,26 @@ export const KmsTable = ({ costsValue, costsValueWeekend }) => {
         if (costsValueWeekend !== null) {
             setFormValues(prevState => ({
                 ...prevState,
-                es: { ...costsValueWeekend }
+                fs: { ...costsValueWeekend }
             }));
+            sumaCostoKmsTableFs()
         }
 
         if (costsValue !== null) {
             setFormValues(prevState => ({
                 ...prevState,
-                fs: { ...costsValue }
+                es: { ...costsValue }
             }));
+            sumaCostoKmsTableEs()
         }
+
     }, [costsValue, costsValueWeekend]);
 
     const directCostFs = (fs.gasoline + fs.salary + fs.booths);
     const totalCostFs = (directCostFs + fs.maintenance);
-    const rentPriceFs = totalCostFs + fs.utility;
 
     const directCostEs = es.gasoline + es.salary + es.booths;
     const totalCostEs = (directCostEs + es.maintenance);
-    const rentPriceEs = totalCostEs + es.utility;;
 
     return (
         <>
@@ -89,325 +90,327 @@ export const KmsTable = ({ costsValue, costsValueWeekend }) => {
                 <div className="row">
                     <div className="col-12">
                         <h3 className='mt-3'>Tabla KMS</h3>
-                        <span></span>
+                        {/* <span></span> */}
                         <div className='table-wrapper'>
-                            <table className="table table-striped table-hover text-center">
-                                <thead className='sticky-header'>
-                                    {/* Entre semana */}
-                                    <tr>
-                                        <th colSpan="1">Entre semana</th>
-                                        <th></th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{es.gasoline}</span>
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="gasoline"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="gasoline"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={es.gasoline}
-                                                            onChange={onInputChangedEs}
-                                                        />
+                            <table className="table table-striped text-center ">
+                                
+                                    <thead className='sticky-header'>
+                                        {/* Entre semana */}
+                                        <tr className=''>
+                                            <th colSpan="1">Entre semana</th>
+                                            <th></th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{es.gasoline}</span>
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="gasoline"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="gasoline"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={es.gasoline}
+                                                                onChange={onInputChangedEs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{es.salary}</span>
+                                                )}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{es.salary}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="salary"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="salary"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={es.salary}
-                                                            onChange={onInputChangedEs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="salary"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="salary"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={es.salary}
+                                                                onChange={onInputChangedEs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th scope='col'>
+                                                )}
+                                            </th>
+                                            <th scope='col'>
 
-                                            {editKms ? (
-                                                <span>{es.booths}</span>
+                                                {editKms ? (
+                                                    <span>{es.booths}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="booths"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="booths"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={es.booths}
-                                                            onChange={onInputChangedEs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="booths"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="booths"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={es.booths}
+                                                                onChange={onInputChangedEs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th>
-                                            {directCostEs}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{es.maintenance}</span>
+                                                )}
+                                            </th>
+                                            <th>
+                                                {directCostEs}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{es.maintenance}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="maintenance"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="maintenance"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={es.maintenance}
-                                                            onChange={onInputChangedEs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="maintenance"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="maintenance"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={es.maintenance}
+                                                                onChange={onInputChangedEs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th>
-                                            {totalCostEs}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{es.utility}</span>
+                                                )}
+                                            </th>
+                                            <th>
+                                                {totalCostEs}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{es.utility}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="utility"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="utility"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={es.utility}
-                                                            onChange={onInputChangedEs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="utility"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="utility"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={es.utility}
+                                                                onChange={onInputChangedEs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{es.supplement}</span>
+                                                )}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{es.supplement}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="supplement"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="supplement"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={es.supplement}
-                                                            onChange={onInputChangedEs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="supplement"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="supplement"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={es.supplement}
+                                                                onChange={onInputChangedEs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th>
-                                            {rentPriceEs}
-                                        </th>
-                                        <th>{/* Espacio en blanco */}</th>
-                                    </tr>
-                                    {/* fin de semana */}
-                                    <tr>
-                                        <th colSpan="1">Fin de semana</th>
-                                        <th></th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{fs.gasoline}</span>
+                                                )}
+                                            </th>
+                                            <th>
+                                                {totalKmsEs}
+                                            </th>
+                                            <th>{/* Espacio en blanco */}</th>
+                                        </tr>
+                                        {/* fin de semana */}
+                                        <tr className=''>
+                                            <th colSpan="1">Fin de semana</th>
+                                            <th></th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{fs.gasoline}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="gasoline"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="gasoline"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={fs.gasoline}
-                                                            onChange={onInputChangedFs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="gasoline"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="gasoline"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={fs.gasoline}
+                                                                onChange={onInputChangedFs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{fs.salary}</span>
+                                                )}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{fs.salary}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="salary"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="salary"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={fs.salary}
-                                                            onChange={onInputChangedFs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="salary"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="salary"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={fs.salary}
+                                                                onChange={onInputChangedFs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{fs.booths}</span>
+                                                )}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{fs.booths}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="booths"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="booths"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={fs.booths}
-                                                            onChange={onInputChangedFs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="booths"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="booths"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={fs.booths}
+                                                                onChange={onInputChangedFs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th>
-                                            {directCostFs}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{fs.maintenance}</span>
+                                                )}
+                                            </th>
+                                            <th>
+                                                {directCostFs}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{fs.maintenance}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="maintenance"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="maintenance"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={fs.maintenance}
-                                                            onChange={onInputChangedFs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="maintenance"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="maintenance"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={fs.maintenance}
+                                                                onChange={onInputChangedFs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th>
-                                            {totalCostFs}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{fs.utility}</span>
+                                                )}
+                                            </th>
+                                            <th>
+                                                {totalCostFs}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{fs.utility}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="utility"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="utility"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={fs.utility}
-                                                            onChange={onInputChangedFs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="utility"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="utility"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={fs.utility}
+                                                                onChange={onInputChangedFs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th scope='col'>
-                                            {editKms ? (
-                                                <span>{fs.supplement}</span>
+                                                )}
+                                            </th>
+                                            <th scope='col'>
+                                                {editKms ? (
+                                                    <span>{fs.supplement}</span>
 
-                                            ) : (
-                                                <div className='d-flex justify-content-center'>
-                                                    <div style={{ width: '65px' }} className='input-group'>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="supplement"
-                                                            className="form-control d-inline-block w-auto text-center"
-                                                            name="supplement"
-                                                            autoComplete="off"
-                                                            step="any"
-                                                            value={fs.supplement}
-                                                            onChange={onInputChangedFs}
-                                                        />
+                                                ) : (
+                                                    <div className='d-flex justify-content-center'>
+                                                        <div style={{ width: '65px' }} className='input-group'>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="supplement"
+                                                                className="form-control d-inline-block w-auto text-center"
+                                                                name="supplement"
+                                                                autoComplete="off"
+                                                                step="any"
+                                                                value={fs.supplement}
+                                                                onChange={onInputChangedFs}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </th>
-                                        <th>
-                                            {rentPriceFs}
-                                        </th>
-                                        <th scope='col' className='d-flex justify-content-end'>
-                                            {editKms ? (
-                                                <button
-                                                    type='submit'
-                                                    className="btn btn-primary"
-                                                    onClick={handleToggleKmsState}
-                                                > Editar
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    type='button'
-                                                    className="btn btn-success"
-                                                    onClick={handleToggleKmsState}>
-                                                    Guardar
-                                                </button>
-                                            )}
-                                        </th>
-                                    </tr>
-                                    {/* Titulo de tabla */}
-                                    <tr className='table-dark'>
-                                        <th scope="col ">Destino</th>
-                                        <th scope="col">kms</th>
-                                        <th scope="col">Gasolina</th>
+                                                )}
+                                            </th>
+                                            <th>
+                                                {totalKmsFs}
+                                            </th>
+                                            <th scope='col' className='d-flex justify-content-end'>
+                                                {editKms ? (
+                                                    <button
+                                                        type='submit'
+                                                        className="btn btn-primary"
+                                                        onClick={handleToggleKmsState}
+                                                    > Editar
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        type='button'
+                                                        className="btn btn-success"
+                                                        onClick={handleToggleKmsState}>
+                                                        Guardar
+                                                    </button>
+                                                )}
+                                            </th>
+                                        </tr>
+                                        {/* Titulo de tabla */}
+                                        <tr className='table-dark'>
+                                            <th scope="col ">Destino</th>
+                                            <th scope="col">kms</th>
+                                            <th scope="col">Gasolina</th>
 
-                                        <th scope="col">Sueldo</th>
-                                        <th scope="col">Casetas</th>
-                                        <th scope="col" className='bg-secondary'>Costo directo</th>
-                                        <th scope="col">Mantenimiento</th>
-                                        <th scope="col" className='bg-secondary'>Costo total</th>
-                                        <th scope="col">Utilidad</th>
-                                        <th scope="col">Sup. cercano</th>
-                                        <th scope="col" className='bg-success'>Precio renta</th>
-                                        <th scope="col" className='bg-info'>precio pax</th>
-                                    </tr>
-                                </thead>
+                                            <th scope="col">Sueldo</th>
+                                            <th scope="col">Casetas</th>
+                                            <th scope="col" className='bg-secondary'>Costo directo</th>
+                                            <th scope="col">Mantenimiento</th>
+                                            <th scope="col" className='bg-secondary'>Costo total</th>
+                                            <th scope="col">Utilidad</th>
+                                            <th scope="col">Sup. cercano</th>
+                                            <th scope="col" className='bg-success'>Precio renta</th>
+                                            <th scope="col" className='bg-info'>precio pax</th>
+                                        </tr>
+                                    </thead>
+
                                 {/* datos de la tabla */}
                                 <tbody>
                                     {destinations.map((destino, index) => (
@@ -423,12 +426,12 @@ export const KmsTable = ({ costsValue, costsValueWeekend }) => {
                                             <td>{Math.round(destino.kms * es.utility)}</td>
                                             <td>{destino.kms <= 400 ? Math.round(destino.kms * es.supplement) : 0}</td>
                                             <td className='bg-success'>{destino.kms <= 400
-                                                ? Math.round(destino.kms * (rentPriceFs + es.supplement))
-                                                : Math.round(destino.kms * rentPriceFs)}
+                                                ? Math.round(destino.kms * (totalKmsEs + es.supplement))
+                                                : Math.round(destino.kms * totalKmsEs)}
                                             </td>
                                             <td className='bg-info'>{destino.kms <= 400
-                                                ? Math.round((destino.kms * (rentPriceFs + es.supplement)) / 14)
-                                                : Math.round((destino.kms * rentPriceFs) / 14)}
+                                                ? Math.round((destino.kms * (totalKmsEs + es.supplement)) / 14)
+                                                : Math.round((destino.kms * totalKmsEs) / 14)}
                                             </td>
                                         </tr>
                                     ))}

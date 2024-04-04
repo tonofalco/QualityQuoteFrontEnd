@@ -4,14 +4,14 @@ import { eachDayOfInterval, getDay } from 'date-fns';
 import { AppProvider } from '../../context/AppContext';
 import { MapBox, RoutesCalculator, GoogleMaps } from '../';
 import Swal from 'sweetalert2'
-import { useConfigStore } from '../../hooks';
+import { useConfigKmsTableStore } from '../../hooks';
 
 
 const libraries = ['places'];
 
 export const Map = () => {
 
-    const { costsValue, costsValueWeekend, startLoadingCosts, startLoadingEsCosts, loading } = useConfigStore();
+    const { costsValue, costsValueWeekend, startLoadingFsCosts, startLoadingEsCosts, loading } = useConfigKmsTableStore();
 
     const [mapKey, setMapKey] = useState(0); // Nuevo estado mapKey
     const [directionsResponse, setDirectionsResponse] = useState(null);
@@ -41,7 +41,7 @@ export const Map = () => {
             const fetchData = async () => {
                 setIsLoading(true);
                 await Promise.all([
-                    startLoadingCosts(),
+                    startLoadingFsCosts(),
                     startLoadingEsCosts()
                 ]);
             };

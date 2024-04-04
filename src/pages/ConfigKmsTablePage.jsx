@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
 import { NavBar, SideBar, KmsTable, OverlayWhole } from "../components"
-import { useActiveBar, useConfigStore } from "../hooks"
+import { useActiveBar, useConfigKmsTableStore } from "../hooks"
 
 export const ConfigKmsTablePage = () => {
 
 
     const { stateNavBar } = useActiveBar()
-    const { startLoadingFsCosts, startLoadingEsCosts, costsValue, costsValueWeekend } = useConfigStore();
+    const { startLoadingFsCosts, startLoadingEsCosts, costsValue, costsValueWeekend } = useConfigKmsTableStore();
 
     const [isLoading, setIsLoading] = useState(false);
 

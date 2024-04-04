@@ -9,7 +9,8 @@
     color: #6c757d;
 } */
 
-.btn:hover, .icon_font:hover {
+.btn:hover,
+.icon_font:hover {
     opacity: 0.8;
     cursor: pointer;
     color: #6c757d;
@@ -17,21 +18,24 @@
 
 .table-wrapper {
     overflow: auto;
-    max-height: 790px;
+    max-height: calc(100vh - 180px);
     /* Ajusta la altura máxima según tus necesidades */
 }
 
 .table-wrapper table {
     width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
+    border-spacing: -10 !important;
+    border-collapse: collapse !important;
+    
 }
+
+
 
 .table-wrapper thead {
     position: sticky;
     top: 0;
-    z-index: 1;
-    background-color: #fff;
+    z-index: 1; /* Ajusta el z-index según sea necesario */
+    background-color: #fff !important;
 }
 
 /* MODAL USERS */

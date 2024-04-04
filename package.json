@@ -13,7 +13,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.12",
-    "@react-google-maps/api": "^2.18.1",
+    "@react-google-maps/api": "^2.19.3",
     "@react-pdf/renderer": "^3.3.4",
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "^1.1.2",

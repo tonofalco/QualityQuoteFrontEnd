@@ -23,7 +23,7 @@ export const useConfigExtraDayStore = () => {
         try {
             let suma = 0
             costs_extraDay.forEach(cost => {
-                suma += cost.valueEs;
+                suma += cost.valueEs
             });
 
             // console.log(suma);

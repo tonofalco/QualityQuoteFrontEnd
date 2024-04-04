@@ -5,10 +5,10 @@ export const configKmsTableSlice = createSlice({
     initialState: {
         //estado
         editKms: true,
-
+        totalKmsEs: 0,
+        totalKmsFs: 0,
         costos: null, // Inicializa como null 
         costosFinSemana: null,
-
 
     },
     reducers: {
@@ -16,12 +16,18 @@ export const configKmsTableSlice = createSlice({
             state.editKms = !state.editKms;
         },
         onLoadCostsSuccess: (state, { payload }) => {
-            state.costos = payload;
+            state.costosFinSemana = payload;
             // state.loading = false; // Indicar que la carga ha finalizado
         },
         onLoadCostsEsSuccess: (state, { payload }) => {
-            state.costosFinSemana = payload;
+            state.costos = payload;
             // state.loading = false; // Indicar que la carga ha finalizado
+        },
+        onLoadTotalSumKmsTableEs: (state, { payload }) => {
+            state.totalKmsEs = payload;
+        },
+        onLoadTotalSumKmsTableFs: (state, { payload }) => {
+            state.totalKmsFs = payload;
         },
 
         onUpdateCostValue: (state, action) => {
@@ -35,9 +41,11 @@ export const configKmsTableSlice = createSlice({
 // Exporta el reducer
 export const {
     onEditKms,
-    onUpdateCostValue,
     onLoadCostsSuccess,
     onLoadCostsEsSuccess,
+    onLoadTotalSumKmsTableEs,
+    onLoadTotalSumKmsTableFs,
+    onUpdateCostValue,
 } = configKmsTableSlice.actions;
 
 // Exporta el initialState

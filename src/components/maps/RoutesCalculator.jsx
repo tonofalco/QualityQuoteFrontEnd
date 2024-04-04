@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useConfigExtraDayStore, useConfigStore } from '../../hooks';
+import { useConfigExtraDayStore, useConfigKmsTableStore } from '../../hooks';
 import Accordion from 'react-bootstrap/Accordion';
 
 
@@ -9,7 +9,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
     const [multi, setMulti] = useState(2);
     const [isChecked, setIsChecked] = useState(true);
 
-    const { costsValue, costsValueWeekend } = useConfigStore();
+    const { costsValue, costsValueWeekend } = useConfigKmsTableStore();
     const {totalEs, totalFs} = useConfigExtraDayStore()
     
     const { gasoline, salary, booths, maintenance, utility, supplement } = costsValue
