@@ -6,7 +6,8 @@ export const useUiStore = () => {
 
     const dispatch = useDispatch()
 
-    const { isDateModalOpen, isModalViewOpen } = useSelector(state => state.ui)
+    const { isDateModalOpen, isModalViewOpen, customStyles } = useSelector(state => state.ui)
+
 
     const openDateModal = () => {
         dispatch(onOpenDateModal())
@@ -40,6 +41,7 @@ export const useUiStore = () => {
         //* propiedades
         isDateModalOpen,
         isModalViewOpen,
+        customStyles,
         
         //* metodos
         openDateModal,

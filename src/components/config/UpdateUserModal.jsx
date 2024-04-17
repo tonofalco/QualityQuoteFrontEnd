@@ -1,24 +1,14 @@
 import { useEffect, useState } from "react"
-import { useAuthStore, useForm } from "../../hooks"
-import Swal from 'sweetalert2';
 import Modal from 'react-modal'
+import Swal from 'sweetalert2';
 
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-};
+import { useAuthStore, useForm, useUiStore } from "../../hooks"
 
 
 export const UpdateUserModal = ({ show2, toggleModalUpdate }) => {
 
     const { activeUser, updateUser } = useAuthStore();
-
+    const { customStyles } = useUiStore()
 
     const [selectUser, setSelectUser] = useState({
         updateName: '',

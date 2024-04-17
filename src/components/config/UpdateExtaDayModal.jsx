@@ -1,20 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useConfigExtraDayStore, useForm } from '../../hooks';
-
 import Modal from 'react-modal'
 import Swal from 'sweetalert2';
 
+import { useConfigExtraDayStore, useForm, useUiStore } from '../../hooks';
 
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-};
 
 export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
 
@@ -25,6 +14,8 @@ export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
     })
 
     const { activeCost, updateCostExtraDay } = useConfigExtraDayStore()
+    const { customStyles } = useUiStore()
+
 
     const { updateCost, updateValueEs, updateValueFs, onInputChange: onUpdateInputChange } = useForm(selectCost)
 
@@ -75,7 +66,6 @@ export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
 
     return (
         <>
-        {/* <h1>modal actualizar costo</h1> */}
         {/* MODAL ACTUALIZAR USUARIO */}
         <Modal
                 isOpen={show2}

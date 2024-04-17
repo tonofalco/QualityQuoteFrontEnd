@@ -1,19 +1,8 @@
-import { useEffect, useState } from "react"
-import { useAuthStore, useForm } from "../../hooks"
-import Swal from 'sweetalert2';
 import Modal from 'react-modal'
+import Swal from 'sweetalert2';
 
+import { useAuthStore, useForm, useUiStore } from "../../hooks"
 
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-};
 
 const registerFormFields = {
     registerName: '',
@@ -26,10 +15,11 @@ const registerFormFields = {
 export const CreateUserModal = ({ show, toggleModalCreate }) => {
 
     const {startRegister} = useAuthStore();
+    const { customStyles } = useUiStore()
 
     const { registerName, registerEmail, registerRole, registerPassword, registerPassword2, onInputChange: onRegisterInputChange } = useForm(registerFormFields)
 
-
+    //Funcion para validar campos
     const areFieldsFilledCreate = () => {
         return (
             registerName.trim() !== '' &&
@@ -40,6 +30,7 @@ export const CreateUserModal = ({ show, toggleModalCreate }) => {
         );
     };
 
+    //Funcion para agregar un nuevo usuario
     const handleRegisterUser = async (e) => {
         e.preventDefault();
         if (!areFieldsFilledCreate()) {
@@ -69,8 +60,6 @@ export const CreateUserModal = ({ show, toggleModalCreate }) => {
             });
         }
     };
-
-
 
     const rolOptions = ['user', 'admin'];
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

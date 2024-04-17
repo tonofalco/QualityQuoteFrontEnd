@@ -195,6 +195,9 @@ export const Map = () => {
 
                             <div className="col-sm-4 col-12">
                                 <RoutesCalculator
+                                    sourceRef={sourceRef}
+                                    destinationRef={destinationRef}
+                                    stops={stops}
                                     distance={distance}
                                     duration={time}
                                     directionsResponse={directionsResponse}

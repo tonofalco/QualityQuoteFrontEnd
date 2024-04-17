@@ -17,9 +17,10 @@ export const ConfigUsersPage = () => {
                     <NavBar />
                     {!stateNavBar
                         ? (
-                            <div>
-                                <h1 className="mt-2">CONFIGURACION</h1>
-                                <hr />
+                            <div className="container">
+                                <h6 className="mt-2 text-secondary">USUARIOS Y ROLES</h6>
+                            <hr />
+
                                 <AdminUsers />
                             </div>
                         ) : (
@@ -27,13 +28,6 @@ export const ConfigUsersPage = () => {
                                 <OverlayWhole />
                             </div>
                         )}
-
-                    {/* <div className={`ms-3 cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
-                        <h1 className="mt-2">CONFIGURACION</h1>
-                        <hr />
-                        <AdminUsers />
-                    </div> */}
-
                 </div>
 
             </div>

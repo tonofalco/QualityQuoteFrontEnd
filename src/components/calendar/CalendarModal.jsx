@@ -57,6 +57,16 @@ export const CalendarModal = () => {
 
     const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, price, advance } = formValues
 
+
+    const namePDF = nameClient.split(' ')[1] ? `${nameClient.split(' ')[0]}_${nameClient.split(' ')[1]}` : `${nameClient.split(' ')[0]}`
+    const destinationPDF = destination.split(' ')[1] ? `${destination.split(' ')[0]}_${destination.split(' ')[1]}` : `${destination.split(' ')[0]}`
+    
+
+    const fileName = `${namePDF} - ${transport} - ${destinationPDF} - ${start.toLocaleDateString()}`
+
+    // console.log(fileName);
+
+
     useEffect(() => {
 
         if (activeEvent !== null) {
@@ -301,6 +311,7 @@ export const CalendarModal = () => {
                                 showTimeSelect
                                 locale='es'
                                 timeCaption='Hora'
+                                timeIntervals={15}
                             />
                         </div>
                     </div>
@@ -317,6 +328,7 @@ export const CalendarModal = () => {
                                 showTimeSelect
                                 locale='es'
                                 timeCaption='Hora'
+                                timeIntervals={15}
                             />
                         </div>
                     </div>
@@ -406,8 +418,8 @@ export const CalendarModal = () => {
                         <hr />
                         <span className="col-12 mb-3"><b>Salida:&nbsp;</b>{departure}</span>
                         <span className="col-12 mb-3"><b>Destino:&nbsp;</b>{destination}</span>
-                        <span className="col-12 mb-3"><b>Fecha y hora salida:&nbsp;</b>{start.toLocaleString()}</span>
-                        <span className="col-12 mb-3"><b>Fecha y hora salida:&nbsp;</b>{end.toLocaleString()}</span>
+                        <span className="col-12 mb-3"><b>Fecha y hora de salida:&nbsp;</b>{start.toLocaleString()}</span>
+                        <span className="col-12 mb-3"><b>Fecha y hora de regreso:&nbsp;</b>{end.toLocaleString()}</span>
                         <span className="col-12"><b>Nota:&nbsp;</b>{notes}</span>
                         <hr />
                         <span className="col-6 mb-3"><b>Precio:&nbsp;</b>{formattedPrice}</span>
@@ -446,7 +458,7 @@ export const CalendarModal = () => {
                                             price={formattedPrice}
                                             advance={formattedAdvance}
                                             due={formattedDue}
-                                        />} fileName='Contrato Terrestre VQ.pdf'>
+                                        />} fileName={fileName}>
                                     {({ loading }) => loading
                                         ? (<button className="btn btn-outline-primary" disabled>Cargando</button>)
                                         : (<button className="btn btn-outline-primary">Descargar PDF</button>)

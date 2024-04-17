@@ -4,14 +4,14 @@ import Accordion from 'react-bootstrap/Accordion';
 
 
 
-export const RoutesCalculator = ({ distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms }) => {
+export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms }) => {
 
     const [multi, setMulti] = useState(2);
     const [isChecked, setIsChecked] = useState(true);
 
     const { costsValue, costsValueWeekend } = useConfigKmsTableStore();
-    const {totalEs, totalFs} = useConfigExtraDayStore()
-    
+    const { totalEs, totalFs } = useConfigExtraDayStore()
+
     const { gasoline, salary, booths, maintenance, utility, supplement } = costsValue
     const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = costsValueWeekend
 
@@ -42,7 +42,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
 
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 14
-    const costoTotal = ( distancia * multKmsValue)
+    const costoTotal = (distancia * multKmsValue)
     const precioTotal = Math.round(parseFloat(costoTotal) + parseFloat(totalDiasCosto))
     const formattedPrecioTotal = parseFloat(precioTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
     const precioUnitatio = (precioTotal / plazas)
@@ -82,9 +82,9 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                     Calcular kms * 2
                                 </label>
                             </div>
-                            <div><b>Distancia: </b> {distancia} kms</div>
+                            {/* <div><b>Distancia: </b> {distancia} kms</div>
                             <div><b>Duracion: </b> {duration}</div>
-                            <div><b>Dias: </b>{totalDays}</div>
+                            <div><b>Dias: </b>{totalDays}</div> */}
                         </div>
                         <hr />
 
@@ -102,13 +102,13 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                 <tr>
                                     <th scope="row">{plazas}</th>
                                     <td>Van</td>
-                                    <td>{formattedPrecioTotal}</td>
+                                    <td className='bg-success text-light'>{formattedPrecioTotal}</td>
                                     <td>{formattedPrecioUnitario}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{plazasSpt}</th>
                                     <td>Sprinter</td>
-                                    <td>{formattedPrecioTotalSpt}</td>
+                                    <td className='bg-success text-light'>{formattedPrecioTotalSpt}</td>
                                     <td>{formattedPrecioUnitarioSpt}</td>
                                 </tr>
                             </tbody>
@@ -118,6 +118,35 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                         {/* DESGLOSE DE OPERACIONES*/}
                         <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="0">
+                                <Accordion.Header>INFORMACION GENERAL</Accordion.Header>
+                                <Accordion.Body style={{ padding: 0 }}>
+                                    <br />
+                                    <div className="row mx-1 ">
+                                        <div className="col-12">
+                                            <span><b>Distancia: </b> {distancia} kms</span><br />
+                                            <span><b>Duracion: </b> {duration}</span><br />
+                                            <span><b>Dias: </b>{totalDays}</span><br /><br />
+                                        </div>
+                                    </div>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey="1">
+                                <Accordion.Header>RUTA CALCULADA</Accordion.Header>
+                                <Accordion.Body style={{ padding: 0 }}>
+                                    <br />
+                                    <div className="row mx-1 ">
+                                        <div className="col-12">
+                                            <ol className='list-group list-group-numbered'>
+                                                <li className='list-group-item'>{sourceRef.current.value}</li>
+                                                {stops.map(stop => <li className='list-group-item'>{stop}</li>)}
+                                                <li className='list-group-item'>{destinationRef.current.value}</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                    <br />
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey="2">
                                 <Accordion.Header>DESGLOSE DE OPERACIONES</Accordion.Header>
                                 <Accordion.Body style={{ padding: 0 }}>
                                     <br />
@@ -178,6 +207,7 @@ export const RoutesCalculator = ({ distance, duration, directionsResponse, total
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>
+
                         </Accordion>
 
                     </div>

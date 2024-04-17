@@ -69,10 +69,11 @@ export const MapBox = (
                             />
                             <div className="input-group-append">
                                 <button
-                                    type="button"
+                                    type="submit"
                                     className="btn btn-success"
                                     onClick={() => {
-                                        addStop();
+                                        addStop()
+                                        // calculateRoute() // Llama a la segunda función después de la primera
                                     }}
                                 ><i className="fa-solid fa-plus"></i>
                                 </button>
@@ -86,10 +87,12 @@ export const MapBox = (
                             <li key={index} className="d-flex justify-content-between align-items-center my-2">
 
                                 <span className='hidden-text'>{stop}</span>
-                                <button className="btn btn-danger"
+                                <button
+                                    type="submit"
+                                    className="btn btn-danger"
                                     onClick={() => {
                                         removeStop(index);       // Llama a la primera función
-                                        clearRoute(); // Llama a la segunda función después de la primera
+                                        // calculateRoute(); // Llama a la segunda función después de la primera
                                     }} >
                                     <i className="fa-solid fa-minus"></i>
                                 </button>

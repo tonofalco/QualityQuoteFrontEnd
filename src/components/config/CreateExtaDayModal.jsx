@@ -1,19 +1,8 @@
-import { useConfigExtraDayStore, useForm } from '../../hooks';
-
 import Modal from 'react-modal'
 import Swal from 'sweetalert2';
 
+import { useConfigExtraDayStore, useForm, useUiStore } from '../../hooks';
 
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-};
 
 const registerFormFields = {
     registerCost: '',
@@ -22,12 +11,14 @@ const registerFormFields = {
 }
 
 
-export const CreateExtaDayModal = ({show, toggleModalCreate}) => {
+export const CreateExtaDayModal = ({ show, toggleModalCreate }) => {
 
-    const {  startRegisterCost } = useConfigExtraDayStore()
+    const { startRegisterCost } = useConfigExtraDayStore()
+    const { customStyles } = useUiStore()
+
 
     const { registerCost, registerValueEs, registerValueFs, onInputChange: onRegisterInputChange } = useForm(registerFormFields)
-    
+
     //Funcion para validar campos
     const areFormFieldsFilledCreate = () => {
         return (
@@ -63,7 +54,6 @@ export const CreateExtaDayModal = ({show, toggleModalCreate}) => {
 
     return (
         <>
-            {/* <h1>modal crear costo</h1> */}
             {/* MODAL CREAR USUARIO */}
             <Modal
                 isOpen={show}
