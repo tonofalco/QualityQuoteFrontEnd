@@ -18,6 +18,9 @@ export * from './config/UpdateUserModal'
 export * from './config/ConfigOptions'
 
 export * from './home/Home'
+export * from './home/General'
+export * from './home/CalendarList'
+
 
 export * from './maps/Map'
 export * from './maps/MapBox'

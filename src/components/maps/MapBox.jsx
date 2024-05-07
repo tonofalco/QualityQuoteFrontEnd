@@ -27,6 +27,11 @@ export const MapBox = (
         setMapKey
     }) => {
 
+    // console.log(startDate);
+    // console.log(stops.length);
+    // console.log(autocompleteRef);
+    // console.log(setMapKey);
+
     const clearRoute = () => {
         setDirectionsResponse(null);
         setDistance('');
@@ -34,10 +39,13 @@ export const MapBox = (
         setStartDate(null); // Reset start date
         setEndDate(null);   // Reset end date
         setStops([])
+        // autocompleteRef.current.setVal('');
         sourceRef.current.value = ''; // Clear source input
         destinationRef.current.value = ''; // Clear destination input
         setMapKey((prevKey) => prevKey + 1); // Incrementar mapKey para forzar el desmontaje y remontaje del componente GoogleMap
     };
+
+    const routesOptions = ['Chilpancingo de los Bravo'];
 
     registerLocale('es', es);
 
@@ -47,15 +55,24 @@ export const MapBox = (
 
                 <div className=' col-12'> {/* Ruta y fechas */}
                     <h5>Ruta del viaje</h5>
-                    <Autocomplete className='mb-3'>
-                        <input className='form-control' type='text' placeholder='Ingresa origen' ref={sourceRef} />
-                    </Autocomplete>
+                    {/* <Autocomplete className='mb-3'> */}
+                    <select
+                        type='text'
+                        className='form-select mb-3'
+                        placeholder='Ingresa origen'
+                        ref={sourceRef}
+                    ><option value="" disabled>Seleccione origen</option>
+                        {routesOptions.map((route) => (
+                            <option value={route} key={route}>{route}</option>
+                        ))}
+                    </select>
+                    {/* </Autocomplete> */}
 
                     <Autocomplete
                         onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
                         onPlaceSelected={(place) => {
-                            if (place.formatted_address) {
-                                setCurrentStop(place.formatted_address);
+                            if (place.name) {
+                                setCurrentStop(place.name);
                             }
                         }}
                     >
@@ -63,13 +80,14 @@ export const MapBox = (
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Parada (opcional)"
+                                placeholder="Ingrese una ruta"
                                 value={currentStop}
+                                // ref={autocompleteRef}
                                 onChange={(e) => setCurrentStop(e.target.value)}
                             />
                             <div className="input-group-append">
                                 <button
-                                    type="submit"
+                                    type={stops.length <= 1 ? "button" : "submit"}
                                     className="btn btn-success"
                                     onClick={() => {
                                         addStop()
@@ -81,7 +99,7 @@ export const MapBox = (
                         </div>
                     </Autocomplete>
 
-                    <ul className="border border-black rounded" style={{paddingLeft: 10 }}> {/* Lista de paradas */}
+                    <ul className="border border-black rounded" style={{ paddingLeft: 10 }}> {/* Lista de paradas */}
                         {stops.map((stop, index) => (
 
                             <li key={index} className="d-flex justify-content-between align-items-center my-2">
@@ -101,7 +119,17 @@ export const MapBox = (
                     </ul>
 
                     <Autocomplete>
-                        <input className='form-control mb-3' type='text' placeholder='Ingresa destino' ref={destinationRef} />
+                        {/* <input className='form-control mb-3' type='text' placeholder='Ingresa destino' ref={destinationRef} /> */}
+                        <select
+                            type='text'
+                            className='form-select mb-3'
+                            placeholder='Ingresa origen'
+                            ref={destinationRef}
+                        ><option value="" disabled>Seleccione destino</option>
+                            {routesOptions.map((route) => (
+                                <option value={route} key={route}>{route}</option>
+                            ))}
+                        </select>
                     </Autocomplete>
 
                     <hr />

@@ -1,38 +1,34 @@
-import { useState } from 'react';
-import { useConfigExtraDayStore, useConfigKmsTableStore } from '../../hooks';
+import { useEffect } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import { useConfigExtraDayStore, useConfigKmsTableStore } from '../../hooks';
+import { QuotePDF } from './QuotePDF';
 
 
 
-export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms }) => {
+export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms, startDate, endDate }) => {
 
-    const [multi, setMulti] = useState(2);
-    const [isChecked, setIsChecked] = useState(true);
+    // console.log(stops);
 
     const { costsValue, costsValueWeekend } = useConfigKmsTableStore();
-    const { totalEs, totalFs } = useConfigExtraDayStore()
+    const { sumaCostoDiaExtraEs, sumaCostoDiaExtraFs, totalEs, totalFs, costs_extraDay } = useConfigExtraDayStore()
 
     const { gasoline, salary, booths, maintenance, utility, supplement } = costsValue
     const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = costsValueWeekend
 
+    // Cargamos la informacion de los costos
+    useEffect(() => { sumaCostoDiaExtraEs(), sumaCostoDiaExtraFs() }, [costs_extraDay]);
 
+    const calcularCosto = (dias, costoPorDia) => (dias * costoPorDia) <= 0 ? 0 : (dias * costoPorDia);
+    const calcularKms = (gasoline, salary, maintenance, booths, utility, supplement) => distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
+    const currencyFormatMx = (value) => parseFloat(value).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-    const calcularCosto = (dias, costoPorDia) => {
-        let costo = (dias * costoPorDia);
-        return costo <= 0 ? 0 : costo;
-    };
-
-    const handleChangeMult = (event) => {
-        setIsChecked(event.target.checked);
-        setMulti(event.target.checked ? 2 : 1);
-    };
-
-    //CALCULO DISTANCIA FINAL
-    const distancia = Math.round(parseFloat(distance) * parseInt(multi))
+    //CALCULO DISTANCIA TOTAL 
+    const distancia = Math.round(parseFloat(distance))
 
     //CALCULO MULTKMS PRIMER DIA
-    const multKmsValueEs = distancia <= 400 ? gasolineEs + salaryEs + boothsEs + maintenanceEs + utilityEs + supplementEs : gasolineEs + salaryEs + maintenanceEs + boothsEs + utilityEs;
-    const multKmsValueFs = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
+    const multKmsValueEs = calcularKms(gasolineEs, salaryEs, boothsEs, maintenanceEs, utilityEs, supplementEs)
+    const multKmsValueFs = calcularKms(gasoline, salary, maintenance, booths, utility, supplement)
     const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
 
     //CALCULOS POR DIAS EXTRAS
@@ -41,20 +37,18 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
 
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
-    let plazas = 14
-    const costoTotal = (distancia * multKmsValue)
-    const precioTotal = Math.round(parseFloat(costoTotal) + parseFloat(totalDiasCosto))
-    const formattedPrecioTotal = parseFloat(precioTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    const precioUnitatio = (precioTotal / plazas)
-    const formattedPrecioUnitario = parseFloat(precioUnitatio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    let plazas = 15
+    const costoPrimerDia = (distancia * multKmsValue)
+    const precioFinal = Math.round(parseFloat(costoPrimerDia) + parseFloat(totalDiasCosto))
+    const formatMX_PrecioTotal = currencyFormatMx(precioFinal)
+    const formatMX_PrecioUnitario = currencyFormatMx(precioFinal / plazas)
 
     let plazasSpt = 18
     const multKmsSpt = multKmsValue + 3
     const costoTotalSpt = (distancia * multKmsSpt)
     const precioTotalSpt = Math.round(parseFloat(costoTotalSpt) + parseFloat(totalDiasCosto))
-    const formattedPrecioTotalSpt = parseFloat(precioTotalSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    const precioUnitatioSpt = (precioTotal / plazasSpt)
-    const formattedPrecioUnitarioSpt = parseFloat(precioUnitatioSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    const formatMX_PrecioTotalSpt = currencyFormatMx(precioTotalSpt)
+    const formatMX_PrecioUnitarioSpt = currencyFormatMx(precioTotalSpt / plazasSpt)
 
 
     return (
@@ -63,38 +57,15 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
 
                 {directionsResponse ? (
                     <div>
-                        <h2 className='text-center mt-3'>COTIZACION DEL VIAJE</h2>
-                        <br />
-
-                        {/* INFORMACION DEL VIAJE */}
-
-                        <div>
-                            <div className="form-check">
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    value=""
-                                    id="flexCheckIndeterminate"
-                                    checked={isChecked} // Asigna el valor del estado al atributo "checked" del checkbox
-                                    onChange={handleChangeMult} // Asigna el controlador de eventos al evento "onChange"
-                                />
-                                <label className="form-check-label" htmlFor="flexCheckIndeterminate">
-                                    Calcular kms * 2
-                                </label>
-                            </div>
-                            {/* <div><b>Distancia: </b> {distancia} kms</div>
-                            <div><b>Duracion: </b> {duration}</div>
-                            <div><b>Dias: </b>{totalDays}</div> */}
-                        </div>
                         <hr />
-
                         {/* PRECIOS FINALES */}
+                        <h4 className='text-muted'>PRECIOS ESTIMADOS:</h4>
                         <table className="table text-center">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Transporte</th>
-                                    <th scope="col">Total</th>
+                                    <th scope="col">Precio Final</th>
                                     <th scope="col">Pax</th>
                                 </tr>
                             </thead>
@@ -102,35 +73,30 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                 <tr>
                                     <th scope="row">{plazas}</th>
                                     <td>Van</td>
-                                    <td className='bg-success text-light'>{formattedPrecioTotal}</td>
-                                    <td>{formattedPrecioUnitario}</td>
+                                    <td className='bg-success text-light'><b>{formatMX_PrecioTotal}</b></td>
+                                    <td>{formatMX_PrecioUnitario}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{plazasSpt}</th>
                                     <td>Sprinter</td>
-                                    <td className='bg-success text-light'>{formattedPrecioTotalSpt}</td>
-                                    <td>{formattedPrecioUnitarioSpt}</td>
+                                    <td className='bg-success text-light'><b>{formatMX_PrecioTotalSpt}</b></td>
+                                    <td>{formatMX_PrecioUnitarioSpt}</td>
                                 </tr>
                             </tbody>
                         </table>
                         <hr />
-
-                        {/* DESGLOSE DE OPERACIONES*/}
+                        {/* INFORMACION GENERAL DEL VIAJE */}
+                        <h4 className='text-muted'>DATOS DE LA COTIZACION:</h4>
+                        <div className="row  mb-3">
+                            <div className="col-12">
+                                <span><b>Distancia total: </b>{distancia} kms</span><br />
+                                <span><b>Duracion del viaje: </b>{totalDays} d</span><br />
+                                <span><b>Tiempo total de manejo: </b>{duration}</span><br />
+                            </div>
+                        </div>
+                        {/* INFORMACION DESGLOSADA  DEL VIAJE */}
                         <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="0">
-                                <Accordion.Header>INFORMACION GENERAL</Accordion.Header>
-                                <Accordion.Body style={{ padding: 0 }}>
-                                    <br />
-                                    <div className="row mx-1 ">
-                                        <div className="col-12">
-                                            <span><b>Distancia: </b> {distancia} kms</span><br />
-                                            <span><b>Duracion: </b> {duration}</span><br />
-                                            <span><b>Dias: </b>{totalDays}</span><br /><br />
-                                        </div>
-                                    </div>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Accordion.Item eventKey="1">
                                 <Accordion.Header>RUTA CALCULADA</Accordion.Header>
                                 <Accordion.Body style={{ padding: 0 }}>
                                     <br />
@@ -138,27 +104,67 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                         <div className="col-12">
                                             <ol className='list-group list-group-numbered'>
                                                 <li className='list-group-item'>{sourceRef.current.value}</li>
-                                                {stops.map(stop => <li className='list-group-item'>{stop}</li>)}
+                                                {stops.map((stop, index) => <li key={index} className='list-group-item'>{stop}</li>)}
                                                 <li className='list-group-item'>{destinationRef.current.value}</li>
                                             </ol>
+
+                                            <div className='d-flex justify-content-end mt-3'>
+                                                <PDFDownloadLink
+                                                    document={
+                                                        <QuotePDF
+                                                            startDate={startDate}
+                                                            endDate={endDate}
+                                                            sourceRef={sourceRef.current.value} 
+                                                            stops={stops}
+                                                            destinationRef={destinationRef.current.value}
+                                                            precioVan={formatMX_PrecioTotal}
+                                                        />} fileName={'cotizacion xd'}>
+                                                    {({ loading }) => loading
+                                                        ? (<button className="btn btn-outline-primary" disabled>Cargando</button>)
+                                                        : (<button className="btn btn-outline-primary">Descargar PDF</button>)
+                                                    }
+                                                </PDFDownloadLink>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <br />
                                 </Accordion.Body>
                             </Accordion.Item>
-                            <Accordion.Item eventKey="2">
+                            <Accordion.Item eventKey="1">
                                 <Accordion.Header>DESGLOSE DE OPERACIONES</Accordion.Header>
                                 <Accordion.Body style={{ padding: 0 }}>
-                                    <br />
-                                    <div className="row mx-1 ">
+                                    <div className="row mx-0 my-1">
 
                                         <div className="col-6">
+                                            <span><b>Costes primer dia:</b></span><br />
+                                            <span className=''>- <i>Fin semana:</i> kms * {multKmsValueFs}</span><br />
+                                            <span className=''>- <i>Entre semana:</i> kms * {multKmsValueEs}</span><br />
+                                        </div>
+
+                                        <div className="col-6">
+                                            <span><b>Costes Dia extra:</b></span><br />
+                                            <span className=''>- <i>Entre semana</i>: ${totalEs}</span><br />
+                                            <span className=''>- <i>Fin de semana:</i> ${totalFs}</span>
+                                        </div>
+                                        <hr />
+                                        <div className="col-12">
+                                            <span><b>Dias extras entre semana:</b> {weekdaysCount} * {totalEs} = ${diasEntreSemanaCosto}</span><br />
+                                            <span><b>Dias extras entre semana:</b> {weekendCount} * {totalFs} = ${diasFinSemanaCosto}</span><br />
+                                            <span><b>Total dias extras:</b> {diasEntreSemanaCosto} + {diasFinSemanaCosto} = ${totalDiasCosto} </span>
+                                        </div>
+                                        <hr />
+                                        <div className="col-12">
+                                            <span><b>Formula:</b> (kms * mult) + dias</span><br />
+                                            <span><b>precio final Van:</b> {distancia} * {multKmsValueEs} = {costoPrimerDia} + {totalDiasCosto} = {formatMX_PrecioTotal}</span><br />
+                                            <span><b>precio final Spt:</b> {distancia} * {multKmsValueFs} = {costoTotalSpt} + {totalDiasCosto} = {formatMX_PrecioTotalSpt}</span>
+                                        </div>
+
+                                        {/* <div className="col-6">
                                             <div className="row">
                                                 <div className="col-12">
                                                     <p>
                                                         <b>Formula:</b>
-                                                        <br />
-                                                        kms * {multi}
                                                         <br />
                                                         (kms * mult) + dias
                                                     </p>
@@ -185,11 +191,11 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                                     <p>
                                                         <b>Van:</b>
                                                         <br />
-                                                        {distancia} * {multKmsValue} = {Math.round(costoTotal)}
+                                                        {distancia} * {multKmsValue} = {Math.round(costoPrimerDia)}
                                                         <br />
-                                                        {Math.round(costoTotal)} + {totalDiasCosto} = {formattedPrecioTotal}
+                                                        {Math.round(costoPrimerDia)} + {totalDiasCosto} = {formatMX_PrecioTotal}
                                                         <br />
-                                                        {precioTotal} / {plazas} = {formattedPrecioUnitario}
+                                                        {precioFinal} / {plazas} = {formatMX_PrecioUnitario}
                                                     </p>
                                                 </div>
                                                 <div className="col-12 mb-1">
@@ -197,17 +203,16 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                                     <br />
                                                     {distancia} * {multKmsSpt} = {Math.round(costoTotalSpt)}
                                                     <br />
-                                                    {Math.round(costoTotalSpt)} + {totalDiasCosto} = {formattedPrecioTotalSpt}
+                                                    {Math.round(costoTotalSpt)} + {totalDiasCosto} = {formatMX_PrecioTotalSpt}
                                                     <br />
-                                                    {precioTotal} / {plazasSpt} = {formattedPrecioUnitarioSpt}
+                                                    {precioFinal} / {plazasSpt} = {formatMX_PrecioUnitarioSpt}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>
-
                         </Accordion>
 
                     </div>

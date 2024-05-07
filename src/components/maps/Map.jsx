@@ -29,7 +29,7 @@ export const Map = () => {
 
     const sourceRef = useRef();
     const destinationRef = useRef();
-    const autocompleteRef = useRef(null);
+    const autocompleteRef = useRef();
 
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
@@ -49,19 +49,22 @@ export const Map = () => {
         }
     }, []);
 
+    // console.log(sourceRef);
+    // console.log(autocompleteRef);
+
     const addStop = () => {
         if (stops.length < 5) {
             if (autocompleteRef.current) {
                 const place = autocompleteRef.current.getPlace();
-                if (place && place.formatted_address) {
-                    setStops([...stops, place.formatted_address]);
-                    setCurrentStop(''); // Restablecer el campo de entrada
+                if (place && place.name) {
+                    setStops([...stops, place.name]); // Guarda solo el nombre del lugar
+                    setCurrentStop(''); // Restablece el campo de entrada
                 } else {
                     Swal.fire('Ingrese una parada válida', '', 'warning');
                 }
             }
         } else {
-            Swal.fire('Si desea cotizar mas de 1 parada porfavor comuniquese con un agente de ventas', '', 'warning');
+            Swal.fire('Si desea cotizar más de 1 parada, por favor comuníquese con un agente de ventas', '', 'warning');
         }
     };
 
@@ -205,6 +208,8 @@ export const Map = () => {
                                     weekdaysCount={weekdaysCount}
                                     weekendCount={weekendCount}
                                     multKms={multKms}
+                                    startDate={startDate}
+                                    endDate={endDate}
                                 />
                             </div>
                         </div>

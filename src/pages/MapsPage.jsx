@@ -1,10 +1,26 @@
-
+import { useState, useEffect } from "react";
 import { NavBar, SideBar, Map, OverlayWhole } from "../components";
-import { useActiveBar } from "../hooks";
+import { useActiveBar, useConfigExtraDayStore } from "../hooks";
 import '../styles/overlayShadow.css';
 
 export const MapsPage = () => {
   const { stateNavBar } = useActiveBar();
+
+  const { startLoadingCostsExtraDay } = useConfigExtraDayStore()
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+      if (!isLoading) {
+          const fetchData = async () => {
+              setIsLoading(true);
+              await Promise.all([
+                  startLoadingCostsExtraDay()
+              ]);
+          };
+          fetchData();
+      }
+  }, []);
 
   return (
     <>
