@@ -1,16 +1,12 @@
 import { Home, NavBar, SideBar } from "../components/"
 import { useActiveBar } from "../hooks"
 
-
-// import second from '../styles/overlayShadow.css'
+import '../styles/overlayShadow.css';
 
 
 
 export const HomePage = () => {
   const { stateNavBar } = useActiveBar()
-
-  const colMd10Active = window.innerWidth > 768;
-  const containerWidth = colMd10Active ? '87%' : '100%';
 
   return (
     <>
@@ -22,13 +18,24 @@ export const HomePage = () => {
 
         <div className="content_column">
           <NavBar />
-          <div className={` cuerpo ${stateNavBar == true ? 'overlay' : ''}`}>
+          {/* <div className={` cuerpo ${stateNavBar == true ? 'overlay' : ''}`}> */}
 
-            <Home />
-          </div>
+          {!stateNavBar
+            ? (
+              <div className="row">
+                <div className="col-12">
+                  <Home />
+                </div>
+              </div>
+            ) : (
+              <div className="overlay">
+                <OverlayWhole />
+              </div>
+            )}
+
         </div>
-
       </div>
+
     </>
   )
 }

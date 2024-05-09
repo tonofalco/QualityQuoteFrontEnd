@@ -4,18 +4,15 @@ import Tabs from 'react-bootstrap/Tabs';
 import { General } from './General';
 import { CalendarList } from './CalendarList';
 
-import { useAuthStore } from "../../hooks"
-
 
 export const Home = () => {
 
-    const { user } = useAuthStore()
 
     return (
         <>
-            <div className='content'>
-                <h3>DASHBOARD</h3>
-                <p><i>Bienvenido {user.name}</i></p>
+            <div className='container'>
+                <h3 className="mt-1">DASHBOARD</h3>
+                
                 <hr />
 
                 {/* distibucion de Pestañas */}

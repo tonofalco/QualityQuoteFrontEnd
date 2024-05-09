@@ -21,8 +21,6 @@ export const BigCalendar = () => {
 
         const isMyEvent = user && event.Usuario && (user.name === event.Usuario.name || user.name === event.user?.name);
         
-
-
         const style = {
             backgroundColor: isMyEvent ? '#347cf7' : '#465670',
             borderRadius: '0px',
@@ -45,7 +43,7 @@ export const BigCalendar = () => {
     const onSelect = (event) => {
         // console.log({ click: event })
         // console.log(user);
-        // console.log(event);
+        console.log(event);
         setActiveEvent(event)
     }
 

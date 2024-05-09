@@ -23,6 +23,7 @@ const customStyles = {
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
+        maxHeight: '81%',
     },
 };
 
@@ -37,6 +38,7 @@ export const CalendarModal = () => {
     const { user } = useAuthStore()
 
     const [formValues, setFormValues] = useState({
+        Usuario: '',
         transportNumber: '',
         transport: '',
         seats: '',
@@ -49,19 +51,14 @@ export const CalendarModal = () => {
         notes: '',
         price: '',
         advance: '',
-        Usuario: {
-            name: ''
-        }
         // title: '',
     })
 
-    const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, price, advance } = formValues
+    const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, price, advance, Usuario } = formValues
 
 
     const namePDF = nameClient.split(' ')[1] ? `${nameClient.split(' ')[0]}_${nameClient.split(' ')[1]}` : `${nameClient.split(' ')[0]}`
     const destinationPDF = destination.split(' ')[1] ? `${destination.split(' ')[0]}_${destination.split(' ')[1]}` : `${destination.split(' ')[0]}`
-    
-
     const fileName = `${namePDF} - ${transport} - ${destinationPDF} - ${start.toLocaleDateString()}`
 
     // console.log(fileName);
@@ -405,7 +402,8 @@ export const CalendarModal = () => {
                 overlayClassName='modal-fondo'
                 closeTimeoutMS={200}
             >
-                <h1>Reserva registrada</h1>
+                <h1 className='text-center'>Reserva registrada</h1>
+                <h6 className='text-center'>Creada por {Usuario.name}</h6>
                 <hr />
 
                 <div className="container">

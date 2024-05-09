@@ -12,8 +12,15 @@ export const useCalendarStore = () => {
     const { activeEvent, events } = useSelector(state => state.calendar)
     const { user } = useSelector(state => state.auth)
 
+    //OBTENER ID DE EVENTO SELECIONADO
     const setActiveEvent = (calendarEvent) => {
         dispatch(onSetActiveEvent(calendarEvent))
+    }
+
+    //OBTENER VALORES DEL EVENTO SELECIONADO
+    const setActiveEventInList = (calendarEvent) => {
+        const eventActive = events.find(user => user.id == calendarEvent)
+        dispatch(onSetActiveEvent(eventActive))
     }
 
     const starSavingEvent = async (calendarEvent) => {
@@ -77,6 +84,7 @@ export const useCalendarStore = () => {
 
         //* Metodos
         setActiveEvent,
+        setActiveEventInList,
         starSavingEvent,
         StartDeletingEvent,
         startLoadingEvent,

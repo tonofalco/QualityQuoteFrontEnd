@@ -1,9 +1,15 @@
+import { useAuthStore } from "../../hooks"
 
 
 export const General = () => {
+    
+    const { user } = useAuthStore()
+
+
     return (
         <>
-            <p>Pestaña GENERAL en desarrollo</p>
+            <p><i>Bienvenido {user.name} - Rol {user.role}</i></p>
+            <p>widgets en desarrollo</p>
             <p>...</p>
         </>
     )

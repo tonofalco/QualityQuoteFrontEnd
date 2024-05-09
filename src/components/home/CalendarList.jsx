@@ -5,38 +5,36 @@ import { Pagination } from 'react-bootstrap';
 import { format } from 'date-fns/esm';
 import es from 'date-fns/locale/es';
 
-import { useCalendarStore } from '../../hooks';
+import { useCalendarStore, useUiStore } from '../../hooks';
+import { CalendarModal } from '../calendar/CalendarModal';
 
 export const CalendarList = () => {
 
-    const [startDate, setStartDate] = useState(new Date()); // Por defecto, la fecha de inicio es hoy
-    const [endDate, setEndDate] = useState(new Date(new Date().setDate(new Date().getDate() + 15))); // Por defecto, la fecha de fin es dentro de un mes
+
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date(new Date().setDate(new Date().getDate() + 15))); // FECHA POR DEFECTO
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [sortBy, setSortBy] = useState('start'); // Ordenar por defecto por nombre de cliente
     const [sortDirection, setSortDirection] = useState('asc'); // Dirección de ordenamiento por defecto ascendente
 
-    const { events, setActiveEvent, startLoadingEvent } = useCalendarStore();
+    const { events, setActiveEventInList, startLoadingEvent, activeEvent } = useCalendarStore();
+    const { openViewModal } = useUiStore()
 
-    useEffect(() => {
-        startLoadingEvent();
-    }, []);
+    // Función para manejar la selección de usuario po id
+    const onSelect = async (event) => {
+        setActiveEventInList(event);
+        openViewModal()
+    }
 
-    const fechaInicio = (date) => {
-        return format(date, "dd'-'MMM'-'yyyy", { locale: es });
-    };
+    const fechaInicio = (date) => format(date, "dd'-'MMM'-'yyyy", { locale: es });
+    const currencyFormatMx = (value) => parseFloat(value).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-    // Manejador de cambios para la fecha de inicio
-    const handleStartDateChange = (date) => {
-        setStartDate(date);
-    };
 
-    // Manejador de cambios para la fecha de fin
-    const handleEndDateChange = (date) => {
-        setEndDate(date);
-    };
+    const handleStartDateChange = (date) => setStartDate(date);
+    const handleEndDateChange = (date) => setEndDate(date)
 
-    // Ordenar eventos según el criterio seleccionado y la dirección
+    // Filtrar eventos según el criterio seleccionado
     const sortedEvents = events.filter(event => {
         // Filtrar eventos que están dentro del rango de fechas seleccionado
         return new Date(event.start) >= startDate && new Date(event.end) <= endDate;
@@ -82,14 +80,6 @@ export const CalendarList = () => {
         setEndDate(nextWeekEndDate);
     };
 
-    // Calcula el índice del primer y último evento en la página actual
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = sortedEvents.slice(indexOfFirstItem, indexOfLastItem);
-
-    // Calcula el número total de páginas
-    const totalPaginationPages = Math.ceil(sortedEvents.length / itemsPerPage);
-
     // Cambia a la página seleccionada
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -105,128 +95,144 @@ export const CalendarList = () => {
         }
     };
 
+    useEffect(() => { startLoadingEvent() }, []);
+
+    // Calcula el índice del primer y último evento en la página actual
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = sortedEvents.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Calcula el número total de páginas
+    const totalPaginationPages = Math.ceil(sortedEvents.length / itemsPerPage);
+
     return (
         <>
-            <div className="container">
-                <div className="row">
-                    <div className="">
-                        <div className="mb-3 col-12">
-                            <div className='d-flex justify-content-end aling-items-center'>
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={handleStartDateChange}
-                                    selectsStart
-                                    startDate={startDate}
-                                    endDate={endDate}
-                                    dateFormat="dd/MM/yyyy"
-                                    style={{ zIndex: '10' }}
-                                />
-                                <span className="mx-2">-</span>
-                                <DatePicker
-                                    selected={endDate}
-                                    onChange={handleEndDateChange}
-                                    selectsEnd
-                                    startDate={startDate}
-                                    endDate={endDate}
-                                    minDate={startDate}
-                                    dateFormat="dd/MM/yyyy"
-                                    style={{ zIndex: '10' }}
-                                />
-                            </div>
-                        </div>
+            <div className="row">
 
-                        <div className='col-12 mt-3'>
-                            <div className='d-flex justify-content-end aling-items-center'>
-                                <button
-                                    className=" ms-3 btn btn-outline-secondary"
-                                    onClick={handleNextWeek}>
-                                    Semana
-                                </button>
-                                <button
-                                    className=" ms-3 btn btn-outline-secondary"
-                                    onClick={handleNextfortnight}>
-                                    Quincena
-                                </button>
-                                <button
-                                    className=" ms-3 btn btn-outline-secondary"
-                                    onClick={handleNextMonth}>
-                                    Mes
-                                </button>
-                            </div>
-                        </div>
+                {/* CAMPOS DE FECHAS */}
+                <div className="mb-3 col-12" style={{ position: 'relative', zIndex: '10' }}>
 
-                        <table className="table table-auto">
-                            <thead>
-                                <tr className='text-start'>
-                                    <th scope='row' onClick={() => handleSort('start')} style={{ cursor: 'pointer' }}>
-                                        Fecha salida{' '}
-                                        {sortBy === 'start' && (
-                                            <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
-                                        )}
-                                    </th>
-                                    <th scope='row' onClick={() => handleSort('end')} style={{ cursor: 'pointer' }}>
-                                        Fecha regreso{' '}
-                                        {sortBy === 'end' && (
-                                            <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
-                                        )}
-                                    </th>
-                                    <th scope='row' onClick={() => handleSort('nameClient')} style={{ cursor: 'pointer' }}>
-                                        Cliente{' '}
-                                        {sortBy === 'nameClient' && (
-                                            <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
-                                        )}
-                                    </th>
-                                    <th scope='row' onClick={() => handleSort('destination')} style={{ cursor: 'pointer' }}>
-                                        Destino{' '}
-                                        {sortBy === 'destination' && (
-                                            <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
-                                        )}
-                                    </th>
-                                    <th scope='row' onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>
-                                        Precio total{' '}
-                                        {sortBy === 'price' && (
-                                            <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
-                                        )}
-                                    </th>
-                                    <th scope='row' onClick={() => handleSort('advance')} style={{ cursor: 'pointer' }}>
-                                        Anticipo{' '}
-                                        {sortBy === 'advance' && (
-                                            <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
-                                        )}
-                                    </th>
-                                    <th scope='row'>Deuda</th>
-                                    <th scope='row'></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentItems.map((event) => (
-                                    <tr key={event.id} className='text-center'>
-                                        <td>{fechaInicio(event.start)}</td>
-                                        <td>{fechaInicio(event.end)}</td>
-                                        <td className="col-3">{event.nameClient}</td>
-                                        <td className="col-3">{event.destination}</td>
-                                        <td>{event.price}</td>
-                                        <td>{event.advance}</td>
-                                        <td>{event.price - event.advance}</td>
-                                        <td>
-                                            <button className="btn btn-primary btn-sm me-3">
-                                                <i className="fa-regular fa-file-lines"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        <Pagination>
-                            {[...Array(totalPaginationPages).keys()].map((number) => (
-                                <Pagination.Item key={number + 1} active={number + 1 === currentPage} onClick={() => paginate(number + 1)}>
-                                    {number + 1}
-                                </Pagination.Item>
-                            ))}
-                        </Pagination>
+                    <div className='d-flex justify-content-end align-items-center'>
+                        <span>Fechas:&nbsp;&nbsp; </span>
+                        <DatePicker
+                            selected={startDate}
+                            onChange={handleStartDateChange}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                            dateFormat="dd/MM/yyyy"
+                        />
+                        <span className="mx-2">-</span>
+                        <DatePicker
+                            selected={endDate}
+                            onChange={handleEndDateChange}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            dateFormat="dd/MM/yyyy"
+                        />
                     </div>
                 </div>
+
+                {/* RANGOS DE FECHAS DEFINIDOS */}
+                <div className='col-12 my-3'>
+                    <div className='d-flex justify-content-end aling-items-center'>
+                        <button
+                            className=" ms-3 btn btn-outline-secondary"
+                            onClick={handleNextWeek}>
+                            Semana
+                        </button>
+                        <button
+                            className=" ms-3 btn btn-outline-secondary"
+                            onClick={handleNextfortnight}>
+                            Quincena
+                        </button>
+                        <button
+                            className=" ms-3 btn btn-outline-secondary"
+                            onClick={handleNextMonth}>
+                            Mes
+                        </button>
+                    </div>
+                </div>
+
+                {/* LISTA DE PROXIMOS VIAJES  */}
+                <div className="table-wrapper" style={{ position: 'relative' }}>
+                    <table className="table table-striped">
+                        <thead className='table-dark'>
+                            <tr className='text-start'>
+                                <th scope='row' onClick={() => handleSort('start')} style={{ cursor: 'pointer' }}>
+                                    {sortBy === 'start' && (
+                                        <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
+                                    )}
+                                    Fecha salida{' '}
+                                </th>
+                                <th scope='row' onClick={() => handleSort('end')} style={{ cursor: 'pointer' }}>
+                                    {sortBy === 'end' && (
+                                        <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
+                                    )}
+                                    Fecha regreso{' '}
+                                </th>
+                                <th scope='row' onClick={() => handleSort('nameClient')} style={{ cursor: 'pointer' }}>
+                                    {sortBy === 'nameClient' && (
+                                        <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
+                                    )}
+                                    Cliente{' '}
+                                </th>
+                                <th scope='row' onClick={() => handleSort('destination')} style={{ cursor: 'pointer' }}>
+                                    {sortBy === 'destination' && (
+                                        <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
+                                    )}
+                                    Destino{' '}
+                                </th>
+                                <th scope='row' onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>
+                                    {sortBy === 'price' && (
+                                        <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
+                                    )}
+                                    Precio total{' '}
+                                </th>
+                                <th scope='row' onClick={() => handleSort('advance')} style={{ cursor: 'pointer' }}>
+                                    {sortBy === 'advance' && (
+                                        <i className={`fas ${sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
+                                    )}
+                                    Anticipo{' '}
+                                </th>
+                                <th scope='row'>Deuda</th>
+                                <th scope='row'></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentItems.map((event) => (
+                                <tr key={event.id} className='text-start'>
+                                    <td>{fechaInicio(event.start)}</td>
+                                    <td>{fechaInicio(event.end)}</td>
+                                    <td className="col-3">{event.nameClient}</td>
+                                    <td className="col-3">{event.destination}</td>
+                                    <td>{currencyFormatMx(event.price)}</td>
+                                    <td>{currencyFormatMx(event.advance)}</td>
+                                    <td>{currencyFormatMx(event.price - event.advance)}</td>
+                                    <td>
+                                        <button className="btn btn-primary btn-sm me-3" onClick={() => { onSelect(event.id) }}>
+                                            <i className="fa-regular fa-file-lines"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* PAGINACION DE LISTA */}
+                <Pagination>
+                    {[...Array(totalPaginationPages).keys()].map((number) => (
+                        <Pagination.Item key={number + 1} active={number + 1 === currentPage} onClick={() => paginate(number + 1)}>
+                            {number + 1}
+                        </Pagination.Item>
+                    ))}
+                </Pagination>
+
+                {/* Modal */}
+                <CalendarModal />
             </div>
         </>
     );
