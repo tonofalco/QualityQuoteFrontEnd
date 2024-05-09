@@ -1,4 +1,4 @@
-import { Home, NavBar, SideBar } from "../components/"
+import { Home, NavBar, OverlayWhole, SideBar } from "../components/"
 import { useActiveBar } from "../hooks"
 
 import '../styles/overlayShadow.css';
@@ -18,7 +18,6 @@ export const HomePage = () => {
 
         <div className="content_column">
           <NavBar />
-          {/* <div className={` cuerpo ${stateNavBar == true ? 'overlay' : ''}`}> */}
 
           {!stateNavBar
             ? (

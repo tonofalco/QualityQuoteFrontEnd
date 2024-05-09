@@ -31,6 +31,12 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
     const multKmsValueFs = calcularKms(gasoline, salary, maintenance, booths, utility, supplement)
     const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
 
+    console.log(multKms);
+    console.log(multKmsValue);
+    // console.log(multKmsValueEs);
+    // console.log(multKmsValueFs);
+
+
     //CALCULOS POR DIAS EXTRAS
     const diasEntreSemanaCosto = calcularCosto(weekdaysCount, totalEs);
     const diasFinSemanaCosto = calcularCosto(weekendCount, totalFs);
@@ -156,8 +162,8 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                         <hr />
                                         <div className="col-12">
                                             <span><b>Formula:</b> (kms * mult) + dias</span><br />
-                                            <span><b>precio final Van:</b> {distancia} * {multKmsValueEs} = {costoPrimerDia} + {totalDiasCosto} = {formatMX_PrecioTotal}</span><br />
-                                            <span><b>precio final Spt:</b> {distancia} * {multKmsValueFs} = {costoTotalSpt} + {totalDiasCosto} = {formatMX_PrecioTotalSpt}</span>
+                                            <span><b>precio final Van:</b> {distancia} * {multKmsValue} = {costoPrimerDia} + {totalDiasCosto} = {formatMX_PrecioTotal}</span><br />
+                                            <span><b>precio final Spt:</b> {distancia} * {multKmsValue} = {costoTotalSpt} + {totalDiasCosto} = {formatMX_PrecioTotalSpt}</span>
                                         </div>
 
                                         {/* <div className="col-6">
