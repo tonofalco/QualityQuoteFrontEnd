@@ -31,8 +31,8 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
     const multKmsValueFs = calcularKms(gasoline, salary, maintenance, booths, utility, supplement)
     const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
 
-    console.log(multKms);
-    console.log(multKmsValue);
+    // console.log(multKms);
+    // console.log(multKmsValue);
     // console.log(multKmsValueEs);
     // console.log(multKmsValueFs);
 
@@ -124,7 +124,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                                             stops={stops}
                                                             destinationRef={destinationRef.current.value}
                                                             precioVan={formatMX_PrecioTotal}
-                                                        />} fileName={'cotizacion xd'}>
+                                                        />} fileName={'Cotizacion_'}>
                                                     {({ loading }) => loading
                                                         ? (<button className="btn btn-outline-primary" disabled>Cargando</button>)
                                                         : (<button className="btn btn-outline-primary">Descargar PDF</button>)
@@ -144,8 +144,8 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
 
                                         <div className="col-6">
                                             <span><b>Costes primer dia:</b></span><br />
-                                            <span className=''>- <i>Fin semana:</i> kms * {multKmsValueFs}</span><br />
                                             <span className=''>- <i>Entre semana:</i> kms * {multKmsValueEs}</span><br />
+                                            <span className=''>- <i>Fin semana:</i> kms * {multKmsValueFs}</span><br />
                                         </div>
 
                                         <div className="col-6">
@@ -156,7 +156,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                         <hr />
                                         <div className="col-12">
                                             <span><b>Dias extras entre semana:</b> {weekdaysCount} * {totalEs} = ${diasEntreSemanaCosto}</span><br />
-                                            <span><b>Dias extras entre semana:</b> {weekendCount} * {totalFs} = ${diasFinSemanaCosto}</span><br />
+                                            <span><b>Dias extras fin de semana:</b> {weekendCount} * {totalFs} = ${diasFinSemanaCosto}</span><br />
                                             <span><b>Total dias extras:</b> {diasEntreSemanaCosto} + {diasFinSemanaCosto} = ${totalDiasCosto} </span>
                                         </div>
                                         <hr />

@@ -80,7 +80,7 @@ export const MapBox = (
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Ingrese una ruta"
+                                placeholder="Ingrese una parada"
                                 value={currentStop}
                                 // ref={autocompleteRef}
                                 onChange={(e) => setCurrentStop(e.target.value)}
@@ -123,7 +123,7 @@ export const MapBox = (
                         <select
                             type='text'
                             className='form-select mb-3'
-                            placeholder='Ingresa origen'
+                            placeholder='Ingresa destino'
                             ref={destinationRef}
                         ><option value="" disabled>Seleccione destino</option>
                             {routesOptions.map((route) => (

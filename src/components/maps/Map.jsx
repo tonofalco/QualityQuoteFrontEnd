@@ -108,6 +108,7 @@ export const Map = () => {
                 setDirectionsResponse(response);
 
                 const route = response.routes[0];
+                
                 let totalDistance = 0;
                 let totalDuration = 0;
 
