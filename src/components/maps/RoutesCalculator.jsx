@@ -40,7 +40,10 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
     //CALCULOS POR DIAS EXTRAS
     const diasEntreSemanaCosto = calcularCosto(weekdaysCount, totalEs);
     const diasFinSemanaCosto = calcularCosto(weekendCount, totalFs);
+    const diasSprinterGeneral = calcularCosto(totalDays - 1, 3000)
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
+
+    console.log(totalDays);
 
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 15
@@ -49,12 +52,12 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
     const formatMX_PrecioTotal = currencyFormatMx(precioFinal)
     const formatMX_PrecioUnitario = currencyFormatMx(precioFinal / plazas)
 
-    let plazasSpt = 18
-    const multKmsSpt = multKmsValue + 3
-    const costoTotalSpt = (distancia * multKmsSpt)
-    const precioTotalSpt = Math.round(parseFloat(costoTotalSpt) + parseFloat(totalDiasCosto))
-    const formatMX_PrecioTotalSpt = currencyFormatMx(precioTotalSpt)
-    const formatMX_PrecioUnitarioSpt = currencyFormatMx(precioTotalSpt / plazasSpt)
+    let plazasSpt = 20
+    const multKmsSpt = 16
+    const costoPrimerDiaSpt = (distancia * multKmsSpt)
+    const precioFinalSpt = Math.round(parseFloat(costoPrimerDiaSpt) + parseFloat(diasSprinterGeneral))
+    const formatMX_PrecioTotalSpt = currencyFormatMx(precioFinalSpt)
+    const formatMX_PrecioUnitarioSpt = currencyFormatMx(precioFinalSpt / plazasSpt)
 
 
     return (
@@ -163,7 +166,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                         <div className="col-12">
                                             <span><b>Formula:</b> (kms * mult) + dias</span><br />
                                             <span><b>precio final Van:</b> {distancia} * {multKmsValue} = {costoPrimerDia} + {totalDiasCosto} = {formatMX_PrecioTotal}</span><br />
-                                            <span><b>precio final Spt:</b> {distancia} * {multKmsValue} = {costoTotalSpt} + {totalDiasCosto} = {formatMX_PrecioTotalSpt}</span>
+                                            <span><b>precio final Spt:</b> {distancia} * {multKmsSpt} = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {formatMX_PrecioTotalSpt}</span>
                                         </div>
 
                                         {/* <div className="col-6">
