@@ -61,7 +61,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                         <table className="table text-center">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
+                                    <th scope="col"><i className="fa-solid fa-bus"></i></th>
                                     <th scope="col">Transporte</th>
                                     <th scope="col">Precio Final</th>
                                     <th scope="col">Pax</th>

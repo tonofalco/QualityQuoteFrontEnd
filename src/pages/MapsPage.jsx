@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { NavBar, SideBar, Map, OverlayWhole } from "../components";
-import { useActiveBar, useConfigExtraDayStore } from "../hooks";
+import { useActiveBar, useConfigExtraDayStore, useConfigKmsTableStore } from "../hooks";
 import '../styles/overlayShadow.css';
+
 
 export const MapsPage = () => {
   const { stateNavBar } = useActiveBar();
 
   const { startLoadingCostsExtraDay } = useConfigExtraDayStore()
+  const { startLoadingFsCosts, startLoadingEsCosts } = useConfigKmsTableStore();
+  
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -15,7 +18,9 @@ export const MapsPage = () => {
           const fetchData = async () => {
               setIsLoading(true);
               await Promise.all([
-                  startLoadingCostsExtraDay()
+                  startLoadingCostsExtraDay(),
+                  startLoadingFsCosts(),
+                  startLoadingEsCosts(),
               ]);
           };
           fetchData();

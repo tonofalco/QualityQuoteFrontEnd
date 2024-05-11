@@ -11,8 +11,6 @@ const libraries = ['places'];
 
 export const Map = () => {
 
-    const { costsValue, costsValueWeekend, startLoadingFsCosts, startLoadingEsCosts, loading } = useConfigKmsTableStore();
-
     const [mapKey, setMapKey] = useState(0); // Nuevo estado mapKey
     const [directionsResponse, setDirectionsResponse] = useState(null);
     const [distance, setDistance] = useState('');
@@ -25,32 +23,18 @@ export const Map = () => {
     const [multKms, setMultKms] = useState(false)
     const [stops, setStops] = useState([]);
     const [currentStop, setCurrentStop] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
 
     const sourceRef = useRef();
     const destinationRef = useRef();
     const autocompleteRef = useRef();
+
+    const { costsValue, costsValueWeekend, loading } = useConfigKmsTableStore();
 
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
         libraries: libraries
     });
 
-    useEffect(() => {
-        if (!isLoading) {
-            const fetchData = async () => {
-                setIsLoading(true);
-                await Promise.all([
-                    startLoadingFsCosts(),
-                    startLoadingEsCosts()
-                ]);
-            };
-            fetchData();
-        }
-    }, []);
-
-    // console.log(sourceRef);
-    // console.log(autocompleteRef);
 
     const addStop = () => {
         if (stops.length < 5) {
