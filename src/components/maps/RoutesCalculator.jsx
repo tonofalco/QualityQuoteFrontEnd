@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
-import { PDFDownloadLink } from '@react-pdf/renderer'
 import { useConfigExtraDayStore, useConfigKmsTableStore } from '../../hooks';
-import { QuotePDF } from './QuotePDF';
+import { currencyFormatMx } from '../../helpers';
+import { PrintRouteModal } from './PrintRouteModal';
 
 
 
 export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms, startDate, endDate }) => {
 
-    // console.log(stops);
+    const [show, setShow] = useState(false);
+    const toggleModalPrint = () => setShow(prevShow => !prevShow);
 
     const { costsValue, costsValueWeekend } = useConfigKmsTableStore();
     const { sumaCostoDiaExtraEs, sumaCostoDiaExtraFs, totalEs, totalFs, costs_extraDay } = useConfigExtraDayStore()
@@ -21,7 +22,6 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
 
     const calcularCosto = (dias, costoPorDia) => (dias * costoPorDia) <= 0 ? 0 : (dias * costoPorDia);
     const calcularKms = (gasoline, salary, maintenance, booths, utility, supplement) => distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
-    const currencyFormatMx = (value) => parseFloat(value).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
     //CALCULO DISTANCIA TOTAL 
     const distancia = Math.round(parseFloat(distance))
@@ -31,33 +31,22 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
     const multKmsValueFs = calcularKms(gasoline, salary, maintenance, booths, utility, supplement)
     const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
 
-    // console.log(multKms);
-    // console.log(multKmsValue);
-    // console.log(multKmsValueEs);
-    // console.log(multKmsValueFs);
-
-
     //CALCULOS POR DIAS EXTRAS
     const diasEntreSemanaCosto = calcularCosto(weekdaysCount, totalEs);
     const diasFinSemanaCosto = calcularCosto(weekendCount, totalFs);
     const diasSprinterGeneral = calcularCosto(totalDays - 1, 3000)
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
 
-    console.log(totalDays);
-
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 15
     const costoPrimerDia = (distancia * multKmsValue)
     const precioFinal = Math.round(parseFloat(costoPrimerDia) + parseFloat(totalDiasCosto))
-    const formatMX_PrecioTotal = currencyFormatMx(precioFinal)
-    const formatMX_PrecioUnitario = currencyFormatMx(precioFinal / plazas)
 
     let plazasSpt = 20
     const multKmsSpt = 16
     const costoPrimerDiaSpt = (distancia * multKmsSpt)
     const precioFinalSpt = Math.round(parseFloat(costoPrimerDiaSpt) + parseFloat(diasSprinterGeneral))
-    const formatMX_PrecioTotalSpt = currencyFormatMx(precioFinalSpt)
-    const formatMX_PrecioUnitarioSpt = currencyFormatMx(precioFinalSpt / plazasSpt)
+
 
 
     return (
@@ -66,9 +55,9 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
 
                 {directionsResponse ? (
                     <div>
-                        <hr />
+                        {/* <hr /> */}
                         {/* PRECIOS FINALES */}
-                        <h4 className='text-muted'>PRECIOS ESTIMADOS:</h4>
+                        <h4 className='text-muted mt-3'>PRECIOS ESTIMADOS:</h4>
                         <table className="table text-center">
                             <thead>
                                 <tr>
@@ -82,14 +71,14 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                 <tr>
                                     <th scope="row">{plazas}</th>
                                     <td>Van</td>
-                                    <td className='bg-success text-light'><b>{formatMX_PrecioTotal}</b></td>
-                                    <td>{formatMX_PrecioUnitario}</td>
+                                    <td className='bg-success text-light'><b>{currencyFormatMx(precioFinal)}</b></td>
+                                    <td>{currencyFormatMx(precioFinal / plazas)}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{plazasSpt}</th>
                                     <td>Sprinter</td>
-                                    <td className='bg-success text-light'><b>{formatMX_PrecioTotalSpt}</b></td>
-                                    <td>{formatMX_PrecioUnitarioSpt}</td>
+                                    <td className='bg-success text-light'><b>{currencyFormatMx(precioFinalSpt)}</b></td>
+                                    <td>{currencyFormatMx(precioFinalSpt / plazasSpt)}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -118,21 +107,12 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                             </ol>
 
                                             <div className='d-flex justify-content-end mt-3'>
-                                                <PDFDownloadLink
-                                                    document={
-                                                        <QuotePDF
-                                                            startDate={startDate}
-                                                            endDate={endDate}
-                                                            sourceRef={sourceRef.current.value} 
-                                                            stops={stops}
-                                                            destinationRef={destinationRef.current.value}
-                                                            precioVan={formatMX_PrecioTotal}
-                                                        />} fileName={'Cotizacion_'}>
-                                                    {({ loading }) => loading
-                                                        ? (<button className="btn btn-outline-primary" disabled>Cargando</button>)
-                                                        : (<button className="btn btn-outline-primary">Descargar PDF</button>)
-                                                    }
-                                                </PDFDownloadLink>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-info me-3"
+                                                    onClick={() => { toggleModalPrint() }}
+                                                >Imprimir
+                                                </button>
                                             </div>
 
                                         </div>
@@ -158,76 +138,40 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                         </div>
                                         <hr />
                                         <div className="col-12">
-                                            <span><b>Dias extras entre semana:</b> {weekdaysCount} * {totalEs} = ${diasEntreSemanaCosto}</span><br />
-                                            <span><b>Dias extras fin de semana:</b> {weekendCount} * {totalFs} = ${diasFinSemanaCosto}</span><br />
-                                            <span><b>Total dias extras:</b> {diasEntreSemanaCosto} + {diasFinSemanaCosto} = ${totalDiasCosto} </span>
+                                            <span><b>Dias extras entre semana:</b> {weekdaysCount} * {totalEs} = {currencyFormatMx(diasEntreSemanaCosto)}</span><br />
+                                            <span><b>Dias extras fin de semana:</b> {weekendCount} * {totalFs} = {currencyFormatMx(diasFinSemanaCosto)}</span><br />
+                                            <span><b>Total dias extras:</b> {diasEntreSemanaCosto} + {diasFinSemanaCosto} = {currencyFormatMx(totalDiasCosto)} </span>
                                         </div>
                                         <hr />
                                         <div className="col-12">
                                             <span><b>Formula:</b> (kms * mult) + dias</span><br />
-                                            <span><b>precio final Van:</b> {distancia} * {multKmsValue} = {costoPrimerDia} + {totalDiasCosto} = {formatMX_PrecioTotal}</span><br />
-                                            <span><b>precio final Spt:</b> {distancia} * {multKmsSpt} = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {formatMX_PrecioTotalSpt}</span>
+                                            <span><b>precio final Van:</b> {distancia} * {multKmsValue} = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span><br />
+                                            <span><b>precio final Spt:</b> {distancia} * {multKmsSpt} = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
                                         </div>
-
-                                        {/* <div className="col-6">
-                                            <div className="row">
-                                                <div className="col-12">
-                                                    <p>
-                                                        <b>Formula:</b>
-                                                        <br />
-                                                        (kms * mult) + dias
-                                                    </p>
-                                                </div>
-                                                <div className="col-12">
-                                                    <p>
-                                                        <b>Dias extras:</b>
-                                                        <br />
-                                                        Entre semana:
-                                                        <br />&nbsp;
-                                                        {weekdaysCount} * {totalEs}
-                                                        <br />
-                                                        Fin semana:
-                                                        <br />&nbsp;
-                                                        {weekendCount} * {totalFs}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="col-6">
-                                            <div className="row">
-                                                <div className="col-12">
-                                                    <p>
-                                                        <b>Van:</b>
-                                                        <br />
-                                                        {distancia} * {multKmsValue} = {Math.round(costoPrimerDia)}
-                                                        <br />
-                                                        {Math.round(costoPrimerDia)} + {totalDiasCosto} = {formatMX_PrecioTotal}
-                                                        <br />
-                                                        {precioFinal} / {plazas} = {formatMX_PrecioUnitario}
-                                                    </p>
-                                                </div>
-                                                <div className="col-12 mb-1">
-                                                    <b>Sprinter:</b>
-                                                    <br />
-                                                    {distancia} * {multKmsSpt} = {Math.round(costoTotalSpt)}
-                                                    <br />
-                                                    {Math.round(costoTotalSpt)} + {totalDiasCosto} = {formatMX_PrecioTotalSpt}
-                                                    <br />
-                                                    {precioFinal} / {plazasSpt} = {formatMX_PrecioUnitarioSpt}
-                                                </div>
-                                            </div>
-                                        </div> */}
 
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
 
-                    </div>
+                        {/* MODAL IMPRIMIR PDF */}
+                        <PrintRouteModal
+                            show={show}
+                            toggleModalPrint={toggleModalPrint}
+                            precioFinal={precioFinal}
+                            precioFinalSpt={precioFinalSpt}
+                            startDate={startDate}
+                            endDate={endDate}
+                            sourceRef={sourceRef.current.value}
+                            stops={stops}
+                            destinationRef={destinationRef.current.value}
+                        />
 
+                    </div>
                 ) : <h2 className='text-center mt-3'>Esperando cotizacion...</h2>}
             </div >
+
+
         </>
     )
 }

@@ -2,9 +2,11 @@ import { Document, Text, Page, StyleSheet, Image, View, Font } from '@react-pdf/
 import { format } from 'date-fns/esm';
 import es from 'date-fns/locale/es';
 
+import { currencyFormatMx } from '../../helpers';
 import Logo from '../../assets/img/logoGuerrero.png'
 import datosAgencia from '../../assets/img/datosAgencia.png'
 import { MontserratFonts } from '../../assets/fonts';
+
 
 Object.entries(MontserratFonts).forEach(([weight, font]) => {
     Font.register({ family: `Montserrat-${weight}`, src: font });
@@ -112,18 +114,10 @@ const styles = StyleSheet.create({
 });
 
 
-export const QuotePDF = ({ startDate, endDate, sourceRef, destinationRef, stops, precioVan }) => {
-
+export const QuotePDF = ({ recipient, vanPrice, formattedStartDay, formattedEndDay, sourceRef, destinationRef, stops }) => {
 
     const today = new Date();
     const formattedDate = format(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy", { locale: es });
-    const formattedStartDay = format(startDate, "dd 'de' MMMM 'del' yyyy", { locale: es })
-    const formattedEndDay = format(endDate, "dd 'de' MMMM 'del' yyyy", { locale: es })
-
-    // console.log(today);
-    // console.log(startDate);
-    // console.log(formattedStartDay);
-
 
     const finalList = stops.length + 2
 
@@ -141,7 +135,7 @@ export const QuotePDF = ({ startDate, endDate, sourceRef, destinationRef, stops,
                 </View>
 
                 <View style={styles.section_body}>
-                    <Text style={styles.title}>A quien corresponda.</Text>
+                    <Text style={styles.title}>{(recipient)}.</Text>
                 </View>
 
                 <View style={styles.section_body}>
@@ -187,7 +181,7 @@ export const QuotePDF = ({ startDate, endDate, sourceRef, destinationRef, stops,
                     <View style={styles.table}>
                         <View style={styles.tableRow}>
                             <View style={styles.tableCell6}><Text style={styles.tableText2}>TOYOTA VAN 15 PLAZAS</Text></View>
-                            <View style={styles.tableCell6}><Text style={styles.tableText2}>{precioVan}</Text></View>
+                            <View style={styles.tableCell6}><Text style={styles.tableText2}>{currencyFormatMx(vanPrice)}</Text></View>
                         </View>
                     </View>
                 </View>

@@ -1,5 +1,6 @@
 export * from './calendarLocalizer'
 export * from './convertToDateEvents'
+export * from './currencyFormatMx'
 export * from './destinations'
 export * from './getEnvVariables'
 export * from './getMessages'

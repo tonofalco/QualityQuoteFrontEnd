@@ -2,7 +2,6 @@ import { addHours, differenceInSeconds } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer'
 
-
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -14,18 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import es from 'date-fns/locale/es';
 import { useAuthStore, useCalendarStore, useUiStore } from '../../hooks';
 import { PDF } from './PDF';
-
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        maxHeight: '81%',
-    },
-};
+import { currencyFormatMx } from '../../helpers';
 
 Modal.setAppElement('#root');
 
@@ -33,7 +21,7 @@ export const CalendarModal = () => {
 
     registerLocale('es', es);
 
-    const { isDateModalOpen, closeDateModal, isModalViewOpen, closeViewModal, openDateModal } = useUiStore()
+    const { isDateModalOpen, closeDateModal, isModalViewOpen, closeViewModal, openDateModal, customStyles } = useUiStore()
     const { activeEvent, starSavingEvent, StartDeletingEvent } = useCalendarStore()
     const { user } = useAuthStore()
 
@@ -56,21 +44,7 @@ export const CalendarModal = () => {
 
     const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, price, advance, Usuario } = formValues
 
-
-    const namePDF = nameClient.split(' ')[1] ? `${nameClient.split(' ')[0]}_${nameClient.split(' ')[1]}` : `${nameClient.split(' ')[0]}`
-    const destinationPDF = destination.split(' ')[1] ? `${destination.split(' ')[0]}_${destination.split(' ')[1]}` : `${destination.split(' ')[0]}`
-    const fileName = `${namePDF} - ${transport} - ${destinationPDF} - ${start.toLocaleDateString()}`
-
-    // console.log(fileName);
-
-
-    useEffect(() => {
-
-        if (activeEvent !== null) {
-            setFormValues({ ...activeEvent })
-        }
-
-    }, [activeEvent])
+    useEffect(() => { activeEvent !== null && setFormValues({ ...activeEvent }) }, [activeEvent])
 
     const onDateChanged = (event, changing) => {
         setFormValues({
@@ -161,17 +135,14 @@ export const CalendarModal = () => {
         }
     };
 
-    const formatCurrency = (value) => parseFloat(value).toLocaleString('es-MX', {
-        style: 'currency',
-        currency: 'MXN',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    });
+    const namePDF = nameClient.split(' ')[1] ? `${nameClient.split(' ')[0]}_${nameClient.split(' ')[1]}` : `${nameClient.split(' ')[0]}`
+    const destinationPDF = destination.split(' ')[1] ? `${destination.split(' ')[0]}_${destination.split(' ')[1]}` : `${destination.split(' ')[0]}`
+    const fileName = `${namePDF} - ${transport} - ${destinationPDF} - ${start.toLocaleDateString()}`
 
     const dueValue = price - advance;
-    const formattedPrice = formatCurrency(price);
-    const formattedAdvance = formatCurrency(advance);
-    const formattedDue = formatCurrency(dueValue);
+    const formattedPrice = currencyFormatMx(price);
+    const formattedAdvance = currencyFormatMx(advance);
+    const formattedDue = currencyFormatMx(dueValue);
 
 
     return (

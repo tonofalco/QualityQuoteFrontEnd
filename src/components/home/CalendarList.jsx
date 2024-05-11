@@ -27,7 +27,7 @@ export const CalendarList = () => {
         openViewModal()
     }
 
-    const fechaInicio = (date) => format(date, "dd'-'MMM'-'yyyy", { locale: es });
+    const dateFormat = (date) => format(date, "dd'-'MMM'-'yyyy", { locale: es });
     const currencyFormatMx = (value) => parseFloat(value).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
 
@@ -37,7 +37,7 @@ export const CalendarList = () => {
     // Filtrar eventos según el criterio seleccionado
     const sortedEvents = events.filter(event => {
         // Filtrar eventos que están dentro del rango de fechas seleccionado
-        return new Date(event.start) >= startDate && new Date(event.end) <= endDate;
+        return new Date(event.start) >= startDate.setHours(0,0,0,0) && new Date(event.end) <= endDate;
     }).sort((a, b) => {
         const factor = sortDirection === 'asc' ? 1 : -1;
         if (a[sortBy] < b[sortBy]) return -1 * factor;
@@ -198,24 +198,27 @@ export const CalendarList = () => {
                                     Anticipo{' '}
                                 </th>
                                 <th scope='row'>Deuda</th>
+                                <th>Vendedor</th>
                                 <th scope='row'></th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentItems.map((event) => (
                                 <tr key={event.id} className='text-start'>
-                                    <td>{fechaInicio(event.start)}</td>
-                                    <td>{fechaInicio(event.end)}</td>
+                                    <td>{dateFormat(event.start)}</td>
+                                    <td>{dateFormat(event.end)}</td>
                                     <td className="col-3">{event.nameClient}</td>
                                     <td className="col-3">{event.destination}</td>
                                     <td>{currencyFormatMx(event.price)}</td>
                                     <td>{currencyFormatMx(event.advance)}</td>
                                     <td>{currencyFormatMx(event.price - event.advance)}</td>
-                                    <td>
+                                    <td>{event.Usuario.name}</td>
+                                    <td className='ps-1'>
                                         <button className="btn btn-primary btn-sm me-3" onClick={() => { onSelect(event.id) }}>
                                             <i className="fa-regular fa-file-lines"></i>
                                         </button>
                                     </td>
+
                                 </tr>
                             ))}
                         </tbody>
