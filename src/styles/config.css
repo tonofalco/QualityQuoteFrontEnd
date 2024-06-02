@@ -1,20 +1,4 @@
-.icon_font {
-    font-size: 90px;
-    color: green;
-}
 
-
-
-/* .icon_font:hover {
-    color: #6c757d;
-} */
-
-.btn:hover,
-.icon_font:hover {
-    opacity: 0.8;
-    cursor: pointer;
-    color: #6c757d;
-}
 
 .table-wrapper {
     overflow: auto;
@@ -60,9 +44,21 @@
     position: relative;
     border-radius: 5px;
 } */
+.icon_font {
+    font-size: 90px;
+    color: green;
+}
 
-@media (max-width: 360px) {
+.btn:hover,
+.icon_font:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+@media (max-width: 576px) {
     .icon_font {
-        font-size: 60px;
+        font-size: 70px;
+        margin-top: 0;
     }
 }

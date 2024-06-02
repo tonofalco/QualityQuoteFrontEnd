@@ -7,6 +7,9 @@ import es from 'date-fns/locale/es';
 
 import { useCalendarStore, useUiStore } from '../../hooks';
 import { CalendarModal } from '../calendar/CalendarModal';
+import { currencyFormatMx } from '../../helpers';
+
+
 
 export const CalendarList = () => {
 
@@ -28,8 +31,6 @@ export const CalendarList = () => {
     }
 
     const dateFormat = (date) => format(date, "dd'-'MMM'-'yyyy", { locale: es });
-    const currencyFormatMx = (value) => parseFloat(value).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
 
     const handleStartDateChange = (date) => setStartDate(date);
     const handleEndDateChange = (date) => setEndDate(date)
@@ -37,7 +38,7 @@ export const CalendarList = () => {
     // Filtrar eventos según el criterio seleccionado
     const sortedEvents = events.filter(event => {
         // Filtrar eventos que están dentro del rango de fechas seleccionado
-        return new Date(event.start) >= startDate.setHours(0,0,0,0) && new Date(event.end) <= endDate;
+        return new Date(event.start) >= startDate.setHours(0, 0, 0, 0) && new Date(event.end) <= endDate;
     }).sort((a, b) => {
         const factor = sortDirection === 'asc' ? 1 : -1;
         if (a[sortBy] < b[sortBy]) return -1 * factor;
@@ -84,13 +85,13 @@ export const CalendarList = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     // Cambia el criterio de ordenamiento y la dirección
-    const handleSort = (criteria) => {
-        if (sortBy === criteria) {
+    const handleSort = (criterio) => {
+        if (sortBy === criterio) {
             // Si el mismo criterio se selecciona nuevamente, cambia la dirección de ordenamiento
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
             // Si se selecciona un nuevo criterio, cambia el criterio y establece la dirección ascendente
-            setSortBy(criteria);
+            setSortBy(criterio);
             setSortDirection('asc');
         }
     };
@@ -110,10 +111,9 @@ export const CalendarList = () => {
             <div className="row">
 
                 {/* CAMPOS DE FECHAS */}
-                <div className="mb-3 col-12" style={{ position: 'relative', zIndex: '10' }}>
-
-                    <div className='d-flex justify-content-end align-items-center'>
-                        <span>Fechas:&nbsp;&nbsp; </span>
+                <div className="mb-3 col-6" style={{ position: 'relative', zIndex: '10' }}>
+                    <div className="d-flex flex-column flex-sm-row align-items-sm-center">
+                        <span className="mb-2 mb-sm-0 me-sm-2">Desde:&nbsp;</span>
                         <DatePicker
                             selected={startDate}
                             onChange={handleStartDateChange}
@@ -121,8 +121,9 @@ export const CalendarList = () => {
                             startDate={startDate}
                             endDate={endDate}
                             dateFormat="dd/MM/yyyy"
+                            className="mb-2 mb-sm-0 me-sm-2"
                         />
-                        <span className="mx-2">-</span>
+                        <span className="mb-2 mb-sm-0 me-sm-2">Hasta:&nbsp;</span>
                         <DatePicker
                             selected={endDate}
                             onChange={handleEndDateChange}
@@ -135,8 +136,9 @@ export const CalendarList = () => {
                     </div>
                 </div>
 
+
                 {/* RANGOS DE FECHAS DEFINIDOS */}
-                <div className='col-12 my-3'>
+                <div className='col-6 '>
                     <div className='d-flex justify-content-end aling-items-center'>
                         <button
                             className=" ms-3 btn btn-outline-secondary"
