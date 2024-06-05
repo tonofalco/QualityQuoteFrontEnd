@@ -4,6 +4,7 @@ import '../styles/config.css'
 
 
 export const ConfigPage = () => {
+  
   const { stateNavBar } = useActiveBar()
 
   return (
@@ -11,7 +12,7 @@ export const ConfigPage = () => {
 
       <div className="row gx-0">
 
-      <div className="sidebar_column d-none d-md-block">
+        <div className="sidebar_column d-none d-md-block">
           <SideBar />
         </div>
 

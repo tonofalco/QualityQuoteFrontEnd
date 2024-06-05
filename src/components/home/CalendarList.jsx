@@ -21,7 +21,7 @@ export const CalendarList = () => {
     const [sortBy, setSortBy] = useState('start'); // Ordenar por defecto por nombre de cliente
     const [sortDirection, setSortDirection] = useState('asc'); // Dirección de ordenamiento por defecto ascendente
 
-    const { events, setActiveEventInList, startLoadingEvent, activeEvent } = useCalendarStore();
+    const { events, setActiveEventInList, startLoadingEvent } = useCalendarStore();
     const { openViewModal } = useUiStore()
 
     // Función para manejar la selección de usuario po id

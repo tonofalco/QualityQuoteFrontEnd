@@ -43,7 +43,7 @@ export const BigCalendar = () => {
     const onSelect = (event) => {
         // console.log({ click: event })
         // console.log(user);
-        console.log(event);
+        // console.log(event);
         setActiveEvent(event)
     }
 
