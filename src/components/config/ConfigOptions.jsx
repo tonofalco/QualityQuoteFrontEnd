@@ -7,7 +7,7 @@ export const ConfigOptions = () => {
     const handleButtonClickCosts = () => navigate("/config/costs");
     const handleButtonClickUsers = () => navigate("/config/users");
     const handleButtonClickKms = () => navigate("/config/tablekms");
-    const handleButtonClickClients = () => navigate ("/config/clients")
+    // const handleButtonClickClients = () => navigate ("/config/clients")
 
     return (
         <>
@@ -51,7 +51,7 @@ export const ConfigOptions = () => {
                     </button>
                 </div>
                 {/* Clientes */}
-                <div className="col-lg-2 col-sm-4 col-6 mb-4 d-flex justify-content-center">
+                {/* <div className="col-lg-2 col-sm-4 col-6 mb-4 d-flex justify-content-center">
                     <button
                         type="button"
                         className="btn text-secondary d-flex flex-column align-items-center justify-content-center text-center"
@@ -61,7 +61,7 @@ export const ConfigOptions = () => {
                         <i className="fa-solid fa-users icon_font mb-1"></i>
                         <span>Clientes</span>
                     </button>
-                </div>
+                </div> */}
             </div>
 
         </>
