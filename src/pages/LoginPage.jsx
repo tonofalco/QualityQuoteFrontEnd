@@ -32,12 +32,12 @@ export const LoginPage = () => {
 
     return (
         <div>
-            <div className="row flex-column-reverse flex-md-row">
-                <div className="col-md-5" >
+            <div className="row ">
+                <div className="col-md-5 d-none d-md-block" >
                     <LongImage className='img-fluid' src={fondoLogin} />
                 </div>
 
-                <div className="col-md-7 login-form-1 login-container">
+                <div className="col-md-7 col-12 login-form-1 login-container">
                     <Logo className='img-fluid' src={logoGuerrero} />
                     <form onSubmit={loginSubmit} className=''>
                         <h5 className='fw-light text-center mb-3'>Software de cotizacion y gestion para transportes terrestres</h5>
