@@ -4,7 +4,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 
 import { useAuthStore, useActiveBar } from "../hooks/"
 
-import LogoQualityGuerrero from '../assets/img/logoBlanco.png'
+import LogoQualityGuerrero from '../assets/img/logoBlanco.webp'
 import '../styles/navbar.css'
 
 

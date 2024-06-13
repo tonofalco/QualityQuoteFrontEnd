@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import { useAuthStore } from "../hooks"
 import ClipLoader from "react-spinners/ClipLoader";
+import { Blocks } from 'react-loader-spinner';
 
 import { HomePage, CalendarPage, MapsPage, ConfigPage, ConfigCostsPage, ConfigUsersPage, LoginPage, ConfigKmsTablePage, ConfigClientsPage } from '../pages/'
 
@@ -29,17 +30,20 @@ export const AppRouter = () => {
             <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
                 <div className="row">
                     <div className="col-12 text-center">
-                        <ClipLoader
-                            size={150}
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                            color="blue"
+                        <Blocks
+                            height="200"
+                            width="200"
+                            color="#4fa94d"
+                            ariaLabel="blocks-loading"
+                            wrapperStyle={{}}
+                            wrapperClass="blocks-wrapper"
+                            visible={true}
                         />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-12 text-center">
-                        <h5>Cargando...</h5>
+                        <h5>Cargando sistema...</h5>
                     </div>
                 </div>
             </div>

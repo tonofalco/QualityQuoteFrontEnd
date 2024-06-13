@@ -6,20 +6,6 @@ body {
     padding: 0px;
 }
 
-/* Auth */
-.login-form-1 {
-    padding: 12% 5% 0% 5%;
-}
-
-.login-container form {
-    padding: 2% 25% 0% 20%;
-}
-
-.login-container form .input .form-control {
-    background-color: #f7f7f7;
-
-}
-
 /* Modal */
 .ReactModalPortal>div {
     opacity: 0;

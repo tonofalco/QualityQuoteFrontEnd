@@ -3,8 +3,8 @@ import { format } from 'date-fns/esm';
 import es from 'date-fns/locale/es';
 
 import { currencyFormatMx } from '../../helpers';
-import Logo from '../../assets/img/logoGuerrero.png'
-import datosAgencia from '../../assets/img/datosAgencia.png'
+import Logo from '../../assets/img/logoGuerrero.webp'
+import datosAgencia from '../../assets/img/datosAgencia.webp'
 import { MontserratFonts } from '../../assets/fonts';
 
 

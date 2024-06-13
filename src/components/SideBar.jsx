@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 import { useAuthStore, useActiveBar } from "../hooks"
 
-import LogoQualityGuerrero from '../assets/img/logoBlanco.png'
+import LogoQualityGuerrero from '../assets/img/logoBlanco.webp'
 import '../styles/sidebar.css'
 
 
