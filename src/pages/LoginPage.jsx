@@ -73,7 +73,7 @@ export const LoginPage = memo(() => {
                                 onChange={onLoginInputChange}
                             />
                         </div>
-                        <div className="d-grid input">
+                        <div className="d-grid input ">
                             <button
                                 type="submit"
                                 className="btnSubmit text-white py-2 btn-form "

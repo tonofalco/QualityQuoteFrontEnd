@@ -1,7 +1,6 @@
-import { useEffect } from "react"
+import React, { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom"
 import { useAuthStore } from "../hooks"
-import ClipLoader from "react-spinners/ClipLoader";
 import { Blocks } from 'react-loader-spinner';
 
 import { HomePage, CalendarPage, MapsPage, ConfigPage, ConfigCostsPage, ConfigUsersPage, LoginPage, ConfigKmsTablePage, ConfigClientsPage } from '../pages/'
@@ -14,9 +13,6 @@ export const AppRouter = () => {
 
     const { status, checkAuthToken, user } = useAuthStore()
     const { role } = user
-
-
-
 
     useEffect(() => {
         checkAuthToken()

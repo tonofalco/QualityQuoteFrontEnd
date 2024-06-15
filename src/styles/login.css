@@ -1,3 +1,4 @@
+/* General */
 body {
     overflow-x: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -5,6 +6,7 @@ body {
     padding: 0px;
 }
 
+/* img */
 .logoQuality {
     width: 40%;
     display: block;
@@ -21,9 +23,11 @@ body {
     width: 100% !important;
 }
 
+
 /* Auth */
 .login-form-1 {
     padding: 12% 5% 0% 5%;
+    margin-bottom: 100px;
 }
 
 .login-container form {
@@ -33,12 +37,7 @@ body {
 .login-container form .input .form-control {
     background-color: #f7f7f7;
     margin-bottom: 5%;
-}
 
-.label-form {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 1%;
 }
 
 .btn-form {
@@ -46,10 +45,82 @@ body {
     border-radius: 5px;
     border: none;
     cursor: pointer;
+    color: #fff;
+    padding: 1.5%;
     font-size: 20px;
+    margin-bottom: 5%;
 }
 
 .btn-form:hover {
     opacity: 0.8;
     transition: 0.7s;
+}
+
+/*Form */
+.label-form {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 1%;
+}
+
+/* Modal */
+.ReactModalPortal>div {
+    opacity: 0;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    transition: opacity .2s ease-in-out;
+    z-index: 999;
+}
+
+.modal-fondo {
+    background-color: rgba(0, 0, 0, 0.3);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+}
+
+.ReactModalPortal .ReactModal__Overlay--after-open {
+    opacity: 1;
+}
+
+.ReactModalPortal .ReactModal__Overlay--before-close {
+    opacity: 0;
+}
+
+.modal {
+    background: white;
+    border-radius: 5px;
+    color: rgb(51, 51, 51);
+    display: inline;
+    max-height: 620px;
+    max-width: 500px;
+    outline: none;
+    padding: 10px;
+}
+
+/*FABS*/
+.fab {
+    border-radius: 25%;
+    bottom: 25px;
+    font-size: 30px;
+    padding: 15px;
+    position: fixed;
+    right: 25px;
+    z-index: 100;
+}
+
+.fab-danger {
+    border-radius: 100%;
+    bottom: 25px;
+    font-size: 22px;
+    position: fixed;
+    left: 25px;
+    width: 70px;
+    height: 70px;
 }
