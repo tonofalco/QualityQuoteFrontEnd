@@ -114,12 +114,12 @@ const styles = StyleSheet.create({
 });
 
 
-export const QuotePDF = ({ recipient, vanPrice, formattedStartDay, formattedEndDay, sourceRef, destinationRef, stops }) => {
+export const QuotePDF = ({ recipient, vanPrice, formattedStartDay, formattedEndDay, sourceRef, destinationRef, stopsQuote }) => {
 
     const today = new Date();
     const formattedDate = format(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy", { locale: es });
 
-    const finalList = stops.length + 2
+    const finalList = stopsQuote.length + 2
 
     return (
         <Document>
@@ -162,7 +162,7 @@ export const QuotePDF = ({ recipient, vanPrice, formattedStartDay, formattedEndD
                                         <View style={styles.tableCell_12}><Text style={styles.tableText1}>1. {sourceRef}</Text></View>
                                     </li>
                                     <li>
-                                        {stops.map((stop, index) => <View style={styles.tableCell_12} key={index}><Text style={styles.tableText1}>{index + 2}. {stop}</Text></View>)}
+                                        {stopsQuote.map((stop, index) => <View style={styles.tableCell_12} key={index}><Text style={styles.tableText1}>{index + 2}. {stop}</Text></View>)}
                                     </li>
                                     <li>
                                         <View style={styles.tableCell_12}><Text style={styles.tableText1}>{finalList}. {destinationRef}</Text></View>

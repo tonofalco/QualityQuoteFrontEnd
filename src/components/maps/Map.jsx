@@ -11,7 +11,7 @@ const libraries = ['places'];
 
 export const Map = () => {
 
-    const [mapKey, setMapKey] = useState(0); // Nuevo estado mapKey
+    const [mapKey, setMapKey] = useState(0);
     const [directionsResponse, setDirectionsResponse] = useState(null);
     const [distance, setDistance] = useState('');
     const [time, setTime] = useState('');
@@ -20,8 +20,9 @@ export const Map = () => {
     const [totalDays, setTotalDays] = useState(0);
     const [weekdaysCount, setWeekdaysCount] = useState(null);
     const [weekendCount, setWeekendCount] = useState(null);
-    const [multKms, setMultKms] = useState(false)
+    const [multKms, setMultKms] = useState(false);
     const [stops, setStops] = useState([]);
+    const [stopsQuote, setStopsQuote] = useState([])
     const [currentStop, setCurrentStop] = useState('');
 
     const sourceRef = useRef();
@@ -35,20 +36,15 @@ export const Map = () => {
         libraries: libraries
     });
 
-
     const addStop = () => {
-        if (stops.length < 5) {
-            if (autocompleteRef.current) {
-                const place = autocompleteRef.current.getPlace();
-                if (place && place.name) {
-                    setStops([...stops, place.name]); // Guarda solo el nombre del lugar
-                    setCurrentStop(''); // Restablece el campo de entrada
-                } else {
-                    Swal.fire('Ingrese una parada válida', '', 'warning');
-                }
+        if (autocompleteRef.current) {
+            const place = autocompleteRef.current.getPlace();
+            if (place && place.name) {
+                setStops([...stops, place.name]);
+                setCurrentStop('');
+            } else {
+                Swal.fire('Ingrese una parada válida', '', 'warning');
             }
-        } else {
-            Swal.fire('Si desea cotizar más de 1 parada, por favor comuníquese con un agente de ventas', '', 'warning');
         }
     };
 
@@ -80,6 +76,8 @@ export const Map = () => {
             stopover: true,
         }));
 
+        setStopsQuote(stops)
+
         const directionsRequest = {
             origin: SourceAndDestination.shift(),
             destination: SourceAndDestination.pop(),
@@ -92,7 +90,7 @@ export const Map = () => {
                 setDirectionsResponse(response);
 
                 const route = response.routes[0];
-                
+
                 let totalDistance = 0;
                 let totalDuration = 0;
 
@@ -186,6 +184,7 @@ export const Map = () => {
                                     sourceRef={sourceRef}
                                     destinationRef={destinationRef}
                                     stops={stops}
+                                    stopsQuote={stopsQuote}
                                     distance={distance}
                                     duration={time}
                                     directionsResponse={directionsResponse}

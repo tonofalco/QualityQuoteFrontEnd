@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@antonandirene/react-beautiful-dnd": "^5.0.1",
+    "@hello-pangea/dnd": "^16.6.0",
     "@react-google-maps/api": "^2.19.3",
     "@react-pdf/renderer": "^3.4.2",
     "@reduxjs/toolkit": "^1.8.5",
@@ -17,6 +19,7 @@
     "chart.js": "^4.4.3",
     "date-fns": "2.23.0",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-big-calendar": "^1.8.1",
     "react-bootstrap": "^2.7.2",
     "react-chartjs-2": "^5.2.0",

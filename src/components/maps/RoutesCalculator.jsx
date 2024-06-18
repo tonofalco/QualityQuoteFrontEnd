@@ -6,7 +6,7 @@ import { PrintRouteModal } from './PrintRouteModal';
 
 
 
-export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms, startDate, endDate }) => {
+export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms, startDate, endDate }) => {
 
     const [show, setShow] = useState(false);
     const toggleModalPrint = () => setShow(prevShow => !prevShow);
@@ -47,6 +47,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
     const costoPrimerDiaSpt = (distancia * multKmsSpt)
     const precioFinalSpt = Math.round(parseFloat(costoPrimerDiaSpt) + parseFloat(diasSprinterGeneral))
 
+    console.log(stopsQuote)
 
 
     return (
@@ -102,7 +103,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                         <div className="col-12">
                                             <ol className='list-group list-group-numbered'>
                                                 <li className='list-group-item'>{sourceRef.current.value}</li>
-                                                {stops.map((stop, index) => <li key={index} className='list-group-item'>{stop}</li>)}
+                                                {stopsQuote.map((stop, index) => <li key={index} className='list-group-item'>{stop}</li>)}
                                                 <li className='list-group-item'>{destinationRef.current.value}</li>
                                             </ol>
 
@@ -125,6 +126,21 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                 <Accordion.Body style={{ padding: 0 }}>
                                     <div className="row mx-0 my-1">
 
+                                        <div className="col-12">
+                                            <span><b>Formula:</b> (kms * mult) + dias</span><br />
+                                            <span><b>- precio final Van:</b> {distancia} * {multKmsValue} = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span><br />
+                                            <span><b>- precio final Spt:</b> {distancia} * {multKmsSpt} = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
+                                        </div>
+                                        <hr />
+
+                                        <div className="col-12">
+                                            <span><b>- Dia extra entre semana:</b> {weekdaysCount} * {totalEs} = {currencyFormatMx(diasEntreSemanaCosto)}</span><br />
+                                            <span><b>- Dia extra fin de semana:</b> {weekendCount} * {totalFs} = {currencyFormatMx(diasFinSemanaCosto)}</span><br />
+                                            <span><b>Total dias extras:</b> {diasEntreSemanaCosto} + {diasFinSemanaCosto} = {currencyFormatMx(totalDiasCosto)} </span>
+                                        </div>
+
+                                        <hr />
+
                                         <div className="col-6">
                                             <span><b>Costes primer dia:</b></span><br />
                                             <span className=''>- <i>Entre semana:</i> kms * {multKmsValueEs}</span><br />
@@ -136,18 +152,10 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                                             <span className=''>- <i>Entre semana</i>: ${totalEs}</span><br />
                                             <span className=''>- <i>Fin de semana:</i> ${totalFs}</span>
                                         </div>
-                                        <hr />
-                                        <div className="col-12">
-                                            <span><b>Dias extras entre semana:</b> {weekdaysCount} * {totalEs} = {currencyFormatMx(diasEntreSemanaCosto)}</span><br />
-                                            <span><b>Dias extras fin de semana:</b> {weekendCount} * {totalFs} = {currencyFormatMx(diasFinSemanaCosto)}</span><br />
-                                            <span><b>Total dias extras:</b> {diasEntreSemanaCosto} + {diasFinSemanaCosto} = {currencyFormatMx(totalDiasCosto)} </span>
-                                        </div>
-                                        <hr />
-                                        <div className="col-12">
-                                            <span><b>Formula:</b> (kms * mult) + dias</span><br />
-                                            <span><b>precio final Van:</b> {distancia} * {multKmsValue} = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span><br />
-                                            <span><b>precio final Spt:</b> {distancia} * {multKmsSpt} = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
-                                        </div>
+
+
+
+
 
                                     </div>
                                 </Accordion.Body>
@@ -163,7 +171,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, distance, d
                             startDate={startDate}
                             endDate={endDate}
                             sourceRef={sourceRef.current.value}
-                            stops={stops}
+                            stopsQuote={stopsQuote}
                             destinationRef={destinationRef.current.value}
                         />
 

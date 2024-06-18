@@ -12,7 +12,7 @@ import { useForm, useUiStore } from "../../hooks"
 import { QuotePDF } from './QuotePDF';
 
 
-export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFinalSpt, sourceRef, stops, destinationRef, startDate, endDate }) => {
+export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFinalSpt, sourceRef, stopsQuote, destinationRef, startDate, endDate }) => {
 
     const { customStyles } = useUiStore()
 
@@ -43,7 +43,7 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
                     startDate={startDate}
                     endDate={endDate}
                     sourceRef={sourceRef}
-                    stops={stops}
+                    stopsQuote={stopsQuote}
                     destinationRef={destinationRef}
                 // precioVan={precioVan}
                 />} fileName={'Cotizacion_'}>
@@ -107,7 +107,7 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
 
                 <ol className='list-group list-group-numbered'>
                     <li className='list-group-item'>{sourceRef}</li>
-                    {stops.map((stop, index) => <li key={index} className='list-group-item'>{stop}</li>)}
+                    {stopsQuote.map((stop, index) => <li key={index} className='list-group-item'>{stop}</li>)}
                     <li className='list-group-item'>{destinationRef}</li>
                 </ol>
 
@@ -152,7 +152,7 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
                                 formattedStartDay={formattedStartDay}
                                 formattedEndDay={formattedEndDay}
                                 sourceRef={sourceRef}
-                                stops={stops}
+                                stopsQuote={stopsQuote}
                                 destinationRef={destinationRef}
                             />} fileName={'Cotizacion_'}>
                         {({ loading }) => loading

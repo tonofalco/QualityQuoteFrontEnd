@@ -1,4 +1,5 @@
 import { Autocomplete } from '@react-google-maps/api';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -31,6 +32,16 @@ export const MapBox = (
     // console.log(stops.length);
     // console.log(autocompleteRef);
     // console.log(setMapKey);
+
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+
+        const reorderedStops = Array.from(stops);
+        const [movedStop] = reorderedStops.splice(result.source.index, 1);
+        reorderedStops.splice(result.destination.index, 0, movedStop);
+
+        setStops(reorderedStops);
+    };
 
     const clearRoute = () => {
         setDirectionsResponse(null);
@@ -76,61 +87,65 @@ export const MapBox = (
                             }
                         }}
                     >
-                        <div className="input-group"> {/* Contenedor para input y botón */}
+                        <div className="input-group">
                             <input
                                 type="text"
                                 className="form-control"
                                 placeholder="Ingrese una parada"
                                 value={currentStop}
-                                // ref={autocompleteRef}
                                 onChange={(e) => setCurrentStop(e.target.value)}
                             />
                             <div className="input-group-append">
                                 <button
-                                    type={stops.length <= 1 ? "button" : "submit"}
+                                    type="button"
                                     className="btn btn-success"
-                                    onClick={() => {
-                                        addStop()
-                                        // calculateRoute() // Llama a la segunda función después de la primera
-                                    }}
-                                ><i className="fa-solid fa-plus"></i>
+                                    onClick={addStop}
+                                >
+                                    <i className="fa-solid fa-plus"></i>
                                 </button>
                             </div>
                         </div>
                     </Autocomplete>
 
-                    <ul className="border border-black rounded" style={{ paddingLeft: 10 }}> {/* Lista de paradas */}
-                        {stops.map((stop, index) => (
+                    <DragDropContext onDragEnd={onDragEnd}>
+                        <Droppable droppableId="stops">
+                            {(provided) => (
+                                <ul className="border border-black rounded" style={{ paddingLeft: 10 }} {...provided.droppableProps} ref={provided.innerRef}>
+                                    {stops.map((stop, index) => (
+                                        <Draggable key={`${stop}-${index}`} draggableId={`${stop}-${index}`} index={index}>
+                                            {(provided) => (
+                                                <li className="d-flex justify-content-between align-items-center my-2"
+                                                    ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                    <span className='hidden-text'>{stop}</span>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-danger"
+                                                        onClick={() => removeStop(index)}
+                                                    >
+                                                        <i className="fa-solid fa-minus"></i>
+                                                    </button>
+                                                </li>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </ul>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
 
-                            <li key={index} className="d-flex justify-content-between align-items-center my-2">
 
-                                <span className='hidden-text'>{stop}</span>
-                                <button
-                                    type="submit"
-                                    className="btn btn-danger"
-                                    onClick={() => {
-                                        removeStop(index);       // Llama a la primera función
-                                        // calculateRoute(); // Llama a la segunda función después de la primera
-                                    }} >
-                                    <i className="fa-solid fa-minus"></i>
-                                </button>
-                            </li>
+                    {/* <input className='form-control mb-3' type='text' placeholder='Ingresa destino' ref={destinationRef} /> */}
+                    <select
+                        type='text'
+                        className='form-select mb-3'
+                        placeholder='Ingresa destino'
+                        ref={destinationRef}
+                    ><option value="" disabled>Seleccione destino</option>
+                        {routesOptions.map((route) => (
+                            <option value={route} key={route}>{route}</option>
                         ))}
-                    </ul>
-
-                    <Autocomplete>
-                        {/* <input className='form-control mb-3' type='text' placeholder='Ingresa destino' ref={destinationRef} /> */}
-                        <select
-                            type='text'
-                            className='form-select mb-3'
-                            placeholder='Ingresa destino'
-                            ref={destinationRef}
-                        ><option value="" disabled>Seleccione destino</option>
-                            {routesOptions.map((route) => (
-                                <option value={route} key={route}>{route}</option>
-                            ))}
-                        </select>
-                    </Autocomplete>
+                    </select>
 
                     <hr />
 
