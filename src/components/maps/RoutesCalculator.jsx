@@ -47,9 +47,6 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
     const costoPrimerDiaSpt = (distancia * multKmsSpt)
     const precioFinalSpt = Math.round(parseFloat(costoPrimerDiaSpt) + parseFloat(diasSprinterGeneral))
 
-    console.log(stopsQuote)
-
-
     return (
         <>
             <div className='me-3 ms-4 ms-md-0 mb-3' id='titulo'>
