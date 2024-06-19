@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
 
 });
 
-export const PDF = ({ transportNumber, transport, seats, nameClient, phone, departure, destination, dateStart, dateEnd, timeStart, timeEnd, notes, price, advance, due }) => {
+export const PDF = ({ transportNumber, transport, seats, nameClient, phone, departure, destination, dateStart, dateEnd, timeStart, timeEnd, notes, status, price, advance, due }) => {
 
     const noteValue = notes.length <= 0 ? '-' : notes
 
@@ -103,6 +103,7 @@ export const PDF = ({ transportNumber, transport, seats, nameClient, phone, depa
     return (
         <Document>
             <Page style={styles.page}>
+                    <Text style={styles.text__clauses}>st. {status}</Text>
 
                 <View style={styles.section_header}>
                     <Image style={styles.image} src={Logo} />
@@ -118,6 +119,9 @@ export const PDF = ({ transportNumber, transport, seats, nameClient, phone, depa
                 <View style={styles.section_body}>
                     {/* <Text style={styles.subtitle}>Chilpancingo de los Bravos a XX de XXXXX del XXXX</Text> */}
                     <Text style={styles.subtitle}>{formattedDate}</Text>
+
+
+
                 </View>
                 <View style={styles.section_body}>
                     <Text style={styles.subtitle}>ESTA EMPRESA CONVIENE EN PROPORCIONAR UN SERVICIO DE EXCURSIÓN EN LOS TÉRMINOS Y CONDICIONES QUE A CONTINUACIÓN SE PRECISAN, RECONOCIENDO A LOS INTERESADOS QUE EL MISMO </Text>
@@ -190,20 +194,19 @@ export const PDF = ({ transportNumber, transport, seats, nameClient, phone, depa
                         <Text style={styles.text__evet_value}>{due}</Text>
                     </View>
                 </View>
+
                 <View style={styles.section_body}>
                     <Text style={styles.text__clauses}>* EL CONTRATANTE SERÁ RESPONSABLE DE LOS DESPERFECTOS CAUSADOS A LA UNIDAD EN SERVICIO.</Text>
                     <Text style={styles.text__clauses}>* EL NÚMERO DE PASAJEROS NO EXCEDERÁ DE LO INDICADO.</Text>
                     <Text style={styles.text__clauses}>* AL INICIAR EL VIAJE SE LIQUIDARÁ EL TOTAL DEL SERVICIO.</Text>
                     <Text style={styles.text__clauses}>* ESTE CONTRATO NO INLCUYE ESTACIONAMIENTOS.</Text>
                 </View>
+
                 <View style={styles.section_footer}>
                     <Text style={styles.text__firms}>FIRMA CLIENTE</Text>
                     <Text style={styles.text__firms}>VIAJES QUALITY</Text>
-                    {/* <View>
-                        <Text>RFC. GACJ900923DE6</Text>
-                    </View> */}
-
                 </View>
+
             </Page>
         </Document>
     );

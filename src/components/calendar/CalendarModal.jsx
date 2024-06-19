@@ -460,6 +460,7 @@ export const CalendarModal = () => {
                                             price={formattedPrice}
                                             advance={formattedAdvance}
                                             due={formattedDue}
+                                            status={status}
                                         />} fileName={fileName}>
                                     {({ loading }) => loading
                                         ? (<button className="btn btn-outline-primary" disabled>Cargando</button>)
