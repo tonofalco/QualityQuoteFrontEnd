@@ -13,12 +13,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import es from 'date-fns/locale/es';
 import { useAuthStore, useCalendarStore, useUiStore } from '../../hooks';
 import { PDF } from './PDF';
-import { currencyFormatMx } from '../../helpers';
+import { currencyFormatMx, customDateFormat } from '../../helpers';
 
-Modal.setAppElement('#root');
 
 export const CalendarModal = () => {
 
+    Modal.setAppElement('#root');
     registerLocale('es', es);
 
     const { isDateModalOpen, closeDateModal, isModalViewOpen, closeViewModal, openDateModal, customStyles } = useUiStore()
@@ -134,6 +134,13 @@ export const CalendarModal = () => {
             });
         }
     };
+
+
+    const dateStartEs = customDateFormat(start, "dd/MM/yyyy")
+    const timeStartEs = start.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+    const dateEndEs = customDateFormat(end, "dd/MM/yyyy")
+    const timeEndEs = end.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+
 
     const namePDF = nameClient.split(' ')[1] ? `${nameClient.split(' ')[0]}_${nameClient.split(' ')[1]}` : `${nameClient.split(' ')[0]}`
     const destinationPDF = destination.split(' ')[1] ? `${destination.split(' ')[0]}_${destination.split(' ')[1]}` : `${destination.split(' ')[0]}`
@@ -419,10 +426,10 @@ export const CalendarModal = () => {
                                             phone={phone}
                                             departure={departure}
                                             destination={destination}
-                                            dateStart={start.toLocaleDateString()}
-                                            dateEnd={end.toLocaleDateString()}
-                                            timeStart={start.toLocaleTimeString()}
-                                            timeEnd={end.toLocaleTimeString()}
+                                            dateStart={dateStartEs}
+                                            dateEnd={dateEndEs}
+                                            timeStart={timeStartEs}
+                                            timeEnd={timeEndEs}
                                             notes={notes}
                                             price={formattedPrice}
                                             advance={formattedAdvance}

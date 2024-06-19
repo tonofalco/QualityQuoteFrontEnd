@@ -119,6 +119,7 @@ export const QuotePDF = ({ recipient, vanPrice, formattedStartDay, formattedEndD
     const today = new Date();
     const formattedDate = format(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy", { locale: es });
 
+
     const finalList = stopsQuote.length + 2
 
     return (

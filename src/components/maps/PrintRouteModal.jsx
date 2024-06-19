@@ -8,11 +8,16 @@ import { PDFDownloadLink } from '@react-pdf/renderer'
 import { format } from 'date-fns/esm';
 import es from 'date-fns/locale/es';
 
+import { customDateFormat } from '../../helpers'
 import { useForm, useUiStore } from "../../hooks"
 import { QuotePDF } from './QuotePDF';
 
 
 export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFinalSpt, sourceRef, stopsQuote, destinationRef, startDate, endDate }) => {
+
+    Modal.setAppElement('#root');
+
+
 
     const { customStyles } = useUiStore()
 
@@ -34,26 +39,6 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
         );
     };
 
-    const generatePDF = () => {
-        <PDFDownloadLink
-            document={
-                <QuotePDF
-                    recipient={recipient}
-                    vanPrice={vanPrice}
-                    startDate={startDate}
-                    endDate={endDate}
-                    sourceRef={sourceRef}
-                    stopsQuote={stopsQuote}
-                    destinationRef={destinationRef}
-                // precioVan={precioVan}
-                />} fileName={'Cotizacion_'}>
-            {({ loading }) => loading
-                ? (<button type='button' className="btn btn-outline-primary" disabled>Cargando</button>)
-                : (<button type='button' className="btn btn-outline-primary">Descargar PDF</button>)
-            }
-        </PDFDownloadLink>
-    }
-
     //Funcion para Crear PDF con datos actualizados
     const handleFormQuote = async (e) => {
         e.preventDefault();
@@ -66,12 +51,14 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
                 vanPrice: vanPrice,
                 sptPrice: sptPrice
             });
-            generatePDF()
         }
     };
 
+    const fileNamePDF = `Cotizacion - ${recipient} - ${stopsQuote}`
+
     const formattedStartDay = format(startDate, "dd 'de' MMMM 'del' yyyy", { locale: es })
     const formattedEndDay = format(endDate, "dd 'de' MMMM 'del' yyyy", { locale: es })
+
 
 
     return (
@@ -154,7 +141,7 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
                                 sourceRef={sourceRef}
                                 stopsQuote={stopsQuote}
                                 destinationRef={destinationRef}
-                            />} fileName={'Cotizacion_'}>
+                            />} fileName={fileNamePDF}>
                         {({ loading }) => loading
                             ? (<button type='button' className="btn btn-outline-primary" disabled>Cargando</button>)
                             : (<button type='button' className="btn btn-outline-primary">Descargar PDF</button>)

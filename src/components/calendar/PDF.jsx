@@ -5,6 +5,8 @@ import Logo from '../../assets/img/logoGuerrero.png'
 import datosAgencia from '../../assets/img/datosAgencia.png'
 import { MontserratFonts } from '../../assets/fonts';
 
+
+
 Object.entries(MontserratFonts).forEach(([weight, font]) => {
     Font.register({ family: `Montserrat-${weight}`, src: font });
 });
