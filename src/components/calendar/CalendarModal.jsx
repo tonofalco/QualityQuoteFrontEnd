@@ -25,6 +25,7 @@ export const CalendarModal = () => {
     const { activeEvent, starSavingEvent, StartDeletingEvent } = useCalendarStore()
     const { user } = useAuthStore()
 
+    const [currentStatus, setCurrentStatus] = useState('');
     const [formValues, setFormValues] = useState({
         Usuario: '',
         transportNumber: '',
@@ -39,10 +40,10 @@ export const CalendarModal = () => {
         notes: '',
         price: '',
         advance: '',
-        // title: '',
+        status: '',
     })
 
-    const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, price, advance, Usuario } = formValues
+    const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, status, price, advance, Usuario } = formValues
 
     useEffect(() => { activeEvent !== null && setFormValues({ ...activeEvent }) }, [activeEvent])
 
@@ -96,6 +97,7 @@ export const CalendarModal = () => {
 
         // Verificar campos obligatorios
         if (
+            !formValues.status ||
             !formValues.transportNumber ||
             !formValues.transport ||
             !formValues.seats ||
@@ -135,7 +137,7 @@ export const CalendarModal = () => {
         }
     };
 
-
+    const statusOptions = ['nuevo', 'abono'];
     const dateStartEs = customDateFormat(start, "dd/MM/yyyy")
     const timeStartEs = start.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
     const dateEndEs = customDateFormat(end, "dd/MM/yyyy")
@@ -165,11 +167,33 @@ export const CalendarModal = () => {
             >
                 {/* {formValues.Usuario.name.length >= 1 ? <h1>Editar reserva</h1> : <h1>Crear reserva</h1> } */}
 
-                <h1>Formulario reserva</h1>
+                <h1 className='text-center'>Formulario reserva</h1>
                 <hr />
                 <form className="container" onSubmit={onSubmit}>
 
                     <div className="row mb-3">
+
+                        <div className="col-5 d-flex align-items-center justify-content-center ">
+                            <span>Status*:</span>
+                            <select
+                                type="text"
+                                className={`form-select ms-2 ${
+                                    status === 'nuevo' ? 'text-primary' : 
+                                    status === 'abono' ? 'text-warning' : ''
+                                }`}
+                                id="status"
+                                aria-label="Seleccione una ciudad"
+                                name='status'
+                                value={status}
+                                onChange={onInputChanged}
+                            >
+                                <option value="" disabled>Seleccione un rol</option>
+                                {statusOptions.map((city) => (
+                                    <option value={city} key={city}>{city}</option>
+                                ))}
+                            </select>
+                        </div>
+
                         <div className="col-7 d-flex align-items-center justify-content-center ">
                             <label htmlFor="transportNumber">Cantidad&nbsp;de&nbsp;transportes*:&nbsp;</label>
                             <input
@@ -183,6 +207,8 @@ export const CalendarModal = () => {
                                 onChange={onInputChanged}
                             />
                         </div>
+
+
                     </div>
 
                     <div className="row mb-3">
