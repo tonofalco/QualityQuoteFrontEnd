@@ -1,8 +1,6 @@
 import { Document, Text, Page, StyleSheet, Image, View, Font } from '@react-pdf/renderer'
-import { format } from 'date-fns/esm';
-import es from 'date-fns/locale/es';
 
-import { currencyFormatMx } from '../../helpers';
+import { currencyFormatMx, customDateFormat } from '../../helpers';
 import Logo from '../../assets/img/logoGuerrero.png'
 import datosAgencia from '../../assets/img/datosAgencia.png'
 import { MontserratFonts } from '../../assets/fonts';
@@ -117,7 +115,7 @@ const styles = StyleSheet.create({
 export const QuotePDF = ({ recipient, vanPrice, formattedStartDay, formattedEndDay, sourceRef, destinationRef, stopsQuote }) => {
 
     const today = new Date();
-    const formattedDate = format(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy", { locale: es });
+    const formattedDate = customDateFormat(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy");
 
 
     const finalList = stopsQuote.length + 2

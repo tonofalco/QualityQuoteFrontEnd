@@ -1,9 +1,10 @@
 import { Document, Text, Page, StyleSheet, Image, View, Font } from '@react-pdf/renderer'
-import { format } from 'date-fns/esm';
-import es from 'date-fns/locale/es';
 import Logo from '../../assets/img/logoGuerrero.png'
 import datosAgencia from '../../assets/img/datosAgencia.png'
 import { MontserratFonts } from '../../assets/fonts';
+import { customDateFormat } from '../../helpers';
+
+
 
 
 
@@ -97,7 +98,7 @@ export const PDF = ({ transportNumber, transport, seats, nameClient, phone, depa
     const noteValue = notes.length <= 0 ? '-' : notes
 
     const today = new Date();
-    const formattedDate = format(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy", { locale: es });
+    const formattedDate = customDateFormat(today, "'Chilpancingo de los Bravos' 'a' dd 'de' MMMM 'del' yyyy");
 
 
     return (
