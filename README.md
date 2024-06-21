@@ -7,5 +7,5 @@
 
 
 ```
-VITE_API_URL=http://localhost:{port}/api
+VITE_API_URL=http://localhost:port/endpoint
 ```
