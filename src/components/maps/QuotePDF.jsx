@@ -187,6 +187,7 @@ export const QuotePDF = ({ recipient, vanPrice, formattedStartDay, formattedEndD
 
                 <View style={styles.section_body}>
                     <Text style={styles.text__clauses}>* En caso de requerir factura, los precios no incluyen el impuesto del IVA.</Text>
+                    <Text style={styles.text__clauses}>* Esta cotizacion no incluye estacionamiento.</Text>
                     <Text style={styles.text__clauses}>* Precios y disponibilidad sujeto a cambios sin previo aviso.</Text>
                     <Text style={styles.text__clauses}>* Este documento es solo una cotización y no representa ningún tipo de contrato.</Text>
                 </View>
