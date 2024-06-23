@@ -1,4 +1,4 @@
-# Calendar APP
+# FRONTEND APP
 
 ## Developent pasos
 
@@ -7,5 +7,5 @@
 
 
 ```
-VITE_API_URL=http://localhost:4000/api
+VITE_API_URL=http://localhost:port/endpoint
 ```
