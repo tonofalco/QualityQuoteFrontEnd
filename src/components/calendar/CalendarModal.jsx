@@ -25,7 +25,6 @@ export const CalendarModal = () => {
     const { activeEvent, starSavingEvent, StartDeletingEvent } = useCalendarStore()
     const { user } = useAuthStore()
 
-    const [currentStatus, setCurrentStatus] = useState('');
     const [formValues, setFormValues] = useState({
         Usuario: '',
         transportNumber: '',
@@ -40,7 +39,7 @@ export const CalendarModal = () => {
         notes: '',
         price: '',
         advance: '',
-        status: '',
+        status: 'nuevo',
     })
 
     const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, status, price, advance, Usuario } = formValues

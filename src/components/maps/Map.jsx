@@ -40,13 +40,16 @@ export const Map = () => {
         if (autocompleteRef.current) {
             const place = autocompleteRef.current.getPlace();
             if (place && place.name) {
-                setStops([...stops, place.name]);
-                setCurrentStop('');
+                setStops([...stops, place.name + ', ' + place.address_components[1].long_name]);
+                console.log(place)
+                setCurrentStop(''); // Restablecer el campo de entrada
             } else {
                 Swal.fire('Ingrese una parada válida', '', 'warning');
             }
         }
     };
+
+    // console.log(stops)
 
     const removeStop = (index) => {
         const updatedStops = [...stops];
