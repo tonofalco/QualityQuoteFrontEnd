@@ -2,31 +2,29 @@ import { useState, useEffect } from 'react';
 import Modal from 'react-modal'
 import Swal from 'sweetalert2';
 
-import { useConfigExtraDayStore, useForm, useUiStore } from '../../hooks';
+import { useConfigSpecialCostsStore, useForm, useUiStore } from '../../hooks';
 
-
-export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
+export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
 
     Modal.setAppElement('#root');
 
     const [selectCost, setSelectCost] = useState({
-        updateCost: '',
-        updateValueEs: 0,
-        updateValueFs: 0,
+        updateKms: 0,
+        updateMult: 0,
+        updateSum: 0,
     })
 
-    const { activeCost, updateCostExtraDay } = useConfigExtraDayStore()
+    const { activeCost, updateCostSpecialCost } = useConfigSpecialCostsStore()
     const { customStyles } = useUiStore()
 
-
-    const { updateCost, updateValueEs, updateValueFs, onInputChange: onUpdateInputChange } = useForm(selectCost)
+    const { updateKms, updateMult, updateSum, onInputChange: onUpdateInputChange } = useForm(selectCost)
 
     //Funcion para validar campos 
     const areFormFieldsFilledUpdate = () => {
         return (
-            updateCost.trim() !== '' &&
-            updateValueEs.toString().trim() &&
-            updateValueFs.toString().trim()
+            updateKms.toString().trim() !== '' &&
+            updateMult.toString().trim() &&
+            updateSum.toString().trim()
         );
     };
 
@@ -34,24 +32,24 @@ export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
     useEffect(() => {
         if (activeCost !== null) {
             setSelectCost({
-                updateCost: activeCost.cost,
-                updateValueEs: activeCost.valueEs,
-                updateValueFs: activeCost.valueFs,
+                updateKms: activeCost.kms,
+                updateMult: activeCost.mult,
+                updateSum: activeCost.sum,
             })
         }
         // console.log(activeCost);
     }, [activeCost])
 
     //Funcion para actualizar un costo
-    const handleUpdateCostExtraDay = async (e) => {
+    const handleUpdatespecialCost = async (e) => {
         e.preventDefault();
         if (!areFormFieldsFilledUpdate()) {
             Swal.fire('Campos vacíos', 'Por favor, completa todos los campos.', 'warning');
         } else {
-            await updateCostExtraDay(activeCost.id, {
-                cost: updateCost,
-                valueEs: updateValueEs,
-                valueFs: updateValueFs,
+            await updateCostSpecialCost(activeCost.id, {
+                kms: updateKms,
+                mult: updateMult,
+                sum: updateSum,
             });
 
             toggleModalUpdate();
@@ -64,6 +62,8 @@ export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
             });
         }
     };
+
+    
 
 
     return (
@@ -81,26 +81,26 @@ export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
                 <hr />
                 <div className="container">
                     <div className="row">
-                        <form onSubmit={handleUpdateCostExtraDay} className="mt-3">
+                        <form onSubmit={handleUpdatespecialCost} className="mt-3">
                             <div className="col-12">
-                                <span>Costo</span>
+                                <span>kms base</span>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Nombre del costo"
-                                    name='updateCost'
-                                    value={updateCost}
+                                    placeholder="kms regla"
+                                    name='updateKms'
+                                    value={updateKms}
                                     onChange={onUpdateInputChange}
                                 />
                             </div>
                             <div className="col-12 mt-3">
-                                <span>valor entre semana</span>
+                                <span>multiplicador de kms</span>
                                 <input
                                     type="number"
                                     className="form-control"
-                                    placeholder="valor del costo entre semana"
-                                    name='updateValueEs'
-                                    value={updateValueEs}
+                                    placeholder="valor del kms"
+                                    name='updateMult'
+                                    value={updateMult}
                                     onChange={onUpdateInputChange}
                                 />
                             </div>
@@ -109,9 +109,9 @@ export const UpdateExtaDayModal = ({show2, toggleModalUpdate}) => {
                                 <input
                                     type="number"
                                     className="form-control"
-                                    placeholder="valor del costo fin de semana"
-                                    name='updateValueFs'
-                                    value={updateValueFs}
+                                    placeholder="suma extra de kms"
+                                    name='updateSum'
+                                    value={updateSum}
                                     onChange={onUpdateInputChange}
                                 />
                             </div>

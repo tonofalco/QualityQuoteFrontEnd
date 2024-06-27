@@ -16,6 +16,8 @@ export * from './config/AdminUsers'
 export * from './config/CreateUserModal'
 export * from './config/UpdateUserModal'
 export * from './config/ConfigOptions'
+export * from './config/SpecialCosts'
+
 
 export * from './home/Home'
 export * from './home/General'
