@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavBar, SideBar, Map, OverlayWhole } from "../components";
-import { useActiveBar, useConfigExtraDayStore, useConfigKmsTableStore } from "../hooks";
+import { useActiveBar, useConfigExtraDayStore, useConfigKmsTableStore, useConfigSpecialCostsStore } from "../hooks";
 import '../styles/overlayShadow.css';
 
 
@@ -9,6 +9,7 @@ export const MapsPage = () => {
 
   const { startLoadingCostsExtraDay } = useConfigExtraDayStore()
   const { startLoadingFsCosts, startLoadingEsCosts } = useConfigKmsTableStore();
+  const {startLoadingSpecialCosts} = useConfigSpecialCostsStore()
   
 
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +22,7 @@ export const MapsPage = () => {
                   startLoadingCostsExtraDay(),
                   startLoadingFsCosts(),
                   startLoadingEsCosts(),
+                  startLoadingSpecialCosts(),
               ]);
           };
           fetchData();

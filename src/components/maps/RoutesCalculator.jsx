@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
-import { useConfigExtraDayStore, useConfigKmsTableStore } from '../../hooks';
+import { useConfigExtraDayStore, useConfigKmsTableStore, useConfigSpecialCostsStore } from '../../hooks';
 import { currencyFormatMx } from '../../helpers';
 import { PrintRouteModal } from './PrintRouteModal';
 
@@ -13,6 +13,8 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
 
     const { costsValue, costsValueWeekend } = useConfigKmsTableStore();
     const { sumaCostoDiaExtraEs, sumaCostoDiaExtraFs, totalEs, totalFs, costs_extraDay } = useConfigExtraDayStore()
+    const { special_costs } = useConfigSpecialCostsStore()
+
 
     const { gasoline, salary, booths, maintenance, utility, supplement } = costsValue
     const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = costsValueWeekend
@@ -29,7 +31,6 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
     //CALCULO MULTKMS PRIMER DIA
     const multKmsValueEs = calcularKms(gasolineEs, salaryEs, boothsEs, maintenanceEs, utilityEs, supplementEs)
     const multKmsValueFs = calcularKms(gasoline, salary, maintenance, booths, utility, supplement)
-    const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
 
     //CALCULOS POR DIAS EXTRAS
     const diasEntreSemanaCosto = calcularCosto(weekdaysCount, totalEs);
@@ -37,15 +38,43 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
     const diasSprinterGeneral = calcularCosto(totalDays - 1, 3000)
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
 
+
+
+    let tripType = ''
+    let multKmsValue = 0
+    let sumKmsValue = 0
+
+    if (distancia <= special_costs[0].kms) {
+
+        tripType = 'Cercano'
+        multKmsValue = special_costs[0].mult
+        sumKmsValue = special_costs[0].sum
+
+    } else if (distancia >= special_costs[1].kms) {
+
+        tripType = 'Lejano'
+        multKmsValue = special_costs[1].mult
+        sumKmsValue = special_costs[1].sum
+
+    } else if (distancia > special_costs[0].kms && distancia < special_costs[1].kms) {
+
+        tripType = 'Normal'
+        multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
+
+    }
+
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 15
-    const costoPrimerDia = (distancia * multKmsValue)
+    const costoPrimerDia = (distancia * multKmsValue) + sumKmsValue
     const precioFinal = Math.round(parseFloat(costoPrimerDia) + parseFloat(totalDiasCosto))
 
     let plazasSpt = 20
     const multKmsSpt = 16
     const costoPrimerDiaSpt = (distancia * multKmsSpt)
     const precioFinalSpt = Math.round(parseFloat(costoPrimerDiaSpt) + parseFloat(diasSprinterGeneral))
+
+
+    // const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
 
     return (
         <>
@@ -85,6 +114,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
                         <h4 className='text-muted'>DATOS DE LA COTIZACION:</h4>
                         <div className="row  mb-3">
                             <div className="col-12">
+                                <span><b>Tipo de viaje: </b>{tripType}</span><br />
                                 <span><b>Distancia total: </b>{distancia} kms</span><br />
                                 <span><b>Duracion del viaje: </b>{totalDays} d</span><br />
                                 <span><b>Tiempo total de manejo: </b>{duration}</span><br />
@@ -92,6 +122,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
                         </div>
                         {/* INFORMACION DESGLOSADA  DEL VIAJE */}
                         <Accordion defaultActiveKey="0">
+                            {/* RUTA CALCULADA */}
                             <Accordion.Item eventKey="0">
                                 <Accordion.Header>RUTA CALCULADA</Accordion.Header>
                                 <Accordion.Body style={{ padding: 0 }}>
@@ -118,25 +149,35 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
                                     <br />
                                 </Accordion.Body>
                             </Accordion.Item>
+                            {/* DESGLOSE DE OPERACIONES */}
                             <Accordion.Item eventKey="1">
                                 <Accordion.Header>DESGLOSE DE OPERACIONES</Accordion.Header>
+                                <Accordion.Body style={{ padding: 0 }}>
+                                    {
+                                        tripType == 'Normal'
+                                            ?
+                                            <div className="row mx-0 my-1">
+                                                <span><b>Precio Van:</b> {distancia} * {multKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span> <hr />
+                                                <span><b>Precio Sprinter:</b> {distancia} * {multKmsSpt} <br /> = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
+                                            </div>
+                                            :
+
+                                            <div className="row mx-0 my-1">
+                                                <span><b>Precio Van:</b> ({distancia} * {multKmsValue}) + {sumKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span> <hr />
+                                                <span><b>Precio Sprinter:</b> {distancia} * {multKmsSpt} <br /> = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
+                                            </div>
+                                    }
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            {/* COSTES RENTAS */}
+                            <Accordion.Item eventKey="2">
+                                <Accordion.Header>COSTES RENTAS</Accordion.Header>
                                 <Accordion.Body style={{ padding: 0 }}>
                                     <div className="row mx-0 my-1">
 
                                         <div className="col-12">
-                                            <span><b>Formula:</b> (kms * mult) + dias</span><br />
-                                            <span><b>- precio final Van:</b> {distancia} * {multKmsValue} = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span><br />
-                                            <span><b>- precio final Spt:</b> {distancia} * {multKmsSpt} = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
+                                            <span><b>Formula: </b> (kms * Mult) + Dias</span>
                                         </div>
-                                        <hr />
-
-                                        <div className="col-12">
-                                            <span><b>- Dia extra entre semana:</b> {weekdaysCount} * {totalEs} = {currencyFormatMx(diasEntreSemanaCosto)}</span><br />
-                                            <span><b>- Dia extra fin de semana:</b> {weekendCount} * {totalFs} = {currencyFormatMx(diasFinSemanaCosto)}</span><br />
-                                            <span><b>Total dias extras:</b> {diasEntreSemanaCosto} + {diasFinSemanaCosto} = {currencyFormatMx(totalDiasCosto)} </span>
-                                        </div>
-
-                                        <hr />
 
                                         <div className="col-6">
                                             <span><b>Costes primer dia:</b></span><br />
@@ -145,15 +186,23 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
                                         </div>
 
                                         <div className="col-6">
-                                            <span><b>Costes Dia extra:</b></span><br />
+                                            <span><b>Costes dia extra:</b></span><br />
                                             <span className=''>- <i>Entre semana</i>: ${totalEs}</span><br />
                                             <span className=''>- <i>Fin de semana:</i> ${totalFs}</span>
                                         </div>
+                                        <hr />
 
 
+                                        <div className="col-6">
+                                            <span className=''><b>Destino cercano <br /> menor a {special_costs[0].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[0].mult}) + {special_costs[0].sum}</i></span><br />
+                                            {/* <span className=''><b>Destino lejano mayor a {special_costs[1].kms} kms:</b> <br /> kms * {multKmsValue = special_costs[1].mult} + {special_costs[1].sum}</span><br /> */}
 
-
-
+                                        </div>
+                                        <div className="col-6">
+                                            {/* <span><b>Formula normal:</b> (kms * Mult) + Dias</span><br /> */}
+                                            {/* <span className=''><b>Destino cercano menor a {special_costs[0].kms} kms:</b> <br /> kms * {multKmsValue = special_costs[0].mult} + {special_costs[0].sum}</span><br /> */}
+                                            <span className=''><b>Destino lejano <br /> mayor a {special_costs[1].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[1].mult}) + {special_costs[1].sum}</i></span><br />
+                                        </div>
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>
