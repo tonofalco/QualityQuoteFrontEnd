@@ -82,7 +82,6 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
 
                 {directionsResponse ? (
                     <div>
-                        {/* <hr /> */}
                         {/* PRECIOS FINALES */}
                         <h4 className='text-muted mt-3'>PRECIOS ESTIMADOS:</h4>
                         <table className="table text-center">
@@ -195,12 +194,9 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
 
                                         <div className="col-6">
                                             <span className=''><b>Destino cercano <br /> menor a {special_costs[0].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[0].mult}) + {special_costs[0].sum}</i></span><br />
-                                            {/* <span className=''><b>Destino lejano mayor a {special_costs[1].kms} kms:</b> <br /> kms * {multKmsValue = special_costs[1].mult} + {special_costs[1].sum}</span><br /> */}
 
                                         </div>
                                         <div className="col-6">
-                                            {/* <span><b>Formula normal:</b> (kms * Mult) + Dias</span><br /> */}
-                                            {/* <span className=''><b>Destino cercano menor a {special_costs[0].kms} kms:</b> <br /> kms * {multKmsValue = special_costs[0].mult} + {special_costs[0].sum}</span><br /> */}
                                             <span className=''><b>Destino lejano <br /> mayor a {special_costs[1].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[1].mult}) + {special_costs[1].sum}</i></span><br />
                                         </div>
                                     </div>
