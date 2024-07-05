@@ -38,35 +38,30 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
     const diasSprinterGeneral = calcularCosto(totalDays - 1, 3000)
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
 
-
-
     let tripType = ''
     let multKmsValue = 0
     let sumKmsValue = 0
+    let addDriver = parseInt(duration) / 2 >= 11 ? true : false
 
     if (distancia <= special_costs[0].kms) {
-
         tripType = 'Cercano'
         multKmsValue = special_costs[0].mult
         sumKmsValue = special_costs[0].sum
 
     } else if (distancia >= special_costs[1].kms) {
-
         tripType = 'Lejano'
         multKmsValue = special_costs[1].mult
-        sumKmsValue = special_costs[1].sum
+        sumKmsValue = addDriver ? special_costs[1].sum + 7000 : special_costs[1].sum
 
     } else if (distancia > special_costs[0].kms && distancia < special_costs[1].kms) {
-
         tripType = 'Normal'
         multKmsValue = (multKms ? multKmsValueFs : multKmsValueEs)
-
     }
 
     //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 15
-    const costoPrimerDia = (distancia * multKmsValue) + sumKmsValue
-    const precioFinal = Math.round(parseFloat(costoPrimerDia) + parseFloat(totalDiasCosto))
+    const costoPrimerDia = ((distancia * multKmsValue) + sumKmsValue)
+    const precioFinal = Math.round(parseFloat(costoPrimerDia) + parseFloat(totalDiasCosto)) + (addDriver && 7000)
 
     let plazasSpt = 20
     const multKmsSpt = 16
@@ -113,10 +108,11 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
                         <h4 className='text-muted'>DATOS DE LA COTIZACION:</h4>
                         <div className="row  mb-3">
                             <div className="col-12">
-                                <span><b>Tipo de viaje: </b>{tripType}</span><br />
+                                <span><b>Tipo de viaje: </b>{tripType}</span>{addDriver && <span> + segundo chofer</span>} <br />
                                 <span><b>Distancia total: </b>{distancia} kms</span><br />
                                 <span><b>Duracion del viaje: </b>{totalDays} d</span><br />
                                 <span><b>Tiempo total de manejo: </b>{duration}</span><br />
+
                             </div>
                         </div>
                         {/* INFORMACION DESGLOSADA  DEL VIAJE */}
@@ -137,7 +133,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
                                             <div className='d-flex justify-content-end mt-3'>
                                                 <button
                                                     type="button"
-                                                    className="btn btn-outline-info me-3"
+                                                    className="btn btn-outline-info"
                                                     onClick={() => { toggleModalPrint() }}
                                                 >Imprimir
                                                 </button>
@@ -152,15 +148,22 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
                             <Accordion.Item eventKey="1">
                                 <Accordion.Header>DESGLOSE DE OPERACIONES</Accordion.Header>
                                 <Accordion.Body style={{ padding: 0 }}>
+
                                     {
                                         tripType == 'Normal'
                                             ?
                                             <div className="row mx-0 my-1">
-                                                <span><b>Precio Van:</b> {distancia} * {multKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span> <hr />
+                                                <div className='col-12 text-end'>
+                                                    <span><i>(kms * Mult) + Dias</i></span>
+                                                </div>
+                                                <div className="col-12">
+                                                    <span><b>Precio Van:</b> {distancia} * {multKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} {addDriver && <span> + 7000 </span>} = {currencyFormatMx(precioFinal)}</span>
+                                                </div>
+
+                                                <hr />
                                                 <span><b>Precio Sprinter:</b> {distancia} * {multKmsSpt} <br /> = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
                                             </div>
                                             :
-
                                             <div className="row mx-0 my-1">
                                                 <span><b>Precio Van:</b> ({distancia} * {multKmsValue}) + {sumKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span> <hr />
                                                 <span><b>Precio Sprinter:</b> {distancia} * {multKmsSpt} <br /> = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
@@ -170,13 +173,11 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
                             </Accordion.Item>
                             {/* COSTES RENTAS */}
                             <Accordion.Item eventKey="2">
-                                <Accordion.Header>COSTES RENTAS</Accordion.Header>
+                                <Accordion.Header>COSTES BASE</Accordion.Header>
                                 <Accordion.Body style={{ padding: 0 }}>
                                     <div className="row mx-0 my-1">
 
-                                        <div className="col-12">
-                                            <span><b>Formula: </b> (kms * Mult) + Dias</span>
-                                        </div>
+
 
                                         <div className="col-6">
                                             <span><b>Costes primer dia:</b></span><br />
