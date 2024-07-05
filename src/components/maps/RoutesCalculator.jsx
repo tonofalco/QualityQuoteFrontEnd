@@ -60,8 +60,6 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
 
         tripType = 'Normal'
         multKmsValue = (multKms ? multKmsValueFs : multKmsValueEs)
-        
-        console.log(multKms)
 
     }
 
