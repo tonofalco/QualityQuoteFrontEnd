@@ -6,7 +6,7 @@ import { PrintRouteModal } from './PrintRouteModal';
 
 
 
-export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms, startDate, endDate }) => {
+export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms, startDate, endDate }) => {
 
     const [show, setShow] = useState(false);
     const toggleModalPrint = () => setShow(prevShow => !prevShow);
@@ -59,7 +59,9 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stops, stopsQuote,
     } else if (distancia > special_costs[0].kms && distancia < special_costs[1].kms) {
 
         tripType = 'Normal'
-        multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
+        multKmsValue = (multKms ? multKmsValueFs : multKmsValueEs)
+        
+        console.log(multKms)
 
     }
 
