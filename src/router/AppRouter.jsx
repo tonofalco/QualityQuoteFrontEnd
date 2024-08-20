@@ -4,6 +4,8 @@ import { useAuthStore } from "../hooks"
 import { Blocks } from 'react-loader-spinner';
 
 import { HomePage, CalendarPage, MapsPage, ConfigPage, ConfigCostsPage, ConfigUsersPage, LoginPage, ConfigKmsTablePage, ConfigClientsPage, ConfigSpecialCosts } from '../pages/'
+import { PreviewPDF } from "../components";
+
 
 
 import '../styles/pages.css'
@@ -73,6 +75,7 @@ export const AppRouter = () => {
                                 <Route path="/" element={<HomePage />} />
                                 <Route path="/calendar" element={<CalendarPage />} />
                                 <Route path="/map" element={<MapsPage />} />
+                                <Route path="/map/previewPDF" element={<PreviewPDF />} />
                                 <Route path="/config" element={<ConfigPage />} />
                                 <Route path="/config/costsExtraDay" element={<ConfigCostsPage />} />
                                 <Route path="/config/costTablekms" element={<ConfigKmsTablePage />} />

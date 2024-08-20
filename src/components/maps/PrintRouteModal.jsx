@@ -1,16 +1,15 @@
 
-
-
 import { useState } from 'react'
 import Modal from 'react-modal'
-import { PDFDownloadLink } from '@react-pdf/renderer'
+import { PDFDownloadLink, pdf } from '@react-pdf/renderer'
 
 import { format } from 'date-fns/esm';
 import es from 'date-fns/locale/es';
 
-import { customDateFormat } from '../../helpers'
+// import { customDateFormat } from '../../helpers'
 import { useForm, useUiStore } from "../../hooks"
 import { QuotePDF } from './QuotePDF';
+import { saveAs } from 'file-saver';
 
 
 export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFinalSpt, sourceRef, stopsQuote, destinationRef, startDate, endDate }) => {
@@ -39,7 +38,25 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
         );
     };
 
-    //Funcion para Crear PDF con datos actualizados
+    //Funcion para Visualizar PDF con datos 
+    const handleOpenPDF = async () => {
+        const blob = await pdf(
+            <QuotePDF
+                recipient={recipient}
+                vanPrice={vanPrice}
+                formattedStartDay={formattedStartDay}
+                formattedEndDay={formattedEndDay}
+                sourceRef={sourceRef}
+                stopsQuote={stopsQuote}
+                destinationRef={destinationRef}
+            />
+        ).toBlob();
+
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    };
+
+    //Funcion para Crear PDF con datos
     const handleFormQuote = async (e) => {
         e.preventDefault();
         if (!areFieldsFilledCreate()) {
@@ -102,7 +119,7 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
 
                 <hr />
 
-                <div className="row">
+                <div className="row ">
                     <div className="col-6 mt-3">
                         <span>Precio Final Van</span>
                         <input
@@ -128,10 +145,12 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
                     </div>
                 </div>
 
-
+                <hr />
                 <div className="col-12 mt-3 d-flex justify-content-end">
+                    <button type="button" className="btn btn-outline-primary me-3" onClick={handleOpenPDF}>
+                        Visualizar PDF
+                    </button>
                     <PDFDownloadLink
-                        type="submit"
                         document={
                             <QuotePDF
                                 recipient={recipient}
@@ -141,17 +160,25 @@ export const PrintRouteModal = ({ show, toggleModalPrint, precioFinal, precioFin
                                 sourceRef={sourceRef}
                                 stopsQuote={stopsQuote}
                                 destinationRef={destinationRef}
-                            />} fileName={fileNamePDF}>
-                        {({ loading }) => loading
-                            ? (<button type='button' className="btn btn-outline-primary" disabled>Cargando</button>)
-                            : (<button type='button' className="btn btn-outline-primary">Descargar PDF</button>)
+                            />
+                        }
+                        fileName={fileNamePDF}
+                    >
+                        {({ loading }) =>
+                            loading ? (
+                                <button type="button" className="btn btn-outline-success" disabled>
+                                    Cargando
+                                </button>
+                            ) : (
+                                <button type="button" className="btn btn-outline-success">
+                                    Descargar PDF
+                                </button>
+                            )
                         }
                     </PDFDownloadLink>
                 </div>
             </form>
-
-
-
+            
         </Modal>
     )
 }

@@ -5,7 +5,6 @@ import { currencyFormatMx } from '../../helpers';
 import { PrintRouteModal } from './PrintRouteModal';
 
 
-
 export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distance, duration, directionsResponse, totalDays, weekdaysCount, weekendCount, multKms, startDate, endDate }) => {
 
     const [show, setShow] = useState(false);
@@ -62,6 +61,8 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
     let plazas = 15
     const costoPrimerDia = ((distancia * multKmsValue) + sumKmsValue)
     const precioFinal = Math.round(parseFloat(costoPrimerDia) + parseFloat(totalDiasCosto)) + (addDriver && 7000)
+
+    // console.log(precioFinal)
 
     let plazasSpt = 20
     const multKmsSpt = 16
@@ -157,7 +158,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
                                                     <span><i>(kms * Mult) + Dias</i></span>
                                                 </div>
                                                 <div className="col-12">
-                                                    <span><b>Precio Van:</b> {distancia} * {multKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} {addDriver && <span> + 7000 </span>} = {currencyFormatMx(precioFinal)}</span>
+                                                    <span><b>Precio Van:</b> {distancia} * {multKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span>
                                                 </div>
 
                                                 <hr />
@@ -165,7 +166,7 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
                                             </div>
                                             :
                                             <div className="row mx-0 my-1">
-                                                <span><b>Precio Van:</b> ({distancia} * {multKmsValue}) + {sumKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} = {currencyFormatMx(precioFinal)}</span> <hr />
+                                                <span><b>Precio Van:</b> ({distancia} * {multKmsValue}) + {sumKmsValue} <br /> = {costoPrimerDia} + {totalDiasCosto} {addDriver && <span> + 7000 </span>}  = {currencyFormatMx(precioFinal)}</span> <hr />
                                                 <span><b>Precio Sprinter:</b> {distancia} * {multKmsSpt} <br /> = {costoPrimerDiaSpt} + {diasSprinterGeneral} = {currencyFormatMx(precioFinalSpt)}</span>
                                             </div>
                                     }
