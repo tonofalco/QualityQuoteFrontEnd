@@ -94,18 +94,17 @@ export const CalendarModal = () => {
         event.preventDefault();
         // setformSubmitted(true);
 
+        if(formValues.status == null){formValues.status = 'nuevo'}
+
         // Verificar campos obligatorios
         if (
-            !formValues.status ||
             !formValues.transportNumber ||
             !formValues.transport ||
             !formValues.seats ||
             !formValues.nameClient ||
             !formValues.phone ||
             !formValues.departure ||
-            !formValues.destination ||
-            !formValues.price ||
-            !formValues.advance
+            !formValues.destination
         ) {
             Swal.fire('Campos incompletos', 'Por favor, completa todos los campos obligatorios.', 'error');
             return;
@@ -118,14 +117,14 @@ export const CalendarModal = () => {
             return;
         }
 
-        if (dueValue < 0) {
+        if (dueValue < 0  || formValues.price < 0 || formValues.advance < 0) {
             Swal.fire('Saldo pendiente incorrecto', 'El anticipo no debe ser mayor al precio', 'error');
             return
         }
         await starSavingEvent(formValues);
         closeDateModal();
 
-        if (activeEvent.Usuario.name == user.name || activeEvent.user.name == user.name) {
+
             Swal.fire({
                 icon: 'success',
                 title: '¡Guardado exitoso!',
@@ -133,7 +132,6 @@ export const CalendarModal = () => {
                 showConfirmButton: false,
                 timer: 1900
             });
-        }
     };
 
     const statusOptions = ['nuevo', 'abono'];
@@ -141,6 +139,7 @@ export const CalendarModal = () => {
     const timeStartEs = start.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
     const dateEndEs = customDateFormat(end, "dd/MM/yyyy")
     const timeEndEs = end.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+
 
 
     const namePDF = nameClient.split(' ')[1] ? `${nameClient.split(' ')[0]}_${nameClient.split(' ')[1]}` : `${nameClient.split(' ')[0]}`
@@ -151,7 +150,6 @@ export const CalendarModal = () => {
     const formattedPrice = currencyFormatMx(price);
     const formattedAdvance = currencyFormatMx(advance);
     const formattedDue = currencyFormatMx(dueValue);
-
 
     return (
         <>
@@ -180,15 +178,15 @@ export const CalendarModal = () => {
                                     status === 'nuevo' ? 'text-primary' : 
                                     status === 'abono' ? 'text-warning' : ''
                                 }`}
+                                aria-label="Seleccione una status"
                                 id="status"
-                                aria-label="Seleccione una ciudad"
                                 name='status'
                                 value={status}
                                 onChange={onInputChanged}
                             >
                                 <option value="" disabled>Seleccione un rol</option>
-                                {statusOptions.map((city) => (
-                                    <option value={city} key={city}>{city}</option>
+                                {statusOptions.map((state) => (
+                                    <option value={state} key={state}>{state}</option>
                                 ))}
                             </select>
                         </div>
