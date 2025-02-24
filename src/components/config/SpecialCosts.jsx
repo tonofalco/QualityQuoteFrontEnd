@@ -42,7 +42,10 @@ export const SpecialCosts = ({ special_costs }) => {
                                 <tr>
 
                                     <th scope='row'>Regla</th>
-                                    <th scope='row'>Formula</th>
+                                    <th scope='row'>Formula entre semana</th>
+                                    <th scope='row'>Formula fin semana</th>
+                                    <th scope='row'>Acciones</th>
+
 
                                 </tr>
                             </thead>
@@ -50,7 +53,9 @@ export const SpecialCosts = ({ special_costs }) => {
                                 {special_costs.map((cost, index) => (
                                     <tr key={cost.id}>
                                         <td>{index % 2 === 0 ? `kms < ${cost.kms}` : `kms > ${cost.kms}`}</td>
+                                        <td>{`(kms * ${cost.mult}) + ${cost.sumEs}`}</td>
                                         <td>{`(kms * ${cost.mult}) + ${cost.sum}`}</td>
+
                                         <td>
                                             <button className="btn btn-primary me-3" onClick={() => { onSelect(cost.id); toggleModalUpdate() }}>
                                                 <i className="fa-solid fa-pen"></i>

@@ -42,15 +42,22 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
     let sumKmsValue = 0
     let addDriver = parseInt(duration) / 2 >= 11 ? true : false
 
+    let nearSumValue = (multKms ? special_costs[0].sumEs : special_costs[0].sum)
+    let FarSumValue = (multKms ? special_costs[1].sumEs : special_costs[1].sum)
+
+
+    // console.log(multKms)
+
     if (distancia <= special_costs[0].kms) {
         tripType = 'Cercano'
         multKmsValue = special_costs[0].mult
-        sumKmsValue = special_costs[0].sum
+        sumKmsValue = nearSumValue
+        // sumKmsValue = special_costs[0].sum
 
     } else if (distancia >= special_costs[1].kms) {
         tripType = 'Lejano'
         multKmsValue = special_costs[1].mult
-        sumKmsValue = addDriver ? special_costs[1].sum + 7000 : special_costs[1].sum
+        sumKmsValue = addDriver ? FarSumValue + 7000 : FarSumValue
 
     } else if (distancia > special_costs[0].kms && distancia < special_costs[1].kms) {
         tripType = 'Normal'
@@ -195,11 +202,11 @@ export const RoutesCalculator = ({ sourceRef, destinationRef, stopsQuote, distan
 
 
                                         <div className="col-6">
-                                            <span className=''><b>Destino cercano <br /> menor a {special_costs[0].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[0].mult}) + {special_costs[0].sum}</i></span><br />
+                                            <span className=''><b>Destino cercano <br /> menor a {special_costs[0].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[0].mult}) + {nearSumValue}</i></span><br />
 
                                         </div>
                                         <div className="col-6">
-                                            <span className=''><b>Destino lejano <br /> mayor a {special_costs[1].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[1].mult}) + {special_costs[1].sum}</i></span><br />
+                                            <span className=''><b>Destino lejano <br /> mayor a {special_costs[1].kms} kms:</b> <br /> - <i>(kms * {multKmsValue = special_costs[1].mult}) + {FarSumValue}</i></span><br />
                                         </div>
                                     </div>
                                 </Accordion.Body>

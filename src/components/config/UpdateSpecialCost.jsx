@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 import { useConfigSpecialCostsStore, useForm, useUiStore } from '../../hooks';
 
-export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
+export const UpdateSpecialCost = ({ show2, toggleModalUpdate }) => {
 
     Modal.setAppElement('#root');
 
@@ -12,19 +12,22 @@ export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
         updateKms: 0,
         updateMult: 0,
         updateSum: 0,
+        updateSumEs: 0,
+
     })
 
     const { activeCost, updateCostSpecialCost } = useConfigSpecialCostsStore()
     const { customStyles } = useUiStore()
 
-    const { updateKms, updateMult, updateSum, onInputChange: onUpdateInputChange } = useForm(selectCost)
+    const { updateKms, updateMult, updateSum, updateSumEs, onInputChange: onUpdateInputChange } = useForm(selectCost)
 
     //Funcion para validar campos 
     const areFormFieldsFilledUpdate = () => {
         return (
             updateKms.toString().trim() !== '' &&
             updateMult.toString().trim() &&
-            updateSum.toString().trim()
+            updateSum.toString().trim() &&
+            updateSumEs.toString().trim()
         );
     };
 
@@ -35,6 +38,7 @@ export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
                 updateKms: activeCost.kms,
                 updateMult: activeCost.mult,
                 updateSum: activeCost.sum,
+                updateSumEs: activeCost.sumEs
             })
         }
         // console.log(activeCost);
@@ -50,6 +54,7 @@ export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
                 kms: updateKms,
                 mult: updateMult,
                 sum: updateSum,
+                sumEs: updateSumEs,
             });
 
             toggleModalUpdate();
@@ -63,13 +68,13 @@ export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
         }
     };
 
-    
+
 
 
     return (
         <>
-        {/* MODAL ACTUALIZAR USUARIO */}
-        <Modal
+            {/* MODAL ACTUALIZAR USUARIO */}
+            <Modal
                 isOpen={show2}
                 onRequestClose={toggleModalUpdate}
                 style={customStyles}
@@ -105,7 +110,18 @@ export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
                                 />
                             </div>
                             <div className="col-12 mt-3">
-                                <span>valor fin de semana</span>
+                                <span>suma entre semana</span>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="suma extra de kms"
+                                    name='updateSumEs'
+                                    value={updateSumEs}
+                                    onChange={onUpdateInputChange}
+                                />
+                            </div>
+                            <div className="col-12 mt-3">
+                                <span>suma fin de semana</span>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -115,6 +131,7 @@ export const UpdateSpecialCost = ({show2, toggleModalUpdate}) => {
                                     onChange={onUpdateInputChange}
                                 />
                             </div>
+
                             <div className="col-12 mt-3 d-flex justify-content-end">
                                 <button
                                     type="submit"
