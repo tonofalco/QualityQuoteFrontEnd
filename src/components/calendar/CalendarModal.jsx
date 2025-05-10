@@ -404,7 +404,7 @@ export const CalendarModal = () => {
                 closeTimeoutMS={200}
             >
                 <h1 className='text-center'>Reserva registrada</h1>
-                <h6 className='text-center'>Creada por {Usuario.name}</h6>
+                <h6 className='text-center'>Creada por {user.name}</h6>
                 <hr />
 
                 <div className="container">

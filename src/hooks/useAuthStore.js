@@ -5,6 +5,8 @@ import { clearErrorMessage, onSelectedUser, onChecking, onLogin, onLogout, onLog
 
 export const useAuthStore = () => {
 
+    const EndpointRouteName = 'users'
+
     const { status, user, errorMessage, activeUser } = useSelector(state => state.auth)
     const usersValue = useSelector((state) => state.auth.users)
 
@@ -17,7 +19,7 @@ export const useAuthStore = () => {
 
         try {
 
-            const { data } = await serverApi.get('auth/renew')
+            const { data } = await serverApi.get(`${EndpointRouteName}/renew`)
             // console.log('Renew response:', data);
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
@@ -37,7 +39,7 @@ export const useAuthStore = () => {
         dispatch(onChecking())
 
         try {
-            const { data } = await serverApi.post('/auth', { email, password })
+            const { data } = await serverApi.post(`/${EndpointRouteName}`, { email, password })
             localStorage.setItem('token', data.token)
             localStorage.setItem('token-init-date', new Date().getTime())
             dispatch(onLogin({ name: data.name, uid: data.uid, role: data.role }))
@@ -62,7 +64,7 @@ export const useAuthStore = () => {
     // OBTENER USUARIOS
     const startLoadingUsers = async () => {
         try {
-            const { data } = await serverApi.get('/auth');
+            const { data } = await serverApi.get(`${EndpointRouteName}`);
             // console.log(data);
             const usuarios = data.usuarios;
             dispatch(onLoadUsers(usuarios)); // Pasar 'usuarios' como argumento
@@ -82,7 +84,7 @@ export const useAuthStore = () => {
     const startRegister = async ({ name, email, role, password }) => {
 
         try {
-            await serverApi.post('/auth/new', { name, email, role, password })
+            await serverApi.post(`${EndpointRouteName}/new`, { name, email, role, password })
             // console.log(user.name);
             dispatch(onLogin({ name: user.name, uid: user.uid, role: user.role }))
             startLoadingUsers()
@@ -101,7 +103,7 @@ export const useAuthStore = () => {
     const deleteUser = async (userId) => {
         // dispatch(onDeleteUser(userId)); // Llama al action creator para eliminar un usuario por su ID
         try {
-            await serverApi.delete(`/auth/${userId}`)
+            await serverApi.delete(`/${EndpointRouteName}/${userId}`)
             dispatch(onDeleteUser(userId));
             startLoadingUsers()
         } catch (error) {
@@ -113,7 +115,7 @@ export const useAuthStore = () => {
     //ACTUALIZAR USUARIO POR ID
     const updateUser = async (userId, updatedUserInfo) => {
         try {
-            const { data } = await serverApi.put(`/auth/${userId}`, updatedUserInfo);
+            const { data } = await serverApi.put(`/${EndpointRouteName}/${userId}`, updatedUserInfo);
             dispatch(onUpdateUser({ userId, updatedUserInfo: data })); // Actualizar el usuario en el estado
             startLoadingUsers()
         } catch (error) {

@@ -214,7 +214,7 @@ export const CalendarList = () => {
                                     <td>{currencyFormatMx(event.price)}</td>
                                     <td>{currencyFormatMx(event.advance)}</td>
                                     <td>{currencyFormatMx(event.price - event.advance)}</td>
-                                    <td>{event.Usuario.name}</td>
+                                    <td>{event.user.name}</td>
                                     <td className='ps-1'>
                                         <button className="btn btn-primary btn-sm me-3" onClick={() => { onSelect(event.id) }}>
                                             <i className="fa-regular fa-file-lines"></i>
