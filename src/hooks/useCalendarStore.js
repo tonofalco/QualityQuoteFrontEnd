@@ -7,6 +7,8 @@ import { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadEv
 
 export const useCalendarStore = () => {
 
+    const EndpointRouteName = 'earthEvents'
+
     const dispatch = useDispatch()
 
     const { activeEvent, events } = useSelector(state => state.calendar)
@@ -33,12 +35,12 @@ export const useCalendarStore = () => {
 
             if (calendarEvent.id) {
                 // Actualizando
-                const { data } = await serverApi.put(`/events/${calendarEvent.id}`, calendarEvent)
+                const { data } = await serverApi.put(`/${EndpointRouteName}/${calendarEvent.id}`, calendarEvent)
                 dispatch(onUpdateEvent({ ...calendarEvent, user }))
                 return;
             }
             // Creando
-            const { data } = await serverApi.post('/events', calendarEvent)
+            const { data } = await serverApi.post(`/${EndpointRouteName}`, calendarEvent)
             dispatch(onAddNewEvent({ ...calendarEvent, id: data.evento.id, user }))
 
         } catch (error) {
@@ -54,7 +56,7 @@ export const useCalendarStore = () => {
         //TODO: llegar al backend
 
         try {
-            const { data } = await serverApi.delete(`/events/${activeEvent.id}`)
+            const { data } = await serverApi.delete(`/${EndpointRouteName}/${activeEvent.id}`)
             dispatch(onDeleteEvent());
         } catch (error) {
             console.log(error);
@@ -65,7 +67,7 @@ export const useCalendarStore = () => {
 
     const startLoadingEvent = async () => {
         try {
-            const { data } = await serverApi.get('/events')
+            const { data } = await serverApi.get(`${EndpointRouteName}`)
             const events = convertToDateEvents(data.eventos)
             dispatch(onLoadEvents(events))
             // console.log(data)

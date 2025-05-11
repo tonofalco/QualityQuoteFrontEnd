@@ -5,6 +5,8 @@ import { onEditKms, onLoadCostsSuccess, onLoadCostsEsSuccess, onLoadTotalSumKmsT
 
 export const useConfigKmsTableStore = () => {
 
+    const EndpointRouteName = 'firstDayCosts'
+
     const { editKms, totalKmsEs, totalKmsFs } = useSelector(state => state.configKmsTable)
     const costsValue = useSelector((state) => state.configKmsTable.costos); //array
     const costsValueWeekend = useSelector((state) => state.configKmsTable.costosFinSemana); //array
@@ -49,7 +51,7 @@ export const useConfigKmsTableStore = () => {
     // OBTENER COSTOS KMS TABLA FIN DE SEMANA
     const startLoadingFsCosts = async () => {
         try {
-            const { data } = await serverApi.get('/cost/kmsTable');
+            const { data } = await serverApi.get(`/cost/${EndpointRouteName}`);
             const costesFs = data.costesKms[1];
             dispatch(onLoadCostsSuccess(costesFs)); // Pasar los datos cargados al estado
         } catch (error) {
@@ -61,7 +63,7 @@ export const useConfigKmsTableStore = () => {
     // OBTENER COSTOS KMS TABLA ENTRE SEMANA
     const startLoadingEsCosts = async () => {
         try {
-            const { data } = await serverApi.get('/cost/kmsTable');
+            const { data } = await serverApi.get(`/cost/${EndpointRouteName}`);
             const costesEs = data.costesKms[0];
             dispatch(onLoadCostsEsSuccess(costesEs)); // Pasar los datos cargados al estado
         } catch (error) {
@@ -74,7 +76,7 @@ export const useConfigKmsTableStore = () => {
     const handleUpdateFsCosts = (newCostsData) => {
         return async () => {
             try {
-                await serverApi.put(`/cost/kmsTable/2`, newCostsData);
+                await serverApi.put(`/cost/${EndpointRouteName}/2`, newCostsData);
                 startLoadingFsCosts()
 
             } catch (error) {
@@ -89,7 +91,7 @@ export const useConfigKmsTableStore = () => {
         return async () => {
             try {
                 // Realiza la solicitud PUT a tu API para actualizar los costos
-                await serverApi.put(`/cost/kmsTable/1`, newCostsData);
+                await serverApi.put(`/cost/${EndpointRouteName}/1`, newCostsData);
                 startLoadingEsCosts()
             } catch (error) {
                 console.error('Error al actualizar los costos:', error);

@@ -4,6 +4,8 @@ import { onLoadSpecialCosts, onSelectedSpecialCost, onUpdateSpecialcosts } from 
 
 export const useConfigSpecialCostsStore = () => {
 
+    const EndpointRouteName = 'specialFirstDayRules'
+
     const dispatch = useDispatch()
 
     const special_costs = useSelector((state) => state.configSpecialCosts.specialCost);
@@ -18,7 +20,7 @@ export const useConfigSpecialCostsStore = () => {
     // OBTENER COSTOS DIA EXTRA
     const startLoadingSpecialCosts = async () => {
         try {
-            const { data } = await serverApi.get('/cost/firstDaySpecialCosts');
+            const { data } = await serverApi.get(`/cost/${EndpointRouteName}`);
             const costos = data.costesKms;
             // console.log(costos);
             dispatch(onLoadSpecialCosts(costos)); // Pasar 'costos' como argumento
@@ -31,7 +33,7 @@ export const useConfigSpecialCostsStore = () => {
     //ACTUALIZAR COSTO POR ID
     const updateCostSpecialCost = async (costId, updatedCostInfo) => {
         try {
-            const { data } = await serverApi.put(`/cost/firstDaySpecialCosts/${costId}`, updatedCostInfo);
+            const { data } = await serverApi.put(`/cost/${EndpointRouteName}/${costId}`, updatedCostInfo);
             // Suponiendo que la API devuelve la información actualizada del usuario
             dispatch(onUpdateSpecialcosts({ costId, updatedCostInfo: data })); // Actualizar el usuario en el estado
             startLoadingSpecialCosts();
