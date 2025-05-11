@@ -11,7 +11,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import es from 'date-fns/locale/es';
-import { useAuthStore, useCalendarStore, useUiStore } from '../../hooks';
+import { useCalendarStore, useUiStore } from '../../hooks';
 import { PDF } from './PDF';
 import { currencyFormatMx, customDateFormat } from '../../helpers';
 
@@ -23,10 +23,11 @@ export const CalendarModal = () => {
 
     const { isDateModalOpen, closeDateModal, isModalViewOpen, closeViewModal, openDateModal, customStyles } = useUiStore()
     const { activeEvent, starSavingEvent, StartDeletingEvent } = useCalendarStore()
-    const { user } = useAuthStore()
 
     const [formValues, setFormValues] = useState({
-        Usuario: '',
+        user: {
+            name: '',
+        },
         transportNumber: '',
         transport: '',
         seats: '',
@@ -42,7 +43,10 @@ export const CalendarModal = () => {
         status: 'nuevo',
     })
 
-    const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, status, price, advance, Usuario } = formValues
+    // console.log('activeEvent', activeEvent);
+    // console.log('formValues', formValues);
+
+    const { transportNumber, transport, seats, nameClient, phone, departure, destination, start, end, notes, status, price, advance, user } = formValues
 
     useEffect(() => { activeEvent !== null && setFormValues({ ...activeEvent }) }, [activeEvent])
 
@@ -404,7 +408,8 @@ export const CalendarModal = () => {
                 closeTimeoutMS={200}
             >
                 <h1 className='text-center'>Reserva registrada</h1>
-                <h6 className='text-center'>Creada por {user.name}</h6>
+
+                <h6 className='text-center'>Creada por: { user && user.name ? user.name : 'Usuario eliminado'}</h6>
                 <hr />
 
                 <div className="container">

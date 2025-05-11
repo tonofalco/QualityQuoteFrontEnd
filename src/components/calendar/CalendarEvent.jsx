@@ -1,17 +1,20 @@
 
 export const CalendarEvent = ({ event }) => {
-    const { title, Usuario,transport, destination } = event;
+    const { title, user,transport, destination } = event;
 
     // (event.user ? console.log(event.user.name) : console.log(Usuario.name));
 
+    // console.log(user.name);
+
     return (
         <>
-            <strong>{transport}</strong>
+            <strong>{transport}</strong> 
             {
-                event.user 
-                ?  <span> - {event.user.name}</span> 
-                : <span> - {Usuario.name}</span>
+                user && user.name 
+                ? <span> - {user.name}</span> 
+                : <span> - UE</span>
             }
+            {/* <span>- {user}</span> */}
             <br />
             <span> {destination}</span>
         </>

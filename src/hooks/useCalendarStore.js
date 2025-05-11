@@ -67,7 +67,7 @@ export const useCalendarStore = () => {
 
     const startLoadingEvent = async () => {
         try {
-            const { data } = await serverApi.get(`${EndpointRouteName}`)
+            const { data } = await serverApi.get(`/${EndpointRouteName}`)
             const events = convertToDateEvents(data.eventos)
             dispatch(onLoadEvents(events))
             // console.log(data)
