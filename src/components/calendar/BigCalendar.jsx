@@ -12,6 +12,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 export const BigCalendar = () => {
 
     const { user } = useAuthStore()
+    
     const { openViewModal } = useUiStore()
     const { events, setActiveEvent, startLoadingEvent } = useCalendarStore()
 
@@ -19,7 +20,10 @@ export const BigCalendar = () => {
 
     const eventStyleGetter = (event, start, end, isSelected) => {
 
-        const isMyEvent = user && event.Usuario && (user.name === event.Usuario.name || user.name === event.user?.name);
+        // console.log(user.name);
+        // console.log(event.user.name)
+
+        const isMyEvent = user && event.user && user.name === event.user?.name;
         
         const style = {
             backgroundColor: isMyEvent ? '#347cf7' : '#465670',
